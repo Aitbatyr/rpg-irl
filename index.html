@@ -2827,6 +2827,26 @@ $("bugForm").addEventListener("submit", async (e) => {
 $("friendOv").addEventListener("click", (e) => { if (e.target === e.currentTarget) { friendId = null; renderFriend(); renderParty(); } });
 $("imgOv").addEventListener("click", (e) => { if (e.target === e.currentTarget || e.target.id === "imgBig") { $("imgOv").hidden = true; $("imgBig").removeAttribute("src"); } });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("imgOv").hidden) { $("imgOv").hidden = true; $("imgBig").removeAttribute("src"); return; } if (e.key === "Escape" && friendId) { friendId = null; renderFriend(); renderParty(); } });
+// ---------- вывеска: переезд ----------
+const MOVED_URL = "https://aitbatyr.github.io/rpg-irl/";
+if (!STANDALONE) {
+  const ov = document.createElement("div");
+  ov.id = "movedOv";
+  ov.setAttribute("role", "dialog");
+  ov.style.cssText = "position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:16px;background:rgba(3,6,14,.96)";
+  ov.innerHTML = '<div style="max-width:440px;width:100%;display:flex;flex-direction:column;gap:14px;padding:24px;border:1px solid var(--line);background:var(--panel-solid);text-align:center">' +
+    '<div style="font:700 12px/1 var(--f-mono);letter-spacing:.2em;color:var(--gold)">[ СИСТЕМА ]</div>' +
+    '<div style="font:800 italic 30px/1.1 var(--f-display)">Система переехала</div>' +
+    '<p style="margin:0;color:var(--muted);font-size:15px;line-height:1.5">Теперь у нас свой сайт. Здесь больше ничего не отмечай: отсюда уже не перенесётся. Весь опыт, квесты и серии ждут тебя на новом сайте.</p>' +
+    '<a class="btn" href="' + MOVED_URL + '" target="_blank" rel="noopener" style="text-decoration:none;display:block">Открыть новый сайт</a>' +
+    '<div style="font:13px var(--f-mono);color:var(--sys);user-select:all">' + MOVED_URL + '</div>' +
+    '<p style="margin:0;color:var(--muted);font-size:13px">Там: «Создать аккаунт», почта и пароль. Имя не пиши, скажи Айтбатыру свою почту, он вернёт твой профиль.</p>' +
+    '<button type="button" class="linkbtn" id="movedPeek" hidden style="align-self:center">Открыть старый сайт (только владелец)</button></div>';
+  document.body.appendChild(ov);
+  const pk = ov.querySelector("#movedPeek");
+  pk.onclick = () => ov.remove();
+  setTimeout(function chk() { if (isOwner) pk.hidden = false; else if (!chk.n || chk.n < 20) { chk.n = (chk.n || 0) + 1; setTimeout(chk, 500); } }, 500);
+}
 renderTestBar(); renderNews(); renderForm(); renderGuide(); renderAll();
 if (tab === "more") markSeen();
 setInterval(() => { const d = today(); if (d !== renderAll.day) { renderAll.day = d; renderAll(); ensureDailies(); writeSeals(); touchSeen(); } }, 30000);
