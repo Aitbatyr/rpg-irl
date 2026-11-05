@@ -1346,6 +1346,7 @@ function threadHtml(ik, owner, id, open, loc, compose) {
 }
 function unreadCmts() {
   if (!me) return 0;
+  if (!prefsLoaded) return 0;
   const seen = num(prefs.cmtSeen); let n = 0;
   threadIndex().forEach((ents, k) => {
     const owner = k.split(":")[1];
@@ -2787,6 +2788,8 @@ function syncSubs() {
     subPrefs = db.doc("q/" + uid + "/meta/prefs").onSnapshot((snap) => {
       prefs = snap.exists ? { ...snap.data() } : {}; prefsLoaded = true;
       renderTabs(); renderGuide(); renderMyBugs(); if (tab === "more") markSeen(); touchSeen();
+      if (tab === "party" && cmtBase == null) cmtBase = num(prefs.cmtSeen);
+      lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges();
       if (!prefs.tourDone && !tourAuto && me) { tourAuto = true; setTimeout(startTour, 900); }
     }, onErr);
   }
