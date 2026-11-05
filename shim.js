@@ -300,7 +300,7 @@
             (legacy.length ? '<select data-auth="' + esc(a.auth_id) + '"><option value="">это новый игрок</option>' + legacy.map(([slot, u]) => '<option value="' + esc(u) + '">это ' + esc(nameOf(slot)) + " (старый профиль)</option>").join("") + '</select><button class="btn sm" data-mig="bind" data-auth="' + esc(a.auth_id) + '">Привязать</button>' : '<span class="hint">новый игрок: подтверди его запрос выше</span>') + "</div>").join("")
         : '<div class="hint">Все входы привязаны.</div>') +
       (legacy.length ? '<div class="hint">Ещё не вошли: ' + legacy.map(([slot]) => esc(nameOf(slot))).join(", ") + ". Пусть создадут аккаунт по ссылке, потом привяжи их здесь.</div>" : "") +
-      '<h3 class="fh">Перенос данных из claude.ai</h3><div class="row" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><label class="filebtn">Выбрать файл переноса<input type="file" id="migFile" accept=".json,application/json"></label><span class="hint" id="migMsg"></span></div>';
+      '<h3 class="fh">Догрузить фото из файла переноса</h3><div class="row" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><label class="filebtn">Выбрать файл переноса<input type="file" id="migFile" accept=".json,application/json"></label><span class="hint" id="migMsg"></span></div>';
     box.querySelectorAll('[data-mig="bind"]').forEach((b) => (b.onclick = async () => {
       const sel = box.querySelector('select[data-auth="' + CSS.escape(b.dataset.auth) + '"]');
       const uid = sel && sel.value;
@@ -311,7 +311,7 @@
       ownerPanel();
     }));
     const fi = document.getElementById("migFile");
-    if (fi) fi.onchange = () => { const f = fi.files && fi.files[0]; if (f) importFile(f); };
+    if (fi) fi.onchange = () => { const f = fi.files && fi.files[0]; if (f) importFile(f, { blobsOnly: true }); };
   }
   async function firstRun() {
     const { data } = await sb.from("docs").select("path").eq("path", "roster/main").maybeSingle();
@@ -326,11 +326,12 @@
     document.getElementById("migFile").onchange = async (e) => { const f = e.target.files && e.target.files[0]; if (f && (await importFile(f))) setTimeout(() => location.reload(), 1500); };
   }
   function alertMsg(t) { const m = document.getElementById("migMsg"); if (m) m.textContent = t; }
-  async function importFile(file) {
+  async function importFile(file, opts) {
+    const blobsOnly = !!(opts && opts.blobsOnly);
     let pack;
     try { pack = JSON.parse(await file.text()); } catch { alertMsg("Файл не читается."); return; }
     if (!pack || !Array.isArray(pack.docs)) { alertMsg("Это не файл переноса."); return; }
-    const rows = pack.docs.filter((d) => d && typeof d.path === "string" && d.path.split("/").length % 2 === 0).map((d) => ({ path: d.path, coll: collOf(d.path), id: idOf(d.path), data: d.data || {} }));
+    const rows = blobsOnly ? [] : pack.docs.filter((d) => d && typeof d.path === "string" && d.path.split("/").length % 2 === 0).map((d) => ({ path: d.path, coll: collOf(d.path), id: idOf(d.path), data: d.data || {} }));
     let done = 0;
     for (let i = 0; i < rows.length; i += 200) {
       const { error } = await sb.from("docs").upsert(rows.slice(i, i + 200), { onConflict: "path" });
@@ -339,16 +340,17 @@
       alertMsg("Записи: " + done + " из " + rows.length);
     }
     const blobs = Array.isArray(pack.blobs) ? pack.blobs : [];
-    let ok = 0;
+    let ok = 0, lastErr = "";
     for (const b of blobs) {
       try {
         const bin = Uint8Array.from(atob(b.b64), (c) => c.charCodeAt(0));
-        const { error } = await sb.storage.from("blobs").upload(b.id, new Blob([bin], { type: b.type || "image/jpeg" }), { contentType: b.type || "image/jpeg", upsert: true, cacheControl: "31536000" });
-        if (!error) ok++;
+        const { error } = await sb.storage.from("blobs").upload(b.id, new Blob([bin], { type: b.type || "image/jpeg" }), { contentType: b.type || "image/jpeg", upsert: false, cacheControl: "31536000" });
+        if (!error || /exist|duplicate/i.test(String(error.message || error.error || ""))) ok++;
+        else lastErr = String(error.message || error.error || error);
       } catch {}
       alertMsg("Записи: " + done + " · фото: " + ok + " из " + blobs.length);
     }
-    alertMsg("Перенос завершён: записей " + done + ", фото " + ok + " из " + blobs.length + ". Обнови страницу.");
+    alertMsg((blobsOnly ? "Фото в файле: " + blobs.length + ", загружено: " + ok : "Перенос завершён: записей " + done + ", фото " + ok + " из " + blobs.length) + (lastErr ? ". Ошибка: " + lastErr : "") + ". Обнови страницу.");
     return true;
   }
 
