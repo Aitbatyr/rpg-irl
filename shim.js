@@ -293,6 +293,12 @@
     const used = new Set((accs || []).map((a) => a.uid));
     const legacy = Object.entries(roster).filter(([, u]) => typeof u === "string" && u.startsWith("u_") && !used.has(u));
     const inRoster = new Set(Object.values(roster));
+    const lf = JSON.stringify(legacy);
+    if (lf !== JSON.stringify(window.SISTEMA_LEGACY_FREE_RAW || null)) {
+      window.SISTEMA_LEGACY_FREE_RAW = legacy;
+      window.SISTEMA_LEGACY_FREE = legacy.map(([slot, u]) => ({ slot, uid: u }));
+      window.dispatchEvent(new Event("sistema-legacy"));
+    }
     const loose = (accs || []).filter((a) => !a.admin && !inRoster.has(a.uid));
     box.innerHTML = '<h3 class="fh">Входы на сайт</h3>' +
       (loose.length
@@ -325,6 +331,14 @@
     document.getElementById("migSkip").onclick = () => ov.remove();
     document.getElementById("migFile").onchange = async (e) => { const f = e.target.files && e.target.files[0]; if (f && (await importFile(f))) setTimeout(() => location.reload(), 1500); };
   }
+  window.SISTEMA_BIND = async (fromUid, toUid) => {
+    if (!account || !account.admin) return "нет прав";
+    const { data, error } = await sb.from("accounts").update({ uid: toUid }).eq("uid", fromUid).select("uid");
+    if (error) return error.message;
+    if (!data || !data.length) return "аккаунт не найден";
+    ownerPanel();
+    return null;
+  };
   function alertMsg(t) { const m = document.getElementById("migMsg"); if (m) m.textContent = t; }
   async function importFile(file, opts) {
     const blobsOnly = !!(opts && opts.blobsOnly);

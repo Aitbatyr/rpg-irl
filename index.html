@@ -712,6 +712,8 @@ const TZ = 5 * 3600e3; // Казахстан, UTC+5
 
 const $ = (id) => document.getElementById(id);
 const STANDALONE = !!window.SISTEMA_CONFIG;
+const legacyFree = () => (STANDALONE && Array.isArray(window.SISTEMA_LEGACY_FREE) ? window.SISTEMA_LEGACY_FREE.filter((l) => l && l.slot && l.uid) : []);
+window.addEventListener("sistema-legacy", () => { lastHtml.admin = null; renderAdmin(); });
 const blobUrl = (id) => (typeof window.SISTEMA_BLOB === "function" ? window.SISTEMA_BLOB(id) : "/_blob/" + id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const pad = (n) => String(n).padStart(2, "0");
@@ -1994,7 +1996,9 @@ function renderAdmin() {
       const byName = typeof c.name === "string";
       const blocked = byName ? full : !!roster[c.want];
       return '<div class="arow"><span>Аккаунт <b data-uname="' + esc(c.uid) + '">…</b> хочет войти как <b>' + esc(byName ? c.name : pname(c.want)) + "</b>" + (blocked ? ' <span class="flag">' + (byName ? "пати заполнена (" + MAX_ACTIVE + ")" : "место занято") + "</span>" : "") +
-        '</span><span class="acts"><button class="btn sm ok" data-act="approve" data-u="' + esc(c.uid) + '"' + (blocked ? " disabled" : "") + '>Подтвердить</button><button class="btn sm no" data-act="rejectclaim" data-u="' + esc(c.uid) + '">Отклонить</button></span></div>';
+        '</span><span class="acts">' + (byName ? legacyFree().map((l) => '<button class="btn sm" data-act="claimlegacy" data-u="' + esc(c.uid) + '" data-to="' + esc(l.uid) + '">Это ' + esc(pname(l.slot)) + " (старый профиль)</button>").join("") : "") +
+        '<button class="btn sm ok" data-act="approve" data-u="' + esc(c.uid) + '"' + (blocked ? " disabled" : "") + ">" + (byName && legacyFree().length ? "Новый игрок" : "Подтвердить") + '</button><button class="btn sm no" data-act="rejectclaim" data-u="' + esc(c.uid) + '">Отклонить</button></span></div>' +
+        (byName && legacyFree().length ? '<div class="hint" style="color:var(--gold)">Есть старые профили без входа. Если это кто-то из них, нажми «Это … (старый профиль)», а не «Новый игрок».</div>' : "");
     }).join("");
   }
   h += '<div class="lbl">Состав пати · ' + activePlayers().length + " из " + MAX_ACTIVE + "</div>" + PLAYERS.filter((p) => roster[p.id]).map((p) =>
@@ -2351,6 +2355,14 @@ document.addEventListener("click", async (e) => {
       b.disabled = true;
       await db.doc("roster/meta").set({ ...(rosterMeta || {}), players });
       toast(pl.name + (act === "archive" ? " в архиве. Данные сохранены." : " снова в пати."));
+      return;
+    }
+    if (act === "claimlegacy" && isOwner && typeof window.SISTEMA_BIND === "function") {
+      b.disabled = true;
+      const err = await window.SISTEMA_BIND(b.dataset.u, b.dataset.to);
+      if (err) { toast("Не получилось привязать: " + err); b.disabled = false; return; }
+      await db.doc("acc/" + b.dataset.u).delete();
+      toast("Готово: вход привязан к старому профилю. У игрока страница обновится сама.");
       return;
     }
     if (act === "rejectclaim" && isOwner) { await db.doc("acc/" + b.dataset.u).delete(); toast("Запрос отклонён."); return; }
