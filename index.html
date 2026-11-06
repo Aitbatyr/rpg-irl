@@ -414,7 +414,7 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 <body>
 <script src="vendor/supabase.js?v=393545de"></script>
 <script src="config.js?v=e31fa54b"></script>
-<script src="shim.js?v=bcbc98df"></script>
+<script src="shim.js?v=d07a2904"></script>
 
 
 <div class="wrap">
@@ -845,6 +845,7 @@ const NEWS = [
     "Исправлена сетка ачивок: полученные ачивки больше не сжимаются.",
     "Сообщения о багах: владелец может закрыть неактуальное. У автора оно помечается «закрыто», его можно открыть снова.",
     "Исправлено: на вкладке «Пати» больше не висит цифра старых комментариев при каждом входе.",
+    "Исправлено: новый игрок в момент вступления мог «заверить» чужие прошлые дни нулями, из-за чего у всех пропадал опыт за мелкие квесты и в журнале появлялось «изм.». Теперь печать ставится только за дни после вступления в пати, опыт вернулся.",
   ] },
   { v: 11, date: "2026-11-02", title: "Фото, обсуждения и онлайн", items: [
     "Доказательство прямо в квесте: до 3 фото при отправке крупного или сюжетного квеста на проверку и при ответе на спор. WhatsApp больше не обязателен.",
@@ -1107,8 +1108,9 @@ function sealInfo(pid) {
     if (w.id === pid || !isActive(w)) continue;
     const doc = (sealsBy[w.id] || {})[pid];
     if (!doc || doc.uid !== roster[pid]) continue;
-    if (doc.days) for (const d in doc.days) { const v = num(doc.days[d]); caps[d] = caps[d] == null ? v : Math.min(caps[d], v); }
-    if (doc.tk) for (const d in doc.tk) { const v = num(doc.tk[d]); cnt[d] = cnt[d] == null ? v : Math.max(cnt[d], v); }
+    const from = joinedOf(w.id); // свидетель не мог видеть дни до того, как вступил в пати
+    if (doc.days) for (const d in doc.days) { if (d < from) continue; const v = num(doc.days[d]); caps[d] = caps[d] == null ? v : Math.min(caps[d], v); }
+    if (doc.tk) for (const d in doc.tk) { if (d < from) continue; const v = num(doc.tk[d]); cnt[d] = cnt[d] == null ? v : Math.max(cnt[d], v); }
   }
   return { caps, cnt };
 }
@@ -2714,7 +2716,7 @@ async function writeSeals() {
       const same = cur && cur.uid === roster[p.id];
       const existing = same && cur.days ? cur.days : {}, exTk = same && cur.tk ? cur.tk : {};
       const prof = computeProfile(p.id, true), add = {}, addTk = {};
-      for (let d = SEASON_START; d <= y; d = addDays(d, 1)) {
+      for (let d = joinedOf(me); d <= y; d = addDays(d, 1)) {
         if (existing[d] == null) add[d] = prof.smallByDay[d] || 0;
         if (exTk[d] == null) addTk[d] = tasksBy[p.id].filter((t) => t.date === d).length;
       }

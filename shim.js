@@ -267,11 +267,21 @@
   }
 
   // если владелец привязал этот вход к старому профилю, перезагрузиться
+  // пока игрок не в пати, база не отдаёт ему чужие данные. Как только его приняли, перезагрузиться,
+  // чтобы сайт не считал «пустые» данные настоящими
+  async function isMemberNow() {
+    if (account.admin) return true;
+    const { data } = await sb.from("docs").select("data").eq("path", "roster/main").maybeSingle();
+    return !!(data && data.data && Object.values(data.data).includes(account.uid));
+  }
   function watchBinding() {
+    let wasMember = null;
+    isMemberNow().then((m) => (wasMember = m)).catch(() => {});
     const t = setInterval(async () => {
       try {
         const { data } = await sb.from("accounts").select("uid,admin").eq("auth_id", account.auth_id).maybeSingle();
-        if (data && (data.uid !== account.uid || data.admin !== account.admin)) location.reload();
+        if (data && (data.uid !== account.uid || data.admin !== account.admin)) { location.reload(); return; }
+        if (wasMember === false && (await isMemberNow())) location.reload();
       } catch {}
     }, 15000);
     setTimeout(() => clearInterval(t), 6 * 3600e3);
