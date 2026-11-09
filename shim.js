@@ -163,6 +163,48 @@
     });
   }
 
+  // ---------- push-уведомления ----------
+  const FN = CFG.url + "/functions/v1/push";
+  const b64u = (s) => { const p = "=".repeat((4 - (s.length % 4)) % 4), b = atob((s + p).replace(/-/g, "+").replace(/_/g, "/")); return Uint8Array.from(b, (c) => c.charCodeAt(0)); };
+  const sameKey = (buf, key) => { if (!buf) return false; const a = new Uint8Array(buf), k = b64u(key); return a.length === k.length && a.every((x, i) => x === k[i]); };
+  async function fnKey() { const r = await fetch(FN + "?key=1", { headers: { apikey: CFG.key } }); if (!r.ok) throw new Error("fn " + r.status); const j = await r.json(); if (!j.key) throw new Error("no key"); return j.key; }
+  async function curSub() { if (!("serviceWorker" in navigator)) return null; const reg = await navigator.serviceWorker.getRegistration(); return reg ? reg.pushManager.getSubscription() : null; }
+  window.SISTEMA_PUSH = Object.freeze({
+    supported: () => "serviceWorker" in navigator && "PushManager" in window && "Notification" in window && window.isSecureContext,
+    iosNeedsInstall: () => /iPhone|iPad|iPod/.test(navigator.userAgent) && !(navigator.standalone || (window.matchMedia && matchMedia("(display-mode: standalone)").matches)),
+    available: async () => { try { await fnKey(); return true; } catch { return false; } },
+    state: async () => {
+      const perm = "Notification" in window ? Notification.permission : "unsupported";
+      const sub = await curSub().catch(() => null);
+      if (!sub) return { on: false, perm };
+      const { data } = await sb.from("push_subs").select("prefs").eq("endpoint", sub.endpoint).maybeSingle();
+      return { on: !!data, prefs: (data && data.prefs) || {}, perm };
+    },
+    enable: async (prefs) => {
+      const perm = await Notification.requestPermission();
+      if (perm !== "granted") throw new Error("denied");
+      const key = await fnKey();
+      const reg = await navigator.serviceWorker.register("sw.js");
+      await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (sub && !sameKey(sub.options && sub.options.applicationServerKey, key)) { await sub.unsubscribe(); sub = null; }
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(key) });
+      const j = sub.toJSON();
+      const { error } = await sb.from("push_subs").upsert({ uid: account.uid, endpoint: j.endpoint, sub: j, prefs: prefs || {} }, { onConflict: "endpoint" });
+      if (error) throw error;
+      return true;
+    },
+    disable: async () => { const sub = await curSub(); if (sub) { await sb.from("push_subs").delete().eq("endpoint", sub.endpoint); await sub.unsubscribe().catch(() => {}); } },
+    setPrefs: async (prefs) => { const sub = await curSub(); if (sub) await sb.from("push_subs").update({ prefs }).eq("endpoint", sub.endpoint); },
+    test: async () => {
+      const { data } = await sb.auth.getSession();
+      const r = await fetch(FN, { method: "POST", headers: { apikey: CFG.key, Authorization: "Bearer " + (data.session ? data.session.access_token : ""), "Content-Type": "application/json" }, body: JSON.stringify({ type: "selftest" }) });
+      const j = await r.json().catch(() => ({}));
+      return r.ok ? j.sent || 0 : -1;
+    },
+  });
+  if ("serviceWorker" in navigator) navigator.serviceWorker.addEventListener("message", (e) => { if (e.data && e.data.type === "nav" && typeof window.SISTEMA_NAV === "function") window.SISTEMA_NAV(e.data.url); });
+
   window.claude = Object.freeze({
     use: async (name) => {
       await ready;
