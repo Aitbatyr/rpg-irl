@@ -114,8 +114,10 @@
         if (path) notify(collOf(path), path);
       })
       .subscribe((st) => { if (st === "SUBSCRIBED") { if (was) kickAll(); was = true; } });
-    setInterval(() => { if (!document.hidden) kickAll(); }, 120000);
-    document.addEventListener("visibilitychange", () => { if (!document.hidden) kickAll(); });
+    // запасная пересверка: живые обновления приходят сами, поэтому редко
+    setInterval(() => { if (!document.hidden) kickAll(); }, 600000);
+    let hiddenAt = 0;
+    document.addEventListener("visibilitychange", () => { if (document.hidden) hiddenAt = Date.now(); else if (Date.now() - hiddenAt > 30000) kickAll(); });
   }
 
   // ---------- user ----------
@@ -183,10 +185,7 @@
 #authOv .msg{font-size:13px;min-height:1em;color:var(--gold,#ffcf5c)}
 #authOv .lnk{background:none;border:0;color:var(--muted,#7f95ba);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;padding:0;align-self:flex-start}
 .authfoot{display:flex;justify-content:center;gap:8px;font-size:12px;color:var(--muted,#7f95ba);padding:0 16px 90px}
-.authfoot button{background:none;border:0;color:inherit;text-decoration:underline;cursor:pointer;font:inherit}
-#migPanel{display:flex;flex-direction:column;gap:8px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line-soft,#16304a)}
-#migPanel .acc{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;padding:8px 10px;border:1px solid var(--line-soft,#16304a)}
-#migPanel select{font:inherit;padding:6px;background:var(--bg,#060a14);color:inherit;border:1px solid var(--line,#2a6c8f)}`;
+.authfoot button{background:none;border:0;color:inherit;text-decoration:underline;cursor:pointer;font:inherit}`;
   document.head.appendChild(css);
   let mode = "in";
   function showLogin(msg) {
@@ -254,15 +253,16 @@
     readyRes();
     addFooter();
     watchBinding();
-    if (account.admin) firstRun();
-    if (account.admin) { setTimeout(ownerPanel, 1500); setInterval(() => { if (!document.hidden && !(document.activeElement && document.activeElement.closest && document.activeElement.closest("#migPanel"))) ownerPanel(); }, 30000); }
+    if (account.admin) { setTimeout(ownerPanel, 1500); setInterval(() => { if (!document.hidden) ownerPanel(); }, 60000); }
   }
 
   function addFooter() {
     const f = document.createElement("div");
     f.className = "authfoot";
     f.innerHTML = "<span>" + esc(account.email || "") + '</span><button type="button" id="authOut">Выйти</button>';
-    document.body.appendChild(f);
+    const foot = document.querySelector(".foot");
+    if (foot) { foot.insertAdjacentHTML("beforeend", '<span aria-hidden="true">·</span>'); f.style.cssText = "display:inline-flex;gap:8px;padding:0"; foot.appendChild(f); }
+    else document.body.appendChild(f);
     document.getElementById("authOut").onclick = async () => { await sb.auth.signOut(); location.reload(); };
   }
 
@@ -288,58 +288,21 @@
   }
 
   // ---------- панель владельца: привязка входов и импорт ----------
+  // владелец: следим, какие старые профили ещё без входа (для кнопок «Это … (старый профиль)» у запросов)
   async function ownerPanel() {
-    const host = document.getElementById("adminPanel");
-    if (!host) return;
-    let box = document.getElementById("migPanel");
-    if (!box) { box = document.createElement("div"); box.id = "migPanel"; host.appendChild(box); }
     const [{ data: accs }, { data: rm }] = await Promise.all([
-      sb.from("accounts").select("auth_id,uid,email,admin,created_at").order("created_at"),
+      sb.from("accounts").select("uid"),
       sb.from("docs").select("data").eq("path", "roster/main").maybeSingle(),
     ]);
     const roster = (rm && rm.data) || {};
-    const names = typeof window.SISTEMA_PLAYERS === "function" ? window.SISTEMA_PLAYERS() : [];
-    const nameOf = (slot) => (names.find((p) => p.id === slot) || {}).name || slot;
     const used = new Set((accs || []).map((a) => a.uid));
     const legacy = Object.entries(roster).filter(([, u]) => typeof u === "string" && u.startsWith("u_") && !used.has(u));
-    const inRoster = new Set(Object.values(roster));
     const lf = JSON.stringify(legacy);
     if (lf !== JSON.stringify(window.SISTEMA_LEGACY_FREE_RAW || null)) {
       window.SISTEMA_LEGACY_FREE_RAW = legacy;
       window.SISTEMA_LEGACY_FREE = legacy.map(([slot, u]) => ({ slot, uid: u }));
       window.dispatchEvent(new Event("sistema-legacy"));
     }
-    const loose = (accs || []).filter((a) => !a.admin && !inRoster.has(a.uid));
-    box.innerHTML = '<h3 class="fh">Входы на сайт</h3>' +
-      (loose.length
-        ? loose.map((a) => '<div class="acc"><b>' + esc(a.email || "без почты") + '</b><span class="hint">' + new Date(a.created_at).toLocaleDateString("ru-RU") + "</span>" +
-            (legacy.length ? '<select data-auth="' + esc(a.auth_id) + '"><option value="">это новый игрок</option>' + legacy.map(([slot, u]) => '<option value="' + esc(u) + '">это ' + esc(nameOf(slot)) + " (старый профиль)</option>").join("") + '</select><button class="btn sm" data-mig="bind" data-auth="' + esc(a.auth_id) + '">Привязать</button>' : '<span class="hint">новый игрок: подтверди его запрос выше</span>') + "</div>").join("")
-        : '<div class="hint">Все входы привязаны.</div>') +
-      (legacy.length ? '<div class="hint">Ещё не вошли: ' + legacy.map(([slot]) => esc(nameOf(slot))).join(", ") + ". Пусть создадут аккаунт по ссылке, потом привяжи их здесь.</div>" : "") +
-      '<h3 class="fh">Догрузить фото из файла переноса</h3><div class="row" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><label class="filebtn">Выбрать файл переноса<input type="file" id="migFile" accept=".json,application/json"></label><span class="hint" id="migMsg"></span></div>';
-    box.querySelectorAll('[data-mig="bind"]').forEach((b) => (b.onclick = async () => {
-      const sel = box.querySelector('select[data-auth="' + CSS.escape(b.dataset.auth) + '"]');
-      const uid = sel && sel.value;
-      if (!uid) { alertMsg("Для нового игрока ничего привязывать не нужно: он отправит запрос с именем, подтверди его выше."); return; }
-      b.disabled = true;
-      const { error } = await sb.from("accounts").update({ uid }).eq("auth_id", b.dataset.auth);
-      alertMsg(error ? "Ошибка: " + error.message : "Готово. У друга страница обновится сама в течение 15 секунд.");
-      ownerPanel();
-    }));
-    const fi = document.getElementById("migFile");
-    if (fi) fi.onchange = () => { const f = fi.files && fi.files[0]; if (f) importFile(f, { blobsOnly: true }); };
-  }
-  async function firstRun() {
-    const { data } = await sb.from("docs").select("path").eq("path", "roster/main").maybeSingle();
-    if (data) return;
-    const ov = document.createElement("div");
-    ov.id = "authOv";
-    ov.innerHTML = '<div class="box"><h1>ПЕРВЫЙ ЗАПУСК</h1><div style="font-size:14px;color:var(--muted,#7f95ba)">База пустая. Загрузи файл переноса из claude.ai, и все квесты, голоса и опыт появятся здесь.</div>' +
-      '<label class="filebtn">Выбрать файл переноса<input type="file" id="migFile" accept=".json,application/json"></label><div class="msg" id="migMsg"></div>' +
-      '<button class="lnk" type="button" id="migSkip">Начать с пустой базы</button></div>';
-    document.body.appendChild(ov);
-    document.getElementById("migSkip").onclick = () => ov.remove();
-    document.getElementById("migFile").onchange = async (e) => { const f = e.target.files && e.target.files[0]; if (f && (await importFile(f))) setTimeout(() => location.reload(), 1500); };
   }
   window.SISTEMA_BIND = async (fromUid, toUid) => {
     if (!account || !account.admin) return "нет прав";
