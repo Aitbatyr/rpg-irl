@@ -418,6 +418,9 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 .imgov{position:fixed;inset:0;z-index:9999;background:rgba(2,5,12,.94);display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
 .imgov img{max-width:100%;max-height:100%;object-fit:contain;border:1px solid var(--line)}
 .imgov .x2{position:absolute;top:12px;right:12px}
+.imgov.isava img{width:min(86vw,72vh,520px);background:var(--bg2);height:auto;aspect-ratio:1;object-fit:cover;border-radius:50%;border:2px solid var(--sys);box-shadow:0 0 30px rgba(94,200,255,.35)}
+.av.zoom{cursor:zoom-in}
+.av.zoom:focus-visible{outline:2px solid var(--sys);outline-offset:2px}
 .thumbs img{width:64px;height:64px;object-fit:cover;border:1px solid var(--line-soft);display:block;background:var(--bg2)}
 .thumbs .rm{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:700 13px/1 var(--f-body);cursor:pointer;padding:0}
 .upl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;width:100%}
@@ -916,7 +919,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 14;
+const APP_VERSION = 15;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
 const tplDays = new Set();
@@ -934,6 +937,10 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 15, date: "2026-11-09", title: "Аватарка на весь экран", items: [
+    "Нажми на чужую аватарку в пати, в профиле друга или в обсуждении, и она откроется крупно на весь экран. Свою можно открыть в «Статусе» кнопкой «открыть».",
+    "Новые аватарки сохраняются в 2 раза чётче (512 px). Старую можно перезалить, чтобы крупно она не была размытой.",
+  ] },
   { v: 14, date: "2026-11-09", title: "Уведомления, аватарки и итоги недели", items: [
     "Push-уведомления на телефон и компьютер: друг ждёт твоего голоса, твой квест оспорили или проголосовали, новый комментарий в твоём обсуждении, вечером в 21:00 напоминание про незакрытые квесты. Включаются в «Ещё» → «Уведомления», каждый тип можно выключить.",
     "Нажал на уведомление, и сайт откроется сразу на нужной вкладке.",
@@ -1363,7 +1370,8 @@ function radarSVG(p) {
 const avaOf = (pid) => { const a = pid === me ? prefs.ava : (prefsBy[pid] || {}).ava; return typeof a === "string" && /^[A-Za-z0-9_-]{6,80}$/.test(a) ? a : null; };
 function avaHtml(pid, cls) {
   const a = avaOf(pid);
-  return '<span class="av ' + (cls || "") + '" aria-hidden="true">' + (a ? '<img src="' + esc(blobUrl(a)) + '" alt="" loading="lazy">' : esc((pname(pid) || "?")[0])) + "</span>";
+  if (!a) return '<span class="av ' + (cls || "") + '" aria-hidden="true">' + esc((pname(pid) || "?")[0]) + "</span>";
+  return '<span class="av zoom ' + (cls || "") + '" role="button" tabindex="0" data-act="imgview" data-kind="ava" data-src="' + esc(blobUrl(a)) + '" title="Аватарка: ' + esc(pname(pid)) + '" aria-label="Открыть аватарку: ' + esc(pname(pid)) + '"><img src="' + esc(blobUrl(a)) + '" alt="" loading="lazy"></span>';
 }
 let avaBusy = false;
 async function setAvatar(file) {
@@ -1372,8 +1380,8 @@ async function setAvatar(file) {
   try {
     const bmp = await createImageBitmap(file);
     const side = Math.min(bmp.width, bmp.height), c = document.createElement("canvas");
-    c.width = c.height = 256;
-    c.getContext("2d").drawImage(bmp, (bmp.width - side) / 2, (bmp.height - side) / 2, side, side, 0, 0, 256, 256);
+    c.width = c.height = 512;
+    c.getContext("2d").drawImage(bmp, (bmp.width - side) / 2, (bmp.height - side) / 2, side, side, 0, 0, 512, 512);
     const blob = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.86));
     const up = await assetsApi.upload(blob);
     const old = prefs.ava;
@@ -1393,7 +1401,7 @@ function statusHtml(pid) {
       ? '<label class="ava avaed" title="Сменить аватарку">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="Аватарка">' : esc(pname(pid)[0])) + '<input type="file" accept="image/*" id="avaFile"><span class="avacam">' + (avaBusy ? "…" : "📷") + "</span></label>"
       : '<div class="ava">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="Аватарка">' : esc(pname(pid)[0])) + "</div>") + '<div style="min-width:0">' +
       '<div class="nm">' + esc(pname(pid)) + "</div>" +
-      (pid === me && avaOf(pid) && canWrite ? '<button type="button" class="linkbtn" data-act="avadel" style="font-size:12px">убрать аватарку</button>' : "") +
+      (pid === me && avaOf(pid) ? '<div style="display:flex;gap:12px">' + '<button type="button" class="linkbtn" data-act="imgview" data-kind="ava" data-src="' + esc(blobUrl(avaOf(pid))) + '" style="font-size:12px">открыть</button>' + (canWrite ? '<button type="button" class="linkbtn" data-act="avadel" style="font-size:12px">убрать аватарку</button>' : "") + "</div>" : "") +
       '<div class="cls">' + (bound ? 'Класс: <span style="color:var(--fg)">' + esc(p.cls) + '</span> · Ранг охотника <span class="rank r-' + hr + '">' + hr + "</span>" : "Игрок ещё не вошёл в систему") + "</div></div></div>" +
     '<div class="lvlrow"><div class="lvl">УРОВЕНЬ<b>' + p.li.L + '</b></div><div class="xpn">' + p.li.into + " / " + p.li.need + " XP</div></div>" +
     '<div class="bar"><i style="width:' + ((p.li.into / p.li.need) * 100).toFixed(1) + '%"></i></div>' +
@@ -2042,7 +2050,7 @@ const GUIDE = [
   { id: "d-join", l: 3, t: "Новые игроки и архив", b: "<p>В пати может быть до 12 активных игроков. Новичок получает ссылку на сайт, создаёт аккаунт, пишет своё имя, владелец подтверждает. Если это кто-то из старых игроков, владелец нажимает «Это … (старый профиль)», и вход привязывается к его профилю со всем опытом. Новичок начинает с нуля, поэтому для честного сравнения есть «Неделя» и средний опыт в день.</p><p>Неактивных владелец может отправить в архив: они пропадают из недели, проверок и голосований, а их данные сохраняются. Вернуть можно в любой момент.</p>", v: 13 },
   { id: "d-party", l: 3, t: "Пати и профиль друга", b: "<p>Нажми на друга во вкладке «Пати» — откроется окно с его квестами, сюжетом, характеристиками и журналом. Там же кнопки «Оспорить». Если друг сегодня не открывал сайт, на карточке будет «сегодня не заходил».</p><p><b>Зелёная точка</b> у имени значит, что сайт у друга открыт прямо сейчас. Закрыл вкладку, точка погасла. Если друга нет, на карточке видно последнее посещение: «был 20 мин назад», «был вчера в 22:14». Время точное примерно до 10 минут.</p>", v: 11 },
   { id: "b-push", l: 2, t: "Уведомления", b: "<p>«Ещё» → <b>«Уведомления»</b> → «Включить уведомления» и разреши их в браузере. Настройка на каждом устройстве своя.</p><p>Что приходит: <b>друг ждёт твоего голоса</b>; <b>твой квест оспорили</b> или по нему проголосовали; <b>новый комментарий</b> в обсуждении, где ты участвуешь; <b>в 21:00</b> напоминание, если квесты дня не закрыты или ты сегодня не заходил. Любой тип можно выключить галочкой. «Прислать тестовое» проверяет, что всё работает.</p><p>На iPhone уведомления работают, только если сайт добавлен на экран «Домой» и открыт с иконки.</p>", v: 14 },
-  { id: "b-week", l: 2, t: "Итоги недели и аватарка", b: "<p><b>Итоги недели</b>: каждый понедельник наверху вкладки «Статус» карточка за прошлую неделю (пн–вс): опыт, место в пати, выполнено и провалено, процент повторов, лучший день и какие характеристики выросли. Ниже архив «Прошлые недели». Пока не посмотрел, на «Сегодня» висит плашка.</p><p><b>Аватарка</b>: во вкладке «Статус» нажми на квадрат со своей буквой и выбери картинку. Убрать: «убрать аватарку» под именем.</p>", v: 14 },
+  { id: "b-week", l: 2, t: "Итоги недели и аватарка", b: "<p><b>Итоги недели</b>: каждый понедельник наверху вкладки «Статус» карточка за прошлую неделю (пн–вс): опыт, место в пати, выполнено и провалено, процент повторов, лучший день и какие характеристики выросли. Ниже архив «Прошлые недели». Пока не посмотрел, на «Сегодня» висит плашка.</p><p><b>Аватарка</b>: во вкладке «Статус» нажми на кружок со своей буквой и выбери картинку. Под именем: «открыть» (посмотреть крупно) и «убрать аватарку».</p><p>Чужую аватарку можно открыть на весь экран: нажми на неё в пати, в профиле друга или в обсуждении. Закрыть: нажатие по экрану или «Закрыть ×».</p>", v: 15 },
   { id: "d-season", l: 3, t: "Итоги сезона", b: "<p>1 января во вкладке «Пати» откроются итоги сезона 1: победитель, опыт, уровень, лучшая серия, сюжетные квесты и ачивки каждого. Сезон 2 настроим вместе.</p>" },
   { id: "d-bugs", l: 3, t: "Сообщения о багах", b: "<p>«Ещё» → «Сообщить о баге» (или ссылка внизу любой вкладки). Опиши, что случилось, можно приложить скриншот. Версия, вкладка, время и устройство добавятся сами.</p><p>Статусы: 🆕 Новое · 🔍 Проверяется · 🛠 В работе · ✅ Исправлено · ❎ Не баг · 🔁 Не воспроизводится · 📎 Дубликат · 💡 Идея. Ответ появится в «Мои сообщения», а на «Ещё» загорится точка. Неактуальное владелец может закрыть: оно помечается «закрыто».</p>", v: 12 },
   { id: "d-data", l: 3, t: "Где хранятся данные и кто что видит", b: "<p>Сайт лежит на GitHub, а данные в базе Supabase. Правила доступа проверяет сама база, поэтому обойти их через браузер нельзя: каждый меняет только свои квесты, голоса и сообщения, а данные пати видят только её участники. Пока владелец не подтвердил вход, новичок видит только состав пати.</p><p>Каждую ночь в 01:30 делается резервная копия всей базы в закрытое хранилище, к ней можно вернуться на любой день. Ничего не удаляется насовсем: удалённые сюжетные квесты и старые расписания хранятся для итогов года.</p>", v: 12 },
@@ -2557,7 +2565,7 @@ document.addEventListener("click", async (e) => {
   if (act === "exportall" && isOwner && db) { exportAll(b); return; }
   if (act === "avadel") { const old = prefs.ava; writePrefs({ ava: null }); if (old && assetsApi) assetsApi.delete(old).catch(() => {}); renderAll(); toast("Аватарка убрана."); return; }
   if (act === "pushon" || act === "pushoff" || act === "pushtest") { pushAct(act); return; }
-  if (act === "imgview") { $("imgBig").src = b.dataset.src || ""; $("imgOv").hidden = false; return; }
+  if (act === "imgview") { e.preventDefault(); e.stopPropagation(); $("imgOv").classList.toggle("isava", b.dataset.kind === "ava"); $("imgBig").src = b.dataset.src || ""; $("imgOv").hidden = false; return; }
   if (act === "imgclose") { $("imgOv").hidden = true; $("imgBig").removeAttribute("src"); return; }
   if (act === "dispopen") { dispOpen = b.dataset.k; renderAll(); const f = document.querySelector('[data-draft="' + CSS.escape("dr:" + dispOpen) + '"]'); if (f) f.focus(); return; }
   if (act === "dispcancel") { dispOpen = null; renderAll(); return; }
@@ -3156,7 +3164,7 @@ $("bugForm").addEventListener("submit", async (e) => {
 });
 $("friendOv").addEventListener("click", (e) => { if (e.target === e.currentTarget) { friendId = null; renderFriend(); renderParty(); } });
 $("imgOv").addEventListener("click", (e) => { if (e.target === e.currentTarget || e.target.id === "imgBig") { $("imgOv").hidden = true; $("imgBig").removeAttribute("src"); } });
-document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("imgOv").hidden) { $("imgOv").hidden = true; $("imgBig").removeAttribute("src"); return; } if (e.key === "Escape" && friendId) { friendId = null; renderFriend(); renderParty(); } });
+document.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches(".av.zoom")) { e.preventDefault(); e.target.click(); return; } if (e.key === "Escape" && !$("imgOv").hidden) { $("imgOv").hidden = true; $("imgBig").removeAttribute("src"); return; } if (e.key === "Escape" && friendId) { friendId = null; renderFriend(); renderParty(); } });
 // ---------- вывеска: переезд ----------
 const MOVED_URL = "https://aitbatyr.github.io/rpg-irl/";
 if (!STANDALONE) {
