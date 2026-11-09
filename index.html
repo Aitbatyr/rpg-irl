@@ -229,7 +229,7 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 .testbar b{color:var(--gold);font-family:var(--f-mono);letter-spacing:.12em}
 .testbar .acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .tpl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:-4px 0 12px;font-size:12px;color:var(--muted)}
-.tpl span.t{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line-soft);padding:3px 4px 3px 8px;color:var(--fg)}
+.tpl span.t{display:inline-flex;flex-wrap:wrap;max-width:100%;align-items:center;gap:4px;border:1px solid var(--line-soft);padding:3px 4px 3px 8px;color:var(--fg)}
 .sq{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--line-soft);background:rgba(6,12,24,.45);border-left:3px solid var(--rc,var(--line))}
 .sq.exp{border-color:rgba(255,93,115,.35);border-left-color:var(--bad)}
 .sq .h{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
@@ -458,7 +458,7 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 <body>
 <script src="vendor/supabase.js?v=393545de"></script>
 <script src="config.js?v=e31fa54b"></script>
-<script src="shim.js?v=382f9615"></script>
+<script src="shim.js?v=7874360e"></script>
 
 
 <div class="wrap">
@@ -940,6 +940,10 @@ const NEWS = [
     "Аватарки: во вкладке «Статус» нажми на свою букву и выбери картинку. Она обрежется в квадрат и появится в пати, в профиле и в обсуждениях.",
     "Итоги недели: каждый понедельник во вкладке «Статус» карточка за прошлую неделю: опыт, место в пати, выполнено и провалено, повторы, лучший день, рост характеристик. Прошлые недели в архиве.",
     "На «Сегодня» появляется плашка «Итоги недели готовы», пока ты их не посмотрел.",
+    "Исправлено: в итогах недели рост характеристик показывался в XP (+100 ИНТ), теперь в очках, как в «Статусе» (ИНТ +4).",
+    "Исправлено: при равном опыте за неделю игроки делят место, а не получают разные.",
+    "Исправлено: длинные названия повторов на узком телефоне вылезали за край экрана.",
+    "Исправлено: при выходе из аккаунта уведомления на этом устройстве отключаются, чтобы следующий вошедший не получал чужие.",
   ] },
   { v: 13, date: "2026-11-09", title: "Честные ранги и компактный статус", items: [
     "Новый выбор ранга: сразу видны все шесть с временем, примерами и кто проверяет. Ничего не пропадает после нажатия, работает и на телефоне.",
@@ -1414,10 +1418,12 @@ function weekRecap(pid, ws) {
     if (t.done) done++; else if (t.date < today()) failed++;
     if (typeof t.fromDaily === "string" && (t.done || t.date < today())) { rDue++; if (t.done) rDone++; }
   }
-  const gain = {};
-  for (let d = ws; d <= we; d = addDays(d, 1)) { const sd = p.statByDay[d] || {}; for (const k in sd) gain[k] = (gain[k] || 0) + sd[k]; }
+  // рост в очках характеристик (как в «Статусе»: 25 XP = 1 очко), а не в XP
+  const before = {}, upto = {}, gain = {};
+  for (const d in p.statByDay) { if (d > we) continue; const sd = p.statByDay[d]; for (const k in sd) { upto[k] = (upto[k] || 0) + sd[k]; if (d < ws) before[k] = (before[k] || 0) + sd[k]; } }
+  for (const k in upto) gain[k] = Math.floor(upto[k] / 25) - Math.floor((before[k] || 0) / 25);
   const board = activePlayers().map((pl) => { let x = 0; const pp = profile(pl.id); for (let d = ws; d <= we; d = addDays(d, 1)) x += num(pp.xpByDay[d]); return { id: pl.id, x }; }).sort((a, b) => b.x - a.x);
-  const place = board.findIndex((b) => b.id === pid) + 1;
+  const mine = (board.find((b) => b.id === pid) || { x: 0 }).x, place = board.filter((b) => b.x > mine).length + 1;
   return { ws, we, xp, best, done, failed, rDue, rDone, gain, place, of: board.length };
 }
 const weekLbl = (ws) => { const we = addDays(ws, 6); return ws.slice(5, 7) === we.slice(5, 7) ? Number(ws.slice(8)) + "–" + nice(we) : nice(ws) + " – " + nice(we); };
@@ -1429,7 +1435,7 @@ function recapCardHtml(r) {
     '<div class="rc-big"><b>' + r.done + (r.failed ? '<small> / ' + r.failed + "✗</small>" : "") + "</b><span>выполнено" + (pct != null ? " · " + pct + "%" : "") + "</span></div>" +
     '<div class="rc-big"><b>' + (r.rDue ? Math.round((r.rDone / r.rDue) * 100) + "%" : "—") + "</b><span>повторы" + (r.rDue ? " · " + r.rDone + " из " + r.rDue : "") + "</span></div></div>" +
     '<div class="hint" style="margin-top:8px">' + (r.best ? "Лучший день: <b style=\"color:var(--fg)\">" + WDS[wdOf(r.best.d) - 1] + " " + nice(r.best.d) + "</b>, " + r.best.xp + " XP. " : "") +
-    (gains.length ? "Рост: " + gains.slice(0, 3).map((x) => "+" + r.gain[x.k] + " " + x.s).join(", ") + "." : "Характеристики не росли.") + "</div>";
+    (gains.length ? "Рост характеристик: " + gains.slice(0, 3).map((x) => x.s + " +" + r.gain[x.k]).join(", ") + "." : "Характеристики за неделю не выросли.") + "</div>";
 }
 function renderRecap() {
   const pid = mainPid(), panel = $("recapPanel"), ws = lastWeekStart();

@@ -305,7 +305,7 @@
     const foot = document.querySelector(".foot");
     if (foot) { foot.insertAdjacentHTML("beforeend", '<span aria-hidden="true">·</span>'); f.style.cssText = "display:inline-flex;gap:8px;padding:0"; foot.appendChild(f); }
     else document.body.appendChild(f);
-    document.getElementById("authOut").onclick = async () => { await sb.auth.signOut(); location.reload(); };
+    document.getElementById("authOut").onclick = async () => { try { await window.SISTEMA_PUSH.disable(); } catch {} await sb.auth.signOut(); location.reload(); };
   }
 
   // если владелец привязал этот вход к старому профилю, перезагрузиться
