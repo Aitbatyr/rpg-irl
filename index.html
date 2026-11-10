@@ -322,7 +322,11 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 .fold>summary::-webkit-details-marker{display:none}
 .fold>summary::before{content:"▸ ";color:var(--sys)}
 .fold[open]>summary::before{content:"▾ "}
+.fold>:not(summary){padding-left:12px;padding-right:12px;box-sizing:border-box}
+.fold>:last-child{padding-bottom:12px}
 .fold>.overdue,.fold>.tpl,.fold>.news{padding:0 12px 12px;margin:0}
+.fold>.statsbox{margin-top:4px}
+.fold>.replow{margin:0 0 8px}
 .fold>.overdue{margin-top:0}
 .qi .meta{font-size:11.5px}
 .rk{font-family:var(--f-display);font-weight:800;margin-right:2px}
@@ -941,6 +945,7 @@ const NEWS = [
     "Нажми на чужую аватарку в пати, в профиле друга или в обсуждении, и она откроется крупно на весь экран. Свою можно открыть в «Статусе» кнопкой «открыть».",
     "Новые аватарки сохраняются в 2 раза чётче (512 px). Старую можно перезалить, чтобы крупно она не была размытой.",
     "Исправлено: уведомления приходили с задержкой, когда телефон спал (например, голос друга пришёл только при открытии сайта). Теперь они отправляются срочными и приходят сразу.",
+    "Исправлено: в «Статусе» цифры характеристик и в «Повторяющихся квестах» красная подсказка вылезали за рамку. Теперь у всего содержимого свёрнутых блоков есть отступы.",
     "Исправлено: вечернее напоминание в 21:00 могло не дойти. Сервер теперь ждёт дольше и записывает, кому и что ушло, чтобы сбой было видно.",
   ] },
   { v: 14, date: "2026-11-09", title: "Уведомления, аватарки и итоги недели", items: [
