@@ -205,6 +205,17 @@
   });
   if ("serviceWorker" in navigator) navigator.serviceWorker.addEventListener("message", (e) => { if (e.data && e.data.type === "nav" && typeof window.SISTEMA_NAV === "function") window.SISTEMA_NAV(e.data.url); });
 
+  // журнал ошибок: сайт сообщает о сбоях на устройствах игроков (таблица client_errors, читает только админ)
+  let errSent = 0; const errSeen = new Set();
+  window.SISTEMA_LOGERR = (o) => {
+    try {
+      if (!account || errSent >= 5) return;
+      const msg = String((o && o.msg) || "").slice(0, 500), key = msg + "|" + String((o && o.where) || "");
+      if (!msg || errSeen.has(key)) return;
+      errSeen.add(key); errSent++;
+      sb.from("client_errors").insert({ uid: account.uid, ver: Number(o.ver) || null, msg, stack: String(o.stack || "").slice(0, 2000), ua: navigator.userAgent.slice(0, 300), url: (location.hash || "").slice(0, 40) }).then(() => {}, () => {});
+    } catch {}
+  };
   window.claude = Object.freeze({
     use: async (name) => {
       await ready;

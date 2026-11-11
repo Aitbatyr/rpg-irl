@@ -1,0 +1,26 @@
+name: Проверка и публикация
+# deploy.sh кладёт новую версию в ветку staging. Здесь GitHub прогоняет автотест на вымышленных данных
+# и только при успехе переносит её в main, откуда публикуется сайт. Упал тест: сайт остаётся прежним.
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: deploy
+jobs:
+  test-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Установить браузер для тестов
+        run: pip install playwright==1.48.0 && python -m playwright install --with-deps chromium
+      - name: Автотест
+        run: python ci/ci_test.py
+      - name: Опубликовать (staging → main)
+        run: git push origin HEAD:main
