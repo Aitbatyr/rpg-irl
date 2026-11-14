@@ -619,6 +619,30 @@ span.remchip{cursor:default}
 .xpbox input[type=range]::-moz-range-thumb{width:13px;height:13px;background:var(--bg);border:2px solid var(--sys);border-radius:0;transform:rotate(45deg);box-shadow:0 0 12px var(--sys-glow)}
 .xpbox input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid var(--fg);outline-offset:3px}
 .tedit .xptag,.er .xptag{align-self:center}
+/* v19: окно перевода старых квестов */
+.ov .panel.migr{max-width:560px;gap:10px}
+.migr h2{font-style:italic;font-size:24px;margin:2px 0}
+.mcap{font:600 10px var(--f-mono);letter-spacing:.3em;color:var(--sys)}
+.mgrp{font:600 10px var(--f-mono);letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin:8px 0 6px}
+.mrow{border:1px solid var(--line-soft);padding:10px 12px;margin-bottom:8px;transition:border-color .2s}
+.mrow.ch{border-color:rgba(94,200,255,.5)}
+.mrt{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.mrt b{font-weight:600;overflow-wrap:anywhere;min-width:0}
+.mcmp{font:600 12px var(--f-mono);white-space:nowrap;color:var(--muted)}
+.mcmp .n{color:var(--gold)}.mcmp .up{color:var(--ok)}.mcmp .dn{color:var(--bad)}
+.mold{font:800 11px var(--f-display);font-style:italic;border:1px solid var(--dim);padding:0 5px;color:var(--muted)}
+.mctl{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.mctl select{min-width:0;width:auto;flex:0 1 auto;max-width:100%}
+.mseg{display:inline-flex;border:1px solid var(--line)}
+.mseg button{background:transparent;border:0;color:var(--dim);width:36px;height:31px;display:grid;place-items:center;cursor:pointer;padding:0}
+.mseg button+button{border-left:1px solid var(--line-soft)}
+.mseg button[aria-pressed=true]{color:var(--sys);background:rgba(94,200,255,.12)}
+.mseg .th{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transform:rotate(var(--r,0deg))}
+.migrf{position:sticky;bottom:-18px;background:#0b1628;padding:10px 0 4px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line-soft)}
+.migrf .hint.bad{color:var(--bad)}
+.migrf .bar.bad i{background:var(--bad)}
+.migrf .acts{display:flex;gap:8px;flex-wrap:wrap}.migrf .acts .btn{flex:1 1 150px}
+.vnote.migrn{width:100%;margin:0 0 10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
@@ -718,6 +742,7 @@ span.remchip{cursor:default}
 
       <div class="dayprog" id="dayprog"></div>
       <div id="offBox"></div>
+      <div id="migrNote"></div>
       <div id="likeAsk"></div>
       <ul class="qlist" id="quests"></ul>
       <div id="overdue"></div>
@@ -851,6 +876,16 @@ span.remchip{cursor:default}
 </div>
 
 <div id="imgOv" class="imgov" hidden role="dialog" aria-modal="true" aria-label="Фото"><button type="button" class="btn sm ghost x2" data-act="imgclose">Закрыть ×</button><img id="imgBig" alt="Фото"></div>
+<div id="migrOv" class="ov sheet" hidden>
+  <div class="panel sheetp migr" role="dialog" aria-modal="true" aria-labelledby="migrT">
+    <div class="mcap">[ СИСТЕМА · НОВЫЙ ОПЫТ ]</div>
+    <h2 id="migrT">Новая система опыта</h2>
+    <p class="hint" style="margin:0">Опыт теперь считается по времени, сложности и тому, нравится ли дело. Переведи свои квесты: значения подставлены так, чтобы опыт не изменился. Поправь под реальность.</p>
+    <div id="migrRows"></div>
+    <div class="migrf"><div class="hint" id="migrBud"></div><div class="bar" id="migrBar"><i></i></div>
+      <div class="acts"><button type="button" class="btn ghost" data-act="migrlater" id="migrLater">Позже</button><button type="button" class="btn" data-act="migrsave" id="migrSave">Сохранить все</button></div></div>
+  </div>
+</div>
 <div id="friendOv" class="ov sheet" hidden>
   <div class="panel sheetp" role="dialog" aria-modal="true" aria-labelledby="fName">
     <div class="ph"><h2 class="ptitle" id="fName">Профиль</h2><button type="button" class="btn sm ghost" data-act="fclose" aria-label="Закрыть">Закрыть ×</button></div>
@@ -1126,7 +1161,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 18;
+const APP_VERSION = 19;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -1167,6 +1202,14 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 19, date: "2026-11-14", title: "Перевод старых квестов на новый опыт", items: [
+    "При первом входе всплывает окно «Новая система опыта»: все повторы с буквой и сегодняшние невыполненные квесты с буквой в одном списке.",
+    "У каждого три выбора (время, сложность, 👎 / — / 👍) и сразу видно старый и новый опыт. Значения подставлены так, чтобы опыт не изменился: E = 15 мин, D = 30 мин, C = 1 ч, 👍.",
+    "Внизу считается день: не больше 16 часов и 5 привычек. Если не влезает, сохранить нельзя.",
+    "«Сохранить все»: сегодняшние квесты меняются сразу, повторы со следующего раза (расписание «каждые N дней» не сдвигается).",
+    "«Позже»: окно больше не всплывает, а на «Сегодня» остаётся плашка «Перевести на новый опыт» с кнопкой.",
+    "Выполненные и прошлые квесты не меняются, опыт за них остаётся.",
+  ] },
   { v: 18, date: "2026-11-14", title: "Новый опыт: время, сложность, «нравится»", items: [
     "Вместо букв E–S у ежедневных квестов три ползунка: время (от 5 минут до 16 часов или «без времени»), сложность (лёгкий, средний, сложный) и «нравится» (👎, —, 👍). Опыт считается сразу, крупной цифрой.",
     "Формула: 20 XP за час средней задачи. Лёгкий ×0,5, сложный ×1,5. После 3 часов каждый следующий час идёт за половину. За 👎 +30% (за дисциплину), за — +15%.",
@@ -2384,7 +2427,7 @@ const GUIDE = [
   // ---------- 1 · Быстрый старт ----------
   { id: "s-what", l: 1, t: "Что это за сайт", b: "<p>«Система» превращает твой день в RPG. Ты записываешь <b>квесты</b> — дела на сегодня, выполняешь их и получаешь <b>опыт (XP)</b>. Опыт поднимает уровень и характеристики. Друзья по пати видят твой прогресс и проверяют крупные достижения.</p><p>Цель сезона — стать лучшей версией себя к 31 декабря.</p>" },
   { id: "s-quest", l: 1, t: "Добавить и выполнить квест", b: "<p>На вкладке <b>«Сегодня»</b> напиши квест в поле «Новый квест…». Под полем откроются три ползунка: <b>время</b>, <b>сложность</b> и <b>«нравится»</b>. Опыт видно сразу крупной цифрой. Нажми <b>«Принять»</b>.</p><p>Плашки под полем: <b>характеристика</b> (что качаешь), <b>опыт</b> (ползунки), <b>повтор</b> и ⏰.</p><p>Характеристики: <b>СИЛ</b> (тело: спорт, сон, питание), <b>ИНТ</b> (разум: учёба, книги), <b>ВОЛ</b> (воля: режим, привычки), <b>ХАР</b> (харизма: люди, общение), <b>ТВР</b> (творчество: музыка, проекты), <b>ФИН</b> (достаток: работа, деньги).</p><p>Сделал — поставь галочку слева от квеста. Опыт начислится сразу, «+XP» улетит в полоску опыта.</p>", v: 18 },
-  { id: "s-ranks", l: 1, t: "Как считается опыт", b: "<p><b>Время</b>: 20 XP за час средней задачи. После 3 часов каждый следующий час идёт за половину (8 часов = 5,5 «часа»).</p><p><b>Сложность</b>: лёгкий ×0,5, средний ×1, сложный ×1,5.</p><p><b>«Нравится»</b>: 👎 +30% (за дисциплину, делать нелюбимое труднее), — +15%, 👍 без бонуса.</p><p>Примеры: час английского, средний, — = <b>23 XP</b>. Тренировка 2 часа, сложный, 👍 = <b>60 XP</b>. Уборка 30 минут, лёгкий, 👎 = <b>7 XP</b>.</p><p><b>ПРИВЫЧКА</b> (ползунок времени на «без времени», зелёная метка): лёгкий 3, средний 5, сложный 10 XP, с тем же бонусом за 👎 или —. Не больше 5 привычек в день. С временем квест становится <b>ЗАДАЧЕЙ</b> (голубая метка).</p><p>У дня <b>16 часов</b>: сумма времени сегодняшних квестов не больше 16 ч, ползунок упирается в остаток. Букв у квестов нет, буква осталась только у ранга охотника.</p>", v: 18 },
+  { id: "s-ranks", l: 1, t: "Как считается опыт", b: "<p><b>Время</b>: 20 XP за час средней задачи. После 3 часов каждый следующий час идёт за половину (8 часов = 5,5 «часа»).</p><p><b>Сложность</b>: лёгкий ×0,5, средний ×1, сложный ×1,5.</p><p><b>«Нравится»</b>: 👎 +30% (за дисциплину, делать нелюбимое труднее), — +15%, 👍 без бонуса.</p><p>Примеры: час английского, средний, — = <b>23 XP</b>. Тренировка 2 часа, сложный, 👍 = <b>60 XP</b>. Уборка 30 минут, лёгкий, 👎 = <b>7 XP</b>.</p><p><b>ПРИВЫЧКА</b> (ползунок времени на «без времени», зелёная метка): лёгкий 3, средний 5, сложный 10 XP, с тем же бонусом за 👎 или —. Не больше 5 привычек в день. С временем квест становится <b>ЗАДАЧЕЙ</b> (голубая метка).</p><p>У дня <b>16 часов</b>: сумма времени сегодняшних квестов не больше 16 ч, ползунок упирается в остаток. Букв у квестов нет, буква осталась только у ранга охотника.</p><p><b>Старые квесты с буквой</b> переводятся в окне «Новая система опыта»: оно всплывает при первом входе после обновления, а потом открывается с плашки на «Сегодня». Выполненные квесты не меняются.</p>", v: 19 },
   { id: "s-login", l: 1, t: "Вход, выход и телефон", b: "<p>Сайт: <b>aitbatyr.github.io/rpg-irl</b>. Первый раз нажми «Создать аккаунт» (почта и пароль от 6 символов), дальше просто «Войти». Внизу страницы твоя почта и кнопка «Выйти». Забыл пароль: «Забыл пароль» на экране входа, ссылка придёт на почту.</p><p>На телефоне открой сайт в Chrome → меню ⋮ → <b>«Добавить на главный экран»</b>. Появится иконка, сайт будет открываться как приложение.</p>", v: 12 },
   { id: "s-tabs", l: 1, t: "Вкладки", b: "<p><b>Сегодня</b> — квесты дня и полоска статуса. <b>Сюжет</b> — цели на недели. <b>Статус</b>: уровень и сводка сверху, а характеристики и ачивки раскрываются по нажатию; ниже карта активности (сайт запоминает, что ты держишь открытым). <b>Пати</b> — друзья, неделя, проверка квестов. <b>Ещё</b> — что нового, гайд, сообщения о багах. После обновления у «Что нового» горит метка «НОВОЕ», а в гайде синей точкой отмечены непрочитанные и изменённые разделы.</p>", v: 17 },
   { id: "s-midnight", l: 1, t: "Полночь и провалы", b: "<p>В 00:00 по времени сервера (UTC+5) день закрывается. Невыполненные квесты становятся <b>проваленными</b> и видны внизу вкладки «Сегодня» и на карте активности.</p><p>Обычный проваленный квест можно перенести на сегодня кнопкой «На сегодня».</p>", v: 17 },
@@ -2770,6 +2813,7 @@ function renderAll() {
     lastAch[me] = { ...got };
   }
   fxWatch();
+  renderMigr();
   bgUpdate();
   bootCheck();
 }
@@ -3209,6 +3253,7 @@ document.addEventListener("input", (e) => {
 });
 document.addEventListener("change", (e) => {
   const id = e.target && e.target.id || "";
+  if (e.target && e.target.dataset && e.target.dataset.mk && migrDraft[e.target.dataset.mk]) { const mk = e.target.dataset.mk, f = e.target.dataset.f; migrDraft[mk][f] = num(e.target.value); renderMigr(); const ns = document.querySelector('#migrRows select[data-mk="' + CSS.escape(mk) + '"][data-f="' + f + '"]'); if (ns) ns.focus(); return; }
   if (/-[mel]$/.test(id) && $(id.slice(0, -2) + "-x")) { const pre = id.slice(0, -2), v = melRead(pre); if (v) $(pre + "-x").textContent = "+" + xpOf(v.m, v.e, v.l) + " XP"; }
   if (id === "bugFile") { const f = e.target.files && e.target.files[0]; $("bugFileName").textContent = f ? f.name : ""; }
   if (e.target && e.target.dataset && e.target.dataset.push && window.SISTEMA_PUSH && pushUI.st) {
@@ -3289,6 +3334,10 @@ document.addEventListener("click", async (e) => {
   if (act === "tewday") { const d = num(b.dataset.d); if (tplDays.has(d)) tplDays.delete(d); else tplDays.add(d); b.setAttribute("aria-pressed", String(tplDays.has(d))); return; }
   if (act === "fclose") { friendId = null; renderFriend(); renderParty(); return; }
   if (act === "stat") { selStat = b.dataset.k; store.set("sys.stat", selStat); openGrp = ""; renderForm(); return; }
+  if (act === "migropen") { migrOpen = true; renderMigr(); return; }
+  if (act === "migrlater") { migrOpen = false; writePrefs({ migr18: "later" }); renderMigr(); toast("Окно больше не всплывёт. Перевести можно с плашки на «Сегодня»."); return; }
+  if (act === "migrsave") { migrSave(b); return; }
+  if (act === "migrl") { const d = migrDraft[b.dataset.mk]; if (d) { d.l = num(b.dataset.l); renderMigr(); const nb = document.querySelector('#migrRows [data-act="migrl"][data-mk="' + CSS.escape(b.dataset.mk) + '"][data-l="' + b.dataset.l + '"]'); if (nb) nb.focus(); } return; }
   if (act === "settime") { const i = num(b.dataset.i); if (i >= 0 && i < STEPS_MIN.length) { selT = i; renderXp(); renderPlaques(); renderWarn(); } return; }
   if (act === "sstat") { sStat = b.dataset.k; renderForm(); return; }
   if (act === "srank") { sRank = b.dataset.r; renderForm(); return; }
@@ -3770,6 +3819,78 @@ async function exportAll(btn) {
   btn.disabled = false;
 }
 
+// ---------- v19: перевод старых квестов с буквой на новый опыт ----------
+let migrOpen = false, migrAuto = false;
+const migrDraft = {};
+function migrItems() {
+  if (!me || !canWrite || !loadedBy[me] || !templatesLoaded) return [];
+  const out = [];
+  for (const tp of templates) if (!tp.deleted && !isNewQ(tp) && RANKS[tp.rank] && !RANKS[tp.rank].big) out.push({ k: "p:" + tp.id, rep: true, it: tp });
+  for (const t of tasksBy[me] || []) if (t.date === today() && !t.done && !isNewQ(t) && RANKS[t.rank] && !t.fromDaily && !t.moved) out.push({ k: "t:" + t.id, rep: false, it: t });
+  for (const x of out) if (!migrDraft[x.k]) { const v = OLD_MEL[x.it.rank] || [7, 1, 2]; migrDraft[x.k] = { m: STEPS_MIN[v[0]], e: v[1], l: v[2] }; }
+  return out;
+}
+function migrBudget(list) {
+  const t0 = today(), t1 = addDays(t0, 1);
+  let m0 = dayUsed(me, t0), h0 = dayHabits(me, t0), m1 = 0, h1 = 0;
+  for (const tp of templates) if (!tp.deleted && isNewQ(tp) && isDue(tp, t1)) { m1 += tp.m; if (tp.m === 0) h1++; }
+  for (const x of list) {
+    const d = migrDraft[x.k];
+    if (!x.rep) { m0 += d.m; if (d.m === 0) h0++; }
+    else if (nextDue(x.it, t1) === t1) { m1 += d.m; if (d.m === 0) h1++; }
+  }
+  return { m0, h0, m1, h1, bad: m0 > DAY_MIN || h0 > HABITS_MAX || m1 > DAY_MIN || h1 > HABITS_MAX };
+}
+function migrRowHtml(x) {
+  const d = migrDraft[x.k], o = RANKS[x.it.rank].xp, n = xpOf(d.m, d.e, d.l), diff = n - o, v = OLD_MEL[x.it.rank] || [7, 1, 2];
+  const ch = d.m !== STEPS_MIN[v[0]] || d.e !== v[1] || d.l !== v[2], k = esc(x.k);
+  return '<div class="mrow' + (ch ? " ch" : "") + '"><div class="mrt"><b>' + esc(x.it.title) + '</b><span class="mcmp"><span class="mold">' + x.it.rank + "</span> " + o + ' XP → <span class="n">' + n + " XP</span>" + (diff ? ' <span class="' + (diff > 0 ? "up" : "dn") + '">' + (diff > 0 ? "+" : "") + diff + "</span>" : "") + "</span></div>" +
+    '<div class="mctl"><select data-mk="' + k + '" data-f="m" aria-label="Время">' + STEPS_MIN.map((m) => '<option value="' + m + '"' + (m === d.m ? " selected" : "") + ">" + (m ? fmtMin(m) : "без времени (привычка)") + "</option>").join("") + "</select>" +
+    '<select data-mk="' + k + '" data-f="e" aria-label="Сложность">' + EFF.map((y, i) => '<option value="' + i + '"' + (i === d.e ? " selected" : "") + ">" + y.n + "</option>").join("") + "</select>" +
+    '<span class="mseg" role="group" aria-label="Нравится">' + LIKE_ICO.map((ic, i) => '<button type="button" data-act="migrl" data-mk="' + k + '" data-l="' + i + '" aria-pressed="' + (i === d.l) + '" aria-label="' + LIKE[i].n + '" title="' + LIKE[i].n + '">' + ic + "</button>").join("") + "</span>" + kindTag(d.m) + "</div></div>";
+}
+function renderMigr() {
+  const list = migrItems();
+  // плашка на «Сегодня», пока есть что переводить
+  setHtml("migrNote", list.length && !migrOpen ? '<button type="button" class="vnote migrn" data-act="migropen"><span>⚠ Перевести на новый опыт: ' + list.length + " " + (list.length === 1 ? "квест" : list.length < 5 ? "квеста" : "квестов") + "</span><span>Открыть →</span></button>" : "");
+  // окно само всплывает один раз (пока игрок не нажал «Позже» или «Сохранить»)
+  if (!migrAuto && list.length && prefsLoaded && !prefs.migr18 && !migrOpen) { migrAuto = true; migrOpen = true; }
+  const ov = $("migrOv");
+  if (!migrOpen || !list.length) { if (!ov.hidden) hideOv(ov); return; } // пустой список бывает на миг при перезагрузке данных: окно не закрываем насовсем
+  if (ov.hidden) showOv(ov);
+  const reps = list.filter((x) => x.rep), tod = list.filter((x) => !x.rep);
+  setHtml("migrRows", (reps.length ? '<div class="mgrp">Повторы · с завтра</div>' + reps.map(migrRowHtml).join("") : "") + (tod.length ? '<div class="mgrp">Сегодня · сразу</div>' + tod.map(migrRowHtml).join("") : ""));
+  const b = migrBudget(list);
+  $("migrBud").className = "hint" + (b.bad ? " bad" : "");
+  $("migrBud").innerHTML = "Сегодня: <b>" + fmtHM(b.m0) + "</b> из 16 ч · привычек " + b.h0 + " из " + HABITS_MAX + (reps.length ? " · повторы завтра: <b>" + fmtHM(b.m1) + "</b> · привычек " + b.h1 + " из " + HABITS_MAX : "") + (b.bad ? " · не влезает в 16 часов или 5 привычек, поправь" : "");
+  $("migrBar").className = "bar" + (b.bad ? " bad" : "");
+  $("migrBar").firstChild.style.width = Math.min(100, (Math.max(b.m0, b.m1) / DAY_MIN) * 100) + "%";
+  $("migrSave").disabled = b.bad;
+}
+async function migrSave(btn) {
+  const list = migrItems();
+  if (!list.length || migrBudget(list).bad) return;
+  btn.disabled = true;
+  const t1 = addDays(today(), 1);
+  let n = 0;
+  try {
+    for (const x of list.filter((y) => !y.rep)) { const d = migrDraft[x.k]; await taskDoc(x.it.id).update({ m: d.m, e: d.e, l: d.l }); n++; }
+    for (const x of list.filter((y) => y.rep)) {
+      const tp = x.it, d = migrDraft[x.k];
+      const st = nextDue(tp, t1) || t1; // фаза «каждые N дней» не сдвигается
+      const { id: _i, rank: _r, ...rest } = tp;
+      const prevVer = { title: tp.title, stat: tp.stat, rank: tp.rank, rep: repOf(tp), start: tplStart(tp), until: st };
+      await db.doc("q/" + uid + "/daily/" + tp.id).set({ ...rest, m: d.m, e: d.e, l: d.l, start: st, editedAt: now(), hist: histOf(tp).concat([prevVer]).slice(-20) });
+      n++;
+    }
+    writePrefs({ migr18: "done" });
+    migrOpen = false;
+    toast("Переведено: " + n + ". Сегодняшние сразу, повторы со следующего раза.", "СИСТЕМА");
+  } catch (err) { fail(err); }
+  btn.disabled = false;
+  renderMigr();
+}
+
 // ---------- recurring dailies ----------
 async function ensureDailies() {
   if (ensuring || !me || !canWrite || !clockOk || !loadedBy[me] || !templatesLoaded || !storyLoadedBy[me]) return;
@@ -3902,7 +4023,7 @@ function syncSubs() {
       prefs = snap.exists ? { ...snap.data() } : {}; prefsLoaded = true;
       renderTabs(); renderGuide(); renderMyBugs(); if (tab === "more") markSeen(); touchSeen();
       if (tab === "party" && cmtBase == null) cmtBase = num(prefs.cmtSeen);
-      lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderStatus();
+      lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderStatus(); renderMigr();
       if (!prefs.tourDone && !tourAuto && me) { tourAuto = true; setTimeout(startTour, 900); }
     }, onErr);
   }
@@ -3985,7 +4106,7 @@ $("bugForm").addEventListener("submit", async (e) => {
 });
 $("friendOv").addEventListener("click", (e) => { if (e.target === e.currentTarget) { friendId = null; renderFriend(); renderParty(); } });
 $("imgOv").addEventListener("click", (e) => { if (e.target === e.currentTarget || e.target.id === "imgBig") hideOv($("imgOv"), () => $("imgBig").removeAttribute("src")); });
-document.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches(".av.zoom")) { e.preventDefault(); e.target.click(); return; } if (e.key === "Escape" && !$("imgOv").hidden) { hideOv($("imgOv"), () => $("imgBig").removeAttribute("src")); return; } if (e.key === "Escape" && friendId) { friendId = null; renderFriend(); renderParty(); } });
+document.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches(".av.zoom")) { e.preventDefault(); e.target.click(); return; } if (e.key === "Escape" && !$("imgOv").hidden) { hideOv($("imgOv"), () => $("imgBig").removeAttribute("src")); return; } if (e.key === "Escape" && migrOpen) { $("migrLater").click(); return; } if (e.key === "Escape" && friendId) { friendId = null; renderFriend(); renderParty(); } });
 // ---------- вывеска: переезд ----------
 const MOVED_URL = "https://aitbatyr.github.io/rpg-irl/";
 if (!STANDALONE) {

@@ -29,5 +29,8 @@ def make(seed=7):
     TODAYQ = [{'m': 0, 'e': 1, 'l': 1}, {'m': 30, 'e': 1, 'l': 0}, {'m': 60, 'e': 2, 'l': 2}, {'rank': 'D'}, {'rank': 'C'}]
     for i, ((t, st, rk), q) in enumerate(zip(POOL[:5], TODAYQ)):
         docs[f'q/u_me/tasks/{tid()}'] = {'title': t, 'stat': st, **q, 'date': TODAY, 'done': False, 'createdAt': ms(TODAY, 0, 1 + i)}
+    # старые повторы с буквой: для окна перевода на новый опыт (v19)
+    docs['q/u_me/daily/rp1'] = {'title': 'Зарядка', 'stat': 'str', 'rank': 'D', 'rep': {'type': 'daily'}, 'start': days[0], 'createdAt': ms(days[0], 8)}
+    docs['q/u_me/daily/rp2'] = {'title': 'Английский через день', 'stat': 'int', 'rank': 'C', 'rep': {'type': 'every', 'n': 2}, 'start': days[0], 'createdAt': ms(days[0], 8)}
     accs = [{'auth_id': 'a-me', 'uid': 'u_me', 'email': 'ci@sistema.local', 'admin': True, 'created_at': '2026-10-15T00:00:00Z'}]
     return {'docs': docs, 'accounts': accs, 'session': {'user': {'id': 'a-me', 'email': 'ci@sistema.local'}}}
