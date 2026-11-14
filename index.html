@@ -589,6 +589,36 @@ span.remchip{cursor:default}
 #bg.still>div{animation:none}
 .setrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0}
 .setrow .hint{margin:2px 0 0}
+/* ---------- v18: ползунки опыта, метки ПРИВЫЧКА/ЗАДАЧА ---------- */
+.qk{font:600 10px/1 var(--f-mono);letter-spacing:.14em;color:var(--sys);border:1px solid rgba(94,200,255,.35);padding:3px 6px;white-space:nowrap}
+.qk.hab{color:var(--ok);border-color:rgba(73,227,160,.45)}
+.qp{color:var(--muted);white-space:nowrap}
+.odd{color:var(--gold)!important}
+.kv.odd{font-weight:600}
+.likeask{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px;padding:9px 12px;border:1px solid rgba(255,207,92,.35);background:rgba(255,207,92,.05);font-size:13px}
+.likeask span{flex:1 1 200px}
+.xpbox{display:flex;flex-direction:column;gap:14px;width:100%}
+.xph{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.xbig{font:italic 800 38px/1 var(--f-display);text-shadow:0 0 24px var(--sys-glow);font-variant-numeric:tabular-nums}
+.xbig small{font:600 12px var(--f-mono);font-style:normal;color:var(--sys);margin-left:4px}
+.xbonus{font:600 12px var(--f-mono);color:var(--gold)}
+.sl .slr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px}
+.sl output{font-weight:600;font-size:14px}
+.sle{display:flex;justify-content:space-between;margin-top:2px;font-size:11px;color:var(--dim)}
+.sle.e3 span{flex:1;text-align:center}.sle.e3 span:first-child{text-align:left}.sle.e3 span:last-child{text-align:right}
+.sle span.on{color:var(--fg)}
+.sle .th{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transform:rotate(var(--r,0deg))}
+.sle span.on .th{color:var(--sys);filter:drop-shadow(0 0 5px var(--sys-glow))}
+.xpbox input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:34px;margin:0;background:transparent;cursor:pointer;touch-action:pan-y;--p:50%}
+.xpbox input[type=range]:focus{outline:none}
+.xpbox input[type=range]::-webkit-slider-runnable-track{height:3px;background:linear-gradient(90deg,var(--sys) 0 var(--p),rgba(94,200,255,.14) var(--p) 100%)}
+.xpbox #xTime::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--sys) 0 var(--p),rgba(94,200,255,.14) var(--p) var(--lock,100%),transparent var(--lock,100%)),repeating-linear-gradient(135deg,rgba(255,93,115,.4) 0 3px,transparent 3px 6px)}
+.xpbox input[type=range]::-moz-range-track{height:3px;background:rgba(94,200,255,.14)}
+.xpbox input[type=range]::-moz-range-progress{height:3px;background:var(--sys)}
+.xpbox input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;margin-top:-6.5px;background:var(--bg);border:2px solid var(--sys);transform:rotate(45deg);box-shadow:0 0 12px var(--sys-glow)}
+.xpbox input[type=range]::-moz-range-thumb{width:13px;height:13px;background:var(--bg);border:2px solid var(--sys);border-radius:0;transform:rotate(45deg);box-shadow:0 0 12px var(--sys-glow)}
+.xpbox input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid var(--fg);outline-offset:3px}
+.tedit .xptag,.er .xptag{align-self:center}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
@@ -651,9 +681,13 @@ span.remchip{cursor:default}
             <div class="chips" id="statChips"></div>
           </div>
           <div class="grp" id="grp-rank" hidden>
-            <div class="lbl" style="margin-bottom:6px">Ранг</div>
-            <div class="chips" id="rankChips"></div>
-            <div class="hint" id="rankHint" style="margin-top:6px"></div>
+            <div class="xpbox">
+              <div class="xph"><span class="qk" id="xKind">ЗАДАЧА</span><span class="xbig"><span id="xNum">+20</span><small>XP</small></span><span class="xbonus" id="xBonus"></span></div>
+              <div class="sl"><div class="slr"><label class="lbl" for="xTime">Время</label><output id="xTimeOut" for="xTime"></output></div><input type="range" id="xTime" min="0" max="19" step="1" value="7"><div class="sle"><span>без времени</span><span id="xMaxLbl">16 ч</span></div></div>
+              <div class="sl"><div class="slr"><label class="lbl" for="xEff">Сложность</label><output id="xEffOut" for="xEff"></output></div><input type="range" id="xEff" min="0" max="2" step="1" value="1"><div class="sle e3" id="xEffEnds"><span>лёгкий</span><span>средний</span><span>сложный</span></div></div>
+              <div class="sl"><div class="slr"><label class="lbl" for="xLike">Нравится</label><output id="xLikeOut" for="xLike"></output></div><input type="range" id="xLike" min="0" max="2" step="1" value="1"><div class="sle e3" id="xLikeEnds"></div></div>
+              <div class="hint" id="xDay"></div>
+            </div>
           </div>
           <div class="grp" id="grp-rep" hidden>
           <div class="row" style="align-items:center">
@@ -684,6 +718,7 @@ span.remchip{cursor:default}
 
       <div class="dayprog" id="dayprog"></div>
       <div id="offBox"></div>
+      <div id="likeAsk"></div>
       <ul class="qlist" id="quests"></ul>
       <div id="overdue"></div>
       <div id="templates"></div>
@@ -705,7 +740,7 @@ span.remchip{cursor:default}
         <div><div class="lbl" style="margin-bottom:6px">Как считать прогресс</div><div class="chips" id="sKindChips"></div></div>
         <div id="sStepsBox">
           <textarea id="sSteps" rows="4" maxlength="800" placeholder="Этапы, каждый с новой строки:&#10;Матан&#10;Физика&#10;Сети&#10;Английский" aria-label="Этапы"></textarea>
-          <div class="hint" style="margin-top:4px">Каждый закрытый этап сразу даёт 10 XP (в лимит мелочи).</div>
+          <div class="hint" style="margin-top:4px">Каждый закрытый этап сразу даёт 10 XP.</div>
         </div>
         <div class="row" id="sCountBox" hidden>
           <input type="number" id="sTarget" min="1" step="any" placeholder="Цель, например 100" aria-label="Цель">
@@ -782,8 +817,8 @@ span.remchip{cursor:default}
     <section class="panel" id="guidePanel" aria-labelledby="gT">
       <div class="ph"><h2 class="ptitle" id="gT">Гайд</h2><span class="sub" id="gProg"></span></div>
       <div class="cheat" aria-label="Шпаргалка">
-        <div><span class="lbl">Ранги</span><span><span class="rank r-E">E</span> 5 ≈15 мин · <span class="rank r-D">D</span> 10 ≈30 мин · <span class="rank r-C">C</span> 20 ≈1 ч · <span class="rank r-B">B</span> 50 · <span class="rank r-A">A</span> 100 · <span class="rank r-S">S</span> 200 XP</span></div>
-        <div><span class="lbl">Мелочь</span><span>до 150 XP в день с квестов E–C и этапов сюжета</span></div>
+        <div><span class="lbl">Опыт</span><span>20 XP за час средней задачи · лёгкий ×0,5 · сложный ×1,5 · после 3 ч час за половину · 👎 +30% · — +15%</span></div>
+        <div><span class="lbl">Привычка</span><span>без времени: 3 / 5 / 10 XP, не больше 5 в день · у дня 16 ч</span></div>
         <div><span class="lbl">Проверка</span><span>большинство друзей; через 48 ч решают проголосовавшие: «да» больше = засчитано, иначе (и при ничьей) отклонено</span></div>
         <div><span class="lbl">Охотник</span><span>E 1–4 · D 5–9 · C 10–14 · B 15–19 · A 20–29 · S 30+ уровень</span></div>
         <div><span class="lbl">День</span><span>по времени сервера (UTC+5), провал — после полуночи</span></div>
@@ -874,42 +909,43 @@ const RANKS = {
   E: { xp: 5, big: false }, D: { xp: 10, big: false }, C: { xp: 20, big: false },
   B: { xp: 50, big: true }, A: { xp: 100, big: true }, S: { xp: 200, big: true },
 };
-const RANK_INFO = {
-  E: { t: "≈ 15 минут", ex: "заправить кровать, выпить 2 л воды, прочитать 10 страниц", who: "сам" },
-  D: { t: "≈ 30 минут", ex: "прогулка 30 минут, 30 минут иностранного, домашка по одному предмету", who: "сам" },
-  C: { t: "≈ 1 час или трудно себя заставить", ex: "тренировка на час, час учёбы, уборка на час", who: "сам" },
-  B: { t: "результат, который можно показать", ex: "сдать экзамен на хорошую оценку, пробежать 10 км, закончить проект", who: "друзья" },
-  A: { t: "результат недель работы", ex: "закрыть сессию без долгов, получить сертификат, пройти онлайн-курс целиком", who: "друзья" },
-  S: { t: "раз в сезон", ex: "найти работу, выиграть соревнование, поступить или пройти отбор", who: "друзья" },
-};
-const RANK_HINT = Object.fromEntries(Object.entries(RANK_INFO).map(([k, v]) => [k, v.t[0].toUpperCase() + v.t.slice(1) + ": " + v.ex + ". " + (v.who === "сам" ? "Отмечаешь сам." : "Проверяют друзья.")]));
-// похожие квесты в истории пати: подсказка, какой ранг обычно ставят
+// похожие квесты в истории пати: подсказка, сколько времени обычно ставят (timeSuggest)
 const simWords = (t) => new Set(String(t).toLowerCase().replace(/ё/g, "е").split(/[^a-zа-я0-9]+/).filter((w) => w.length >= 3 && !/^\d+$/.test(w)).map((w) => w.slice(0, 5)));
-function rankSuggest(title) {
-  const a = simWords(title);
-  if (a.size === 0) return null;
-  const cnt = {}, names = {};
-  for (const pid in tasksBy) for (const t of tasksBy[pid] || []) {
-    if (!t || !RANKS[t.rank] || typeof t.title !== "string" || t.moved) continue;
-    const b = simWords(t.title);
-    if (!b.size) continue;
-    let inter = 0; a.forEach((w) => { if (b.has(w)) inter++; });
-    if (inter / (a.size + b.size - inter) < 0.5) continue;
-    cnt[t.rank] = (cnt[t.rank] || 0) + 1;
-    (names[t.rank] = names[t.rank] || {})[t.title] = ((names[t.rank] || {})[t.title] || 0) + 1;
-  }
-  const tot = Object.values(cnt).reduce((x, y) => x + y, 0);
-  if (tot < 2) return null;
-  const top = Object.keys(cnt).sort((x, y) => cnt[y] - cnt[x])[0];
-  const ex = Object.entries(names[top]).sort((x, y) => y[1] - x[1])[0];
-  return { rank: top, n: cnt[top], tot, ex: ex[0], exN: ex[1] };
-}
-const HABIT_RE = /(спать|сп[ау]ть|отбой|сон\b|душ|помыт|умыв|зуб|зарядк|\bвод[уа]\b|кроват|\d+\s*мин|минут|не играть|не смотреть|ютуб|шаг)/i;
-const RESULT_RE = /(сдать|сдал|выпуст|получить|экзамен|сертификат|защит|релиз|опубликов|олимпиад|соревнован|зач[её]т|сессию|поступ)/i;
-function rankWarn(title, rank) {
-  if (!title || !RANKS[rank]) return "";
-  if (RANKS[rank].big && HABIT_RE.test(title)) return "Похоже на привычку. B и выше — для результата, который можно показать. Для привычки обычно ставят D или C.";
-  if (!RANKS[rank].big && RESULT_RE.test(title)) return "Похоже на крупный результат — может, B? Тогда его проверят друзья, и он даст 50+ XP.";
+// ---------- v18: опыт ежедневных квестов = время × сложность × «нравится», без букв ----------
+const V18_FROM = "2026-11-14";
+const STEPS_MIN = [0, 5, 10, 15, 20, 30, 45, 60, 90, 120, 150, 180, 240, 300, 360, 480, 600, 720, 840, 960];
+const EFF = [{ n: "лёгкий", k: 0.5, h: 3 }, { n: "средний", k: 1, h: 5 }, { n: "сложный", k: 1.5, h: 10 }];
+const LIKE = [{ n: "не нравится", k: 1.3 }, { n: "нейтрально", k: 1.15 }, { n: "нравится", k: 1 }];
+const DAY_MIN = 960, HABITS_MAX = 5, ODD_MIN = 600, LEGEND_MIN = 6000;
+const isNewQ = (t) => !!t && typeof t.m === "number";
+const okMEL = (m, e, l) => STEPS_MIN.includes(m) && [0, 1, 2].includes(e) && [0, 1, 2].includes(l);
+const xpOf = (m, e, l) => (!okMEL(m, e, l) ? 0 : m === 0 ? Math.round(EFF[e].h * LIKE[l].k) : Math.max(1, Math.round(20 * (Math.min(m / 60, 3) + Math.max(0, m / 60 - 3) * 0.5) * EFF[e].k * LIKE[l].k)));
+const taskXp = (t) => (isNewQ(t) ? xpOf(t.m, t.e, t.l) : RANKS[t.rank] ? RANKS[t.rank].xp : 0);
+const taskBig = (t) => !isNewQ(t) && !!RANKS[t.rank] && RANKS[t.rank].big;
+const taskMin = (t) => (isNewQ(t) ? t.m : 0);
+const OLD_MEL = { E: [4, 1, 2], D: [5, 1, 2], C: [7, 1, 2] }; // старый повтор при правке: E = 15 мин, D = 30 мин, C = 1 ч, тот же опыт
+const fmtMin = (m) => (m < 60 ? m + " мин" : String(Math.round((m / 60) * 100) / 100).replace(".", ",") + " ч");
+const fmtHM = (m) => (m < 60 ? Math.max(0, m) + " мин" : Math.floor(m / 60) + " ч" + (m % 60 ? " " + (m % 60) + " мин" : ""));
+const xpTier = (xp) => (xp <= 10 ? "E" : xp <= 20 ? "D" : xp <= 40 ? "C" : xp <= 80 ? "B" : xp <= 160 ? "A" : "S"); // только сила искр, нигде не показывается
+const qCol = (t) => (isNewQ(t) && t.m === 0 ? "var(--ok)" : "var(--sys)");
+const qFx = (t) => (isNewQ(t) ? (t.m === 0 ? "#49e3a0" : "#5ec8ff") : RCOL[t.rank] || RCOL.C);
+const kindTag = (m) => '<span class="qk' + (m === 0 ? " hab" : "") + '">' + (m === 0 ? "ПРИВЫЧКА" : "ЗАДАЧА") + "</span>";
+const qParams = (t) => (isNewQ(t) ? (t.m ? fmtMin(t.m) + " · " : "") + EFF[t.e].n + (t.l === 0 ? " · 👎" : "") : "");
+const LIKE_ICO = ['<svg class="th" style="--r:180deg" viewBox="0 0 24 24"><path d="M7 11v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3a4 4 0 0 0 4-4V6a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 3 0 0 1-2 2h-7a3 3 0 0 1-3-3"/></svg>', '<svg class="th" viewBox="0 0 24 24"><path d="M6 12h12" stroke-width="2.2"/></svg>', '<svg class="th" viewBox="0 0 24 24"><path d="M7 11v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3a4 4 0 0 0 4-4V6a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 3 0 0 1-2 2h-7a3 3 0 0 1-3-3"/></svg>'];
+// день игрока: сколько минут занято, сколько привычек, сколько выполнено
+const dayTasks = (pid, d, except) => (tasksBy[pid] || []).filter((t) => t.date === d && t.id !== except && isNewQ(t) && !t.moved && !t.missed);
+const dayUsed = (pid, d, except) => dayTasks(pid, d, except).reduce((a, t) => a + t.m, 0);
+const dayHabits = (pid, d, except) => dayTasks(pid, d, except).filter((t) => t.m === 0).length;
+const dayDoneMin = (pid, d, except) => dayTasks(pid, d, except).filter((t) => t.done).reduce((a, t) => a + t.m, 0);
+const sinceSix = () => Math.floor(((now() + TZ) % 864e5) / 6e4) - 360; // минут с 6:00 сегодня (до 6 утра меньше нуля)
+// необычный день: больше 10 ч задач или опыт вдвое выше обычного за 14 дней
+function oddDay(pid, d, p) {
+  const doneMin = (tasksBy[pid] || []).filter((t) => t.date === d && isNewQ(t) && countsTask(t)).reduce((a, t) => a + t.m, 0);
+  if (doneMin > ODD_MIN) return "больше 10 ч задач за день";
+  const x = p.xpByDay[d] || 0;
+  let sum = 0, n = 0; for (let i = 1; i <= 14; i++) { const dd = addDays(d, -i); if (dd < joinedOf(pid)) break; sum += p.xpByDay[dd] || 0; n++; }
+  const avg = n >= 3 ? sum / n : 0;
+  if (avg >= 10 && x >= 100 && x >= avg * 2) return "опыт вдвое выше обычного";
   return "";
 }
 const AUTO_MS = 48 * 3600e3;
@@ -919,7 +955,7 @@ const BUG_ST = [
 ];
 const bugStName = (k) => (BUG_ST.find((x) => x.k === k) || BUG_ST[0]).n;
 const SMALL_CAP_OLD = 100, SMALL_CAP_NEW = 150, CAP_FROM = "2026-10-22", STEP_XP = 10;
-const capFor = (d) => (d >= CAP_FROM ? SMALL_CAP_NEW : SMALL_CAP_OLD);
+const capFor = (d) => (d >= V18_FROM ? Infinity : d >= CAP_FROM ? SMALL_CAP_NEW : SMALL_CAP_OLD); // с v18 лимита мелочи нет
 const ACH = [
   { k: "first", n: "Первый шаг", d: "Выполнить первый квест", xp: 10 },
   { k: "s3", n: "Разгон", d: "Серия 3 дня", xp: 15 },
@@ -928,8 +964,9 @@ const ACH = [
   { k: "s30", n: "Железная воля", d: "Серия 30 дней", xp: 120 },
   { k: "perfect", n: "Идеальный день", d: "Закрыть все квесты дня, минимум 5", xp: 20 },
   { k: "clean7", n: "Без провалов", d: "7 дней подряд без единого провала", xp: 50 },
-  { k: "bigB", n: "Крупная рыба", d: "Подтверждённый квест B или выше", xp: 20 },
-  { k: "bigS", n: "Легенда", d: "Подтверждённый квест ранга S", xp: 100 },
+  { k: "bigB", n: "Крупная рыба", d: "Квест на 50+ XP (или подтверждённый крупный квест)", xp: 20 },
+  { k: "bigS", n: "Легенда", d: "100 часов квестов за сезон (или подтверждённый S)", xp: 100 },
+  { k: "habit", n: "Привычка сформирована", d: "Повтор с 👎 стал 👍 после 5+ выполнений", xp: 30 },
   { k: "story", n: "Сюжет пройден", d: "Завершить сюжетный квест", xp: 50 },
   { k: "q100", n: "Сотня", d: "100 выполненных квестов", xp: 50 },
 ];
@@ -1082,14 +1119,14 @@ const votesReady = () => PLAYERS.every((p) => !isActive(p) || votesLoaded[p.id])
 let sealing = false;
 const subs = {};
 let templates = [], templatesLoaded = false, subDaily = null;
-let selStat = "int", selRank = "D";
+let selStat = "int", selT = 7, selE = 1, selL = 1, xpAuto = true;
 let selDays = new Set();
 let sStat = "int", sRank = "A", sKind = "steps";
 let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = null, editOpen = null;
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 17;
+const APP_VERSION = 18;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -1130,6 +1167,19 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 18, date: "2026-11-14", title: "Новый опыт: время, сложность, «нравится»", items: [
+    "Вместо букв E–S у ежедневных квестов три ползунка: время (от 5 минут до 16 часов или «без времени»), сложность (лёгкий, средний, сложный) и «нравится» (👎, —, 👍). Опыт считается сразу, крупной цифрой.",
+    "Формула: 20 XP за час средней задачи. Лёгкий ×0,5, сложный ×1,5. После 3 часов каждый следующий час идёт за половину. За 👎 +30% (за дисциплину), за — +15%.",
+    "«Без времени» это ПРИВЫЧКА (зелёная метка): 3, 5 или 10 XP по сложности, не больше 5 в день. С временем это ЗАДАЧА (голубая метка).",
+    "У дня 16 часов: ползунок времени упирается в то, что осталось свободным. Лимит мелочи 150 XP убран.",
+    "Букв у квестов больше нет, буква осталась только у ранга охотника (уровня). Крупные B, A, S в ежедневных убраны, сюжет пока без изменений. Уже отправленные на проверку доживут по старым правилам.",
+    "Проверки друзьями у ежедневных нет, только «Оспорить» в течение суток.",
+    "Защита от накрутки: «честные часы» (выполнить можно не больше часов, чем прошло с 6:00), замок 🔒 на выполненном квесте (сначала сними галочку), друзья видят время, сложность и 👎, метка «⚠ необычно много» на карточке, а сервер сам отклоняет невозможное.",
+    "Повтор с 👎 раз в неделю спросит «всё ещё не нравится?». Перешёл на 👍 после 5+ выполнений: ачивка «Привычка сформирована».",
+    "«Крупная рыба» теперь за квест на 50+ XP, «Легенда» за 100 часов квестов за сезон. Полученные раньше ачивки остаются.",
+    "Подсказка от пати теперь про время: «похожие квесты обычно на 30 мин».",
+    "Старые квесты и прошлый опыт не менялись. Старые повторы дают свои 5, 10 или 20 XP, при правке ✎ открываются новые настройки.",
+  ] },
   { v: 17, date: "2026-11-11", title: "Карта активности, выходной и живой фон", items: [
     "Карта активности в «Статусе» и у друга вместо «Журнала · 14 дней»: квадратик на каждый день сезона, чем больше выполнено, тем ярче. Золотая рамка: все квесты дня закрыты. Наведи (на ПК) или нажми (на телефоне): «выполнено 5 из 8, +65 XP».",
     "Выходной: 2 дня в месяц. Бери заранее («на завтра») или сегодня до первой отметки. В выходной повторы не создаются, провалов нет, серия не сгорает. Друзья видят «🌙 выходной».",
@@ -1289,7 +1339,7 @@ const NEWS = [
 // ---------- validation / anti-cheat ----------
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 function validTask(t) {
-  return t && typeof t.title === "string" && RANKS[t.rank] && statOf(t.stat) && typeof t.date === "string" && DATE_RE.test(t.date);
+  return t && typeof t.title === "string" && (isNewQ(t) ? okMEL(t.m, t.e, t.l) : RANKS[t.rank]) && statOf(t.stat) && typeof t.date === "string" && DATE_RE.test(t.date);
 }
 function validStory(s) {
   return s && !s.deleted && typeof s.title === "string" && RANKS[s.rank] && RANKS[s.rank].big && statOf(s.stat) && typeof s.deadline === "string" && DATE_RE.test(s.deadline) &&
@@ -1305,7 +1355,7 @@ function flagOf(t) {
 }
 const sigOf = (it, kind) => kind === "story"
   ? ["s", it.rank, it.stat, it.title, it.deadline, it.extended ? 1 : 0].join("|")
-  : ["t", it.rank, it.stat, it.title, it.date].join("|");
+  : ["t", isNewQ(it) ? "x" + it.m + "." + it.e + "." + it.l : it.rank, it.stat, it.title, it.date].join("|");
 function votesFor(item, kind, round) {
   if (round === undefined) round = item.submittedAt;
   const sig = sigOf(item, kind);
@@ -1374,7 +1424,7 @@ function disputeAt(t) {
 }
 function taskState(t) {
   if (!t.done) return "todo";
-  if (!RANKS[t.rank].big) {
+  if (!taskBig(t)) {
     if (!disputesFor(t).length) return "done";
     const r = voteResult(t, "task", "dispute", disputeAt(t));
     return r === "approved" ? "done" : r === "rejected" ? "rejected" : "disputed";
@@ -1475,7 +1525,7 @@ function profile(pid) {
 function computeProfile(pid, sealMode) {
   const ts = tasksBy[pid] || [], ss = storiesBy[pid] || [];
   const ev = [];
-  for (const t of ts) if (countsTask(t) || (sealMode && !flagOf(t) && taskState(t) === "disputed")) ev.push({ key: "t:" + t.id, day: t.date, at: t.doneAt || t.createdAt || 0, xp: RANKS[t.rank].xp, small: !RANKS[t.rank].big, stat: t.stat });
+  for (const t of ts) if (countsTask(t) || (sealMode && !flagOf(t) && taskState(t) === "disputed")) ev.push({ key: "t:" + t.id, day: t.date, at: t.doneAt || t.createdAt || 0, xp: taskXp(t), small: !taskBig(t), stat: t.stat });
   for (const s of ss) {
     if (s.kind === "steps") s.steps.forEach((_, i) => {
       const si = stepInfo(s, i);
@@ -1530,7 +1580,14 @@ function computeProfile(pid, sealMode) {
   }
   const bigEv = ev.filter((e) => !e.small).sort((a, b) => a.at - b.at);
   if (bigEv.length) setA("bigB", bigEv[0].day);
-  for (const t of ts) if (t.rank === "S" && countsTask(t)) setA("bigS", t.date);
+  for (const t of ts) if (t.rank === "S" && !isNewQ(t) && countsTask(t)) setA("bigS", t.date);
+  // v18: крупная рыба = квест на 50+ XP, легенда = 100 часов, привычка = повтор 👎 → 👍
+  const newDone = ts.filter((t) => isNewQ(t) && countsTask(t)).sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  let mins = 0;
+  for (const t of newDone) { if (taskXp(t) >= 50) setA("bigB", t.date); mins += t.m; if (mins >= LEGEND_MIN) setA("bigS", t.date); }
+  const byTpl = {};
+  for (const t of newDone) if (typeof t.fromDaily === "string") (byTpl[t.fromDaily] = byTpl[t.fromDaily] || []).push(t);
+  for (const k in byTpl) { let bad = 0; for (const t of byTpl[k]) { if (t.l === 0) bad++; else if (t.l === 2 && bad >= 5) { setA("habit", t.date); break; } } }
   for (const s of ss) if (storyState(s) === "approved") { setA("story", dayOf(s.submittedAt)); if (s.rank === "S") setA("bigS", dayOf(s.submittedAt)); }
   const doneTasks = ts.filter(countsTask).sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
   if (doneTasks.length >= 100) setA("q100", doneTasks[99].date);
@@ -1549,7 +1606,7 @@ function computeProfile(pid, sealMode) {
   const endD = today() < LAST_DAY ? today() : LAST_DAY, j0 = joinedOf(pid);
   const daysIn = Math.max(1, Math.round((toUTC(endD) - toUTC(j0)) / 864e5) + 1);
   const perDay = Math.round(seasonXp / daysIn);
-  return { statByDay, xp, li: levelInfo(xp), stats, streak, best, bestIn, td, tdDone, cls, xpByDay, smallByDay, tampered, pending, award, activeStories, ach, achXp, week, seasonXp, storiesDone, perDay, daysIn, smallToday: smallByDay[today()] || 0 };
+  return { statByDay, xp, li: levelInfo(xp), stats, streak, best, bestIn, td, tdDone, cls, xpByDay, smallByDay, tampered, pending, award, activeStories, ach, achXp, week, seasonXp, storiesDone, perDay, daysIn, smallToday: smallByDay[today()] || 0, todayXp: xpByDay[today()] || 0 };
 }
 
 // ---------- render ----------
@@ -1625,7 +1682,7 @@ function statusHtml(pid) {
       '<div class="cls">' + (bound ? 'Класс: <span style="color:var(--fg)">' + esc(p.cls) + '</span> · Ранг охотника <span class="rank r-' + hr + '">' + hr + "</span>" : "Игрок ещё не вошёл в систему") + "</div></div></div>" +
     '<div class="lvlrow"><div class="lvl">УРОВЕНЬ<b>' + p.li.L + '</b></div><div class="xpn">' + p.li.into + " / " + p.li.need + " XP</div></div>" +
     '<div class="bar"><i style="width:' + ((p.li.into / p.li.need) * 100).toFixed(1) + '%"></i></div>' +
-    '<div class="mini m4"><div><b>' + p.xp + '</b><span>всего XP</span></div><div><b>' + p.streak + '</b><span>серия, дн</span></div><div><b>' + p.tdDone + "/" + p.td.length + '</b><span>сегодня</span></div><div><b' + (p.smallToday >= capFor(today()) ? ' style="color:var(--gold)"' : "") + ">" + p.smallToday + "/" + capFor(today()) + "</b><span>мелочь XP</span></div></div>" +
+    '<div class="mini m4"><div><b>' + p.xp + '</b><span>всего XP</span></div><div><b>' + p.streak + '</b><span>серия, дн</span></div><div><b>' + p.tdDone + "/" + p.td.length + '</b><span>сегодня</span></div><div><b>+' + p.todayXp + "</b><span>XP сегодня</span></div></div>" +
     fold("st:stats", "Характеристики · " + STATS.map((x) => x.s + " " + p.stats[x.k]).join(" · "),
       '<div class="statsbox">' + radarSVG(p) + '<ul class="stats">' +
       STATS.map((s) => '<li title="' + esc(s.hint) + '"><span class="k">' + statIco(s.k) + s.s + '</span><span class="n">' + s.n + '</span><span class="v">' + p.stats[s.k] + "</span></li>").join("") +
@@ -1692,7 +1749,7 @@ function renderRecap() {
 function stripHtml(pid) {
   const p = profile(pid), hr = hunter(p.li.L);
   return '<span class="rank r-' + hr + '" title="Ранг охотника">' + hr + '</span><span class="lvb">LV <b>' + p.li.L + '</b></span><div class="bar"><i style="width:' + ((p.li.into / p.li.need) * 100).toFixed(1) + '%"></i></div><span class="xpn">' + p.li.into + "/" + p.li.need + " XP</span>" +
-    '<span class="kv">серия <b>' + p.streak + '</b></span><span class="kv">сегодня <b>' + p.tdDone + "/" + p.td.length + '</b></span><span class="kv">мелочь <b' + (p.smallToday >= capFor(today()) ? ' style="color:var(--gold)"' : "") + ">" + p.smallToday + "/" + capFor(today()) + "</b></span>";
+    '<span class="kv">серия <b>' + p.streak + '</b></span><span class="kv">сегодня <b>' + p.tdDone + "/" + p.td.length + '</b></span><span class="kv">опыт <b>+' + p.todayXp + "</b></span>" + (() => { const o = roster[pid] ? oddDay(pid, today(), p) : ""; return o ? '<span class="kv odd" title="' + esc(o) + '">⚠ необычно много</span>' : ""; })();
 }
 
 function linkLabel(t) {
@@ -1770,7 +1827,7 @@ function threadIndex() {
   tiCache = m; tiVer = votesVer; return m;
 }
 function threadItem(ik, owner, id) {
-  if (ik === "task") { const t = (tasksBy[owner] || []).find((x) => x.id === id); if (!t) return null; const st = taskState(t); return { title: t.title, open: RANKS[t.rank].big ? st === "pending" : st === "disputed" }; }
+  if (ik === "task") { const t = (tasksBy[owner] || []).find((x) => x.id === id); if (!t) return null; const st = taskState(t); return { title: t.title, open: taskBig(t) ? st === "pending" : st === "disputed" }; }
   if (ik === "story") { const s = storyOf(owner, id); return s ? { title: s.title, open: storyState(s) === "pending" } : null; }
   const [sid, si] = id.split("~"), s = storyOf(owner, sid), i = num(si);
   return s && s.kind === "steps" && s.steps[i] ? { title: s.steps[i].t + " · " + s.title, open: stepState(s, i) === "disputed" } : null;
@@ -1826,9 +1883,19 @@ function disputeForm(key, inpId, act, attrs) {
     '<button class="btn sm no" data-act="' + act + '" ' + attrs + ' data-inp="' + inpId + '">Оспорить</button><button class="btn sm ghost" data-act="dispcancel">Отмена</button></div>';
 }
 
+// три выбора вместо ползунков (правка квеста и повтора): время, сложность, «нравится»
+function melSelects(pre, v, except, tpl) {
+  const free = tpl ? DAY_MIN : DAY_MIN - (me ? dayUsed(me, today(), except) : 0);
+  const habOk = tpl || !me || dayHabits(me, today(), except) < HABITS_MAX || v[0] === 0;
+  return '<select id="' + pre + '-m" aria-label="Время">' + STEPS_MIN.map((m, i) => (m <= free || i === v[0]) && (m > 0 || habOk) ? '<option value="' + i + '"' + (i === v[0] ? " selected" : "") + ">" + (m ? fmtMin(m) : "без времени (привычка)") + "</option>" : "").join("") + "</select>" +
+    '<select id="' + pre + '-e" aria-label="Сложность">' + EFF.map((x, i) => '<option value="' + i + '"' + (i === v[1] ? " selected" : "") + ">" + x.n + "</option>").join("") + "</select>" +
+    '<select id="' + pre + '-l" aria-label="Нравится">' + LIKE.map((x, i) => '<option value="' + i + '"' + (i === v[2] ? " selected" : "") + ">" + ["👎 ", "— ", "👍 "][i] + x.n + "</option>").join("") + "</select>" +
+    '<span class="xptag" id="' + pre + '-x">+' + xpOf(STEPS_MIN[v[0]], v[1], v[2]) + " XP</span>";
+}
+const melRead = (pre) => { const m = STEPS_MIN[num(($(pre + "-m") || {}).value)], e = num(($(pre + "-e") || {}).value), l = num(($(pre + "-l") || {}).value); return okMEL(m, e, l) ? { m, e, l } : null; };
 function questItem(t, mine, prof) {
   const st = taskState(t);
-  const big = RANKS[t.rank].big;
+  const big = taskBig(t);
   const stat = statOf(t.stat);
   const flag = flagOf(t);
   let badge = "";
@@ -1844,7 +1911,7 @@ function questItem(t, mine, prof) {
   const can = mine && canWrite;
   const id = esc(t.id);
   const chk = '<button class="chk" data-act="toggle" data-id="' + id + '" aria-pressed="' + pressed + '" aria-label="Отметить выполнение"' + (can ? "" : " disabled") + ">" + (pressed ? CHECK : "") + "</button>";
-  const base = RANKS[t.rank].xp;
+  const base = taskXp(t);
   const got = prof.award.has("t:" + t.id) ? prof.award.get("t:" + t.id) : null;
   const xpTxt = got != null && got < base ? "+" + got + "/" + base + " XP · лимит" : "+" + base + " XP";
   let dbtn = "";
@@ -1853,15 +1920,14 @@ function questItem(t, mine, prof) {
       ? '<button class="btn sm ghost" data-act="undispute" data-p="' + esc(t.player) + '" data-id="' + id + '">Снять спор</button>'
       : st === "done" ? (dispOpen === "t:" + t.player + ":" + t.id ? "FORM" : '<button class="btn sm no" data-act="dispopen" data-k="t:' + esc(t.player) + ":" + id + '" title="Попросить доказательство">Оспорить</button>') : "";
   }
-  const right = '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="xptag"><span class="rk r-' + t.rank + '">' + t.rank + "</span> " + xpTxt + "</span>" + (can && st === "todo" && canDelete(t) ? '<button class="x" data-act="del" data-id="' + id + '" aria-label="Удалить квест">×</button>' : "") + "</div>";
+  const right = '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="xptag">' + xpTxt + "</span>" + (can && st === "todo" && canDelete(t) ? '<button class="x" data-act="del" data-id="' + id + '" aria-label="Удалить квест">×</button>' : "") + "</div>";
   const editable = can && st === "todo" && t.date === today() && !t.fromDaily;
   let extra = "";
   if (editable && editTask === t.id) {
     extra = '<div class="proof tedit"><input type="text" id="et-t-' + id + '" maxlength="120" value="' + esc(t.title) + '" aria-label="Название">' +
       '<select id="et-s-' + id + '" aria-label="Характеристика">' + STATS.map((x) => '<option value="' + x.k + '"' + (x.k === t.stat ? " selected" : "") + ">" + x.s + " · " + x.n + "</option>").join("") + "</select>" +
-      '<select id="et-r-' + id + '" aria-label="Ранг">' + Object.keys(RANKS).filter((r) => !t.link || !RANKS[r].big || RANKS[t.rank].big).map((r) => '<option value="' + r + '"' + (r === t.rank ? " selected" : "") + ">" + r + " · " + RANKS[r].xp + " XP</option>").join("") + "</select>" +
-      '<button class="btn sm" data-act="tsave" data-id="' + id + '">Сохранить</button><button class="btn sm ghost" data-act="tcancel">Отмена</button>' +
-      (() => { const w = rankWarn(t.title, t.rank); return '<span class="warn" id="et-w-' + id + '"' + (w ? "" : " hidden") + ">" + (w ? "⚠ " + esc(w) : "") + "</span>"; })() + "</div>";
+      melSelects("et-" + id, isNewQ(t) ? [STEPS_MIN.indexOf(t.m), t.e, t.l] : OLD_MEL[t.rank] || [7, 1, 1], t.id) +
+      '<button class="btn sm" data-act="tsave" data-id="' + id + '">Сохранить</button><button class="btn sm ghost" data-act="tcancel">Отмена</button></div>';
   } else
   if (can && big && proofOpen === "t:" + t.id) {
     extra = '<div class="proof"><div class="cin"><input type="text" id="proof-' + id + '" data-draft="p:t:' + id + '" maxlength="140" value="' + draftVal("p:t:" + t.id) + '" placeholder="Пояснение: что на фото или где смотреть" aria-label="Доказательство"></div>' + uploaderHtml("t:" + t.id) + '<button class="btn sm" data-act="submit" data-id="' + id + '">Отправить на проверку</button><button class="btn sm ghost" data-act="cancelproof">Отмена</button></div>';
@@ -1880,8 +1946,9 @@ function questItem(t, mine, prof) {
   const remTxt = typeof t.remind === "string" && /^\d\d:\d\d$/.test(t.remind) ? t.remind : "";
   let remChip = remTxt || remOk ? (remOk ? '<button type="button" class="remchip' + (remTxt ? " on" : "") + '" data-act="remedit" data-id="' + id + '" title="Напоминание">⏰' + (remTxt ? " " + remTxt : "") + "</button>" : '<span class="remchip on">⏰ ' + remTxt + "</span>") : "";
   if (remOk && remEdit === t.id) extra += '<div class="proof remrow"><input type="time" id="rem-' + id + '" value="' + remTxt + '" aria-label="Время напоминания"><button class="btn sm" data-act="remsave" data-id="' + id + '">Напомнить</button>' + (remTxt ? '<button class="btn sm ghost" data-act="remdel" data-id="' + id + '">Убрать</button>' : "") + (t.fromDaily ? '<span class="hint" style="margin:0">У повтора время сохранится и на следующие дни.</span>' : "") + "</div>";
-  return '<li class="qi' + (pressed ? " done" : "") + '" style="--rc:var(--r' + t.rank + ')">' + chk +
-    '<div style="min-width:0"><div class="qt">' + (editable ? '<button type="button" class="qtbtn" data-act="tedit" data-id="' + id + '" title="Нажми, чтобы изменить">' + esc(t.title) + "</button>" : esc(t.title)) + '</div><div class="meta"><span title="' + esc(stat.n) + '">' + statLbl(stat) + "</span>" + badge + linkLabel(t) + remChip + "</div></div>" + right + extra + "</li>";
+  const kp = isNewQ(t) ? kindTag(t.m) + '<span class="qp">' + esc(qParams(t)) + "</span>" + (mine && t.done && t.date === today() ? '<span class="qp" title="Выполненный квест нельзя менять. Сними галочку, поправь и отметь заново.">🔒</span>' : "") : "";
+  return '<li class="qi' + (pressed ? " done" : "") + '" style="--rc:' + qCol(t) + '">' + chk +
+    '<div style="min-width:0"><div class="qt">' + (editable ? '<button type="button" class="qtbtn" data-act="tedit" data-id="' + id + '" title="Нажми, чтобы изменить">' + esc(t.title) + "</button>" : esc(t.title)) + '</div><div class="meta">' + kp + '<span title="' + esc(stat.n) + '">' + statLbl(stat) + "</span>" + badge + linkLabel(t) + remChip + "</div></div>" + right + extra + "</li>";
 }
 
 const canDelete = (t) => t.date === today() && !t.done && !t.fromDaily && !t.movedFrom && !t.movedAt;
@@ -1907,7 +1974,7 @@ function tplEditorHtml() {
   return '<div class="sedit" style="margin:0 12px 12px"><div class="lbl">Изменить повторяющийся квест · вступит в силу завтра</div>' +
     '<input type="text" id="te-title" maxlength="120" value="' + esc(tp.title) + '" aria-label="Название">' +
     '<div class="er"><select id="te-stat" aria-label="Характеристика">' + STATS.map((x) => '<option value="' + x.k + '"' + (x.k === tp.stat ? " selected" : "") + ">" + x.s + " · " + x.n + "</option>").join("") + "</select>" +
-    '<select id="te-rank" aria-label="Ранг">' + ["E", "D", "C"].map((x) => '<option value="' + x + '"' + (x === tp.rank ? " selected" : "") + ">" + x + " · " + RANKS[x].xp + " XP</option>").join("") + "</select></div>" +
+    "</div>" + '<div class="er">' + melSelects("te", isNewQ(tp) ? [STEPS_MIN.indexOf(tp.m), tp.e, tp.l] : OLD_MEL[tp.rank] || [7, 1, 1], null, true) + "</div>" +
     '<div class="er"><select id="te-rep" aria-label="Повтор"><option value="daily"' + (r.type === "daily" ? " selected" : "") + '>Каждый день</option><option value="every"' + (r.type === "every" ? " selected" : "") + '>Каждые N дней</option><option value="weekdays"' + (r.type === "weekdays" ? " selected" : "") + ">По дням недели</option></select>" +
     '<span class="every" id="te-nbox"' + (r.type === "every" ? "" : " hidden") + '>каждые <input type="number" id="te-n" min="2" max="30" step="1" value="' + (r.n || 2) + '" aria-label="Через сколько дней"> дн</span></div>' +
     '<div class="chips" id="te-days"' + (r.type === "weekdays" ? "" : " hidden") + ">" + WD.map((w, i) => '<button type="button" class="chip" data-act="tewday" data-d="' + (i + 1) + '" aria-pressed="' + tplDays.has(i + 1) + '">' + w + "</button>").join("") + "</div>" +
@@ -1936,6 +2003,7 @@ function renderQuests() {
   setHtml("offBox", offBoxHtml());
   setHtml("dayprog", r.total ? '<div class="bar"><i style="width:' + ((r.done / r.total) * 100).toFixed(0) + '%"></i></div><span class="xpn">' + r.done + "/" + r.total + "</span>" : "");
   setHtml("quests", r.html);
+  if (mine) { renderXp(); renderPlaques(); }
 
   const od = mine ? tasksBy[me].filter((t) => t.date < today() && t.date >= addDays(today(), -7) && (!t.done || taskState(t) === "rejected") && !(isOff(me, t.date) && !t.done)).sort((a, b) => b.date.localeCompare(a.date)) : [];
   const groups = new Map(), singles = [];
@@ -1957,9 +2025,12 @@ function renderQuests() {
     : "");
 
   const live = templates.filter((tp) => !tp.deleted), repSt = mine ? repStats(me) : {};
+  // раз в неделю: повтор с 👎 «всё ещё не нравится?»
+  const ask = mine && canWrite ? live.find((tp) => isNewQ(tp) && tp.l === 0 && tplStart(tp) <= addDays(today(), -7) && (typeof tp.likeAsked !== "string" || tp.likeAsked <= addDays(today(), -7))) : null;
+  setHtml("likeAsk", ask ? '<div class="likeask"><span>«' + esc(ask.title) + "» всё ещё не нравится?</span>" + '<button type="button" class="btn sm ghost" data-act="likeno" data-id="' + esc(ask.id) + '">Да, всё ещё</button><button type="button" class="btn sm" data-act="likeyes" data-id="' + esc(ask.id) + '">Уже норм 👍</button></div>' : "");
   const lowRep = live.filter((tp) => { const r = repSt[tp.id]; return r && r.due >= 5 && r.pct < 40; });
   setHtml("templates", mine && live.length
-    ? fold("tpl", "Повторяющиеся квесты · " + live.length + (lowRep.length ? ' · <span style="color:var(--bad)">плохо идут: ' + lowRep.length + "</span>" : ""), (lowRep.length ? '<div class="replow">' + lowRep.map((tp) => "«" + esc(tp.title) + "» выполняется в " + repSt[tp.id].pct + "% дней.").join(" ") + " Может, реже (например, 3 раза в неделю) или меньше (30 минут вместо часа)? Нажми ✎, чтобы изменить.</div>" : "") + '<div class="tpl">' + live.map((tp) => { const nx = nextDue(tp, today()), rs = repSt[tp.id]; return '<span class="t">' + esc(tp.title) + ' <span class="rank r-' + esc(tp.rank) + '" style="height:18px;min-width:20px;font-size:11px">' + esc(tp.rank) + '</span> <span class="xpn">' + esc(repLabel(tp)) + (nx && nx !== today() ? " · след. " + nice(nx) : nx === today() ? " · сегодня" : "") + "</span> " + repStatHtml(rs) + (canWrite ? '<button class="x" data-act="tpledit" data-id="' + esc(tp.id) + '" aria-label="Изменить" title="Изменить" style="font-size:13px">✎</button><button class="x" data-act="tdel" data-id="' + esc(tp.id) + '" aria-label="Больше не повторять" title="Больше не повторять">×</button>' : "") + "</span>"; }).join("") + "</div>" + tplEditorHtml())
+    ? fold("tpl", "Повторяющиеся квесты · " + live.length + (lowRep.length ? ' · <span style="color:var(--bad)">плохо идут: ' + lowRep.length + "</span>" : ""), (lowRep.length ? '<div class="replow">' + lowRep.map((tp) => "«" + esc(tp.title) + "» выполняется в " + repSt[tp.id].pct + "% дней.").join(" ") + " Может, реже (например, 3 раза в неделю) или меньше (30 минут вместо часа)? Нажми ✎, чтобы изменить.</div>" : "") + '<div class="tpl">' + live.map((tp) => { const nx = nextDue(tp, today()), rs = repSt[tp.id]; return '<span class="t">' + esc(tp.title) + " " + (isNewQ(tp) ? kindTag(tp.m) : "") + ' <span class="xpn">+' + taskXp(tp) + " XP · " + esc(repLabel(tp)) + (nx && nx !== today() ? " · след. " + nice(nx) : nx === today() ? " · сегодня" : "") + "</span> " + repStatHtml(rs) + (canWrite ? '<button class="x" data-act="tpledit" data-id="' + esc(tp.id) + '" aria-label="Изменить" title="Изменить" style="font-size:13px">✎</button><button class="x" data-act="tdel" data-id="' + esc(tp.id) + '" aria-label="Больше не повторять" title="Больше не повторять">×</button>' : "") + "</span>"; }).join("") + "</div>" + tplEditorHtml())
     : "");
 }
 
@@ -2135,8 +2206,7 @@ function renderRepeat() {
     if (lastHtml.qWeekdays !== h) { lastHtml.qWeekdays = h; $("qWeekdays").innerHTML = h; }
   }
   let hint = "";
-  if (mode && RANKS[selRank].big) hint = "· повторять можно только E, D, C";
-  else if (mode) {
+  if (mode) {
     const tp = draftTemplate();
     if (!tp) hint = mode === "every" ? "· от 2 до 30 дней" : "· выбери хотя бы один день";
     else { const nx = nextDue(tp, today()); hint = nx === today() ? "· первый раз сегодня" : nx ? "· первый раз " + WD[wdOf(nx) - 1] + " " + nice(nx) : ""; }
@@ -2145,22 +2215,63 @@ function renderRepeat() {
   renderPlaques();
 }
 function renderWarn() {
-  const sg = rankSuggest($("qTitle").value.trim()), box = $("qSuggest");
+  const sg = timeSuggest($("qTitle").value.trim()), box = $("qSuggest");
   if (box) {
-    box.hidden = !sg || sg.rank === selRank;
-    if (sg && sg.rank !== selRank) box.innerHTML = "У пати похожие квесты обычно <b>" + sg.rank + "</b> (" + esc(sg.ex) + (sg.exN > 1 ? " ×" + sg.exN : "") + ', ' + sg.n + " из " + sg.tot + ') <button type="button" class="btn sm ghost" data-act="rank" data-r="' + sg.rank + '">Поставить ' + sg.rank + "</button>";
+    const show = !!sg && sg.m !== STEPS_MIN[selT];
+    box.hidden = !show;
+    if (show) box.innerHTML = "У пати похожие квесты обычно на <b>" + (sg.m ? fmtMin(sg.m) : "без времени") + "</b> (" + esc(sg.ex) + (sg.exN > 1 ? " ×" + sg.exN : "") + ', ' + sg.n + " из " + sg.tot + ') <button type="button" class="btn sm ghost" data-act="settime" data-i="' + STEPS_MIN.indexOf(sg.m) + '">Поставить</button>';
   }
-  const big = RANKS[selRank].big, rep = $("qRepeat").value !== "";
-  $("qProofRow").hidden = !big || rep;
-  const w = rankWarn($("qTitle").value.trim(), selRank);
-  $("qWarn").textContent = w ? "⚠ " + w : "";
-  $("qWarn").hidden = !w;
+  $("qProofRow").hidden = true;
+  $("qWarn").hidden = true;
+  if (xpAuto && !openGrp && $("qTitle").value.trim()) { openGrp = "rank"; renderPlaques(); }
+}
+// ползунки опыта: время упирается в свободное время дня (16 ч), привычек не больше 5
+function renderXp() {
+  if (!$("xTime")) return;
+  const free = me ? DAY_MIN - dayUsed(me, today()) : DAY_MIN, habs = me ? dayHabits(me, today()) : 0;
+  let mx = 0; STEPS_MIN.forEach((m, i) => { if (m <= free) mx = i; });
+  if (selT > mx) selT = mx;
+  const tm = $("xTime"), ef = $("xEff"), lk = $("xLike");
+  tm.value = selT; ef.value = selE; lk.value = selL;
+  const m = STEPS_MIN[selT], xp = xpOf(m, selE, selL);
+  tm.style.setProperty("--lock", (mx / 19) * 100 + "%");
+  [tm, ef, lk].forEach((el) => el.style.setProperty("--p", (num(el.value) / num(el.max)) * 100 + "%"));
+  $("xMaxLbl").textContent = mx < 19 ? (mx ? "доступно " + fmtMin(STEPS_MIN[mx]) : "только без времени") : "16 ч";
+  $("xTimeOut").textContent = m ? fmtMin(m) : "без времени";
+  $("xEffOut").textContent = EFF[selE].n; $("xLikeOut").textContent = LIKE[selL].n;
+  const k = $("xKind"); k.textContent = m ? "ЗАДАЧА" : "ПРИВЫЧКА"; k.classList.toggle("hab", !m);
+  $("xNum").textContent = "+" + xp;
+  $("xBonus").textContent = LIKE[selL].k > 1 ? "+" + Math.round((LIKE[selL].k - 1) * 100) + "% за дисциплину" : "";
+  [...$("xEffEnds").children].forEach((x, i) => x.classList.toggle("on", i === selE));
+  if (!$("xLikeEnds").children.length) $("xLikeEnds").innerHTML = LIKE_ICO.map((ic, i) => '<span aria-label="' + LIKE[i].n + '">' + ic + "</span>").join("");
+  [...$("xLikeEnds").children].forEach((x, i) => x.classList.toggle("on", i === selL));
+  const used = DAY_MIN - free;
+  $("xDay").innerHTML = "Сегодня занято " + fmtHM(used) + " из 16 ч · привычек " + habs + " из " + HABITS_MAX + (!m && habs >= HABITS_MAX ? ' · <span style="color:var(--bad)">привычек уже 5, выбери время</span>' : "");
+}
+function timeSuggest(title) {
+  const a = simWords(title);
+  if (a.size === 0) return null;
+  const cnt = {}, names = {};
+  for (const pid in tasksBy) for (const t of tasksBy[pid] || []) {
+    if (!isNewQ(t) || typeof t.title !== "string" || t.moved) continue;
+    const b = simWords(t.title);
+    if (!b.size) continue;
+    let inter = 0; a.forEach((w) => { if (b.has(w)) inter++; });
+    if (inter / (a.size + b.size - inter) < 0.5) continue;
+    cnt[t.m] = (cnt[t.m] || 0) + 1;
+    (names[t.m] = names[t.m] || {})[t.title] = ((names[t.m] || {})[t.title] || 0) + 1;
+  }
+  const tot = Object.values(cnt).reduce((x, y) => x + y, 0);
+  if (tot < 2) return null;
+  const top = Object.keys(cnt).sort((x, y) => cnt[y] - cnt[x])[0];
+  const ex = Object.entries(names[top]).sort((x, y) => y[1] - x[1])[0];
+  return { m: Number(top), n: cnt[top], tot, ex: ex[0], exN: ex[1] };
 }
 function renderPlaques() {
   const mode = $("qRepeat").value, tp = mode ? draftTemplate() : null, st = statOf(selStat);
   const sid = $("qLink").value, sl = sid && me ? storyOf(me, sid) : null;
   const pl = (k, cls, lb, txt, ico) => '<button type="button" class="plq' + cls + '" data-act="pl" data-k="' + k + '" aria-expanded="' + (openGrp === k) + '" aria-controls="qOpts"><span class="lb">' + lb + "</span>" + (ico || "") + "<span>" + esc(txt) + "</span> ▾</button>";
-  let h = pl("stat", "", "стат", st.s + " · " + st.n, statIco(st.k)) + pl("rank", " rkp r-" + selRank, "ранг", selRank + " · " + RANKS[selRank].xp + " XP") +
+  let h = pl("stat", "", "стат", st.s + " · " + st.n, statIco(st.k)) + pl("rank", "", "опыт", (STEPS_MIN[selT] ? "задача · " + fmtMin(STEPS_MIN[selT]) : "привычка") + " · +" + xpOf(STEPS_MIN[selT], selE, selL) + " XP") +
     pl("rep", "", "повтор", mode ? (tp ? repLabel(tp) : "настрой") : "нет") +
     (STANDALONE ? pl("rem", "", "⏰", ($("qRemind").value || "нет")) : "");
   if (linkAvail) h += pl("link", "", "сюжет", sl ? sl.title : "нет");
@@ -2199,7 +2310,7 @@ function renderVerify() {
   $("vCount").textContent = q.length ? q.length + " ждут твоего голоса" : "";
   setHtml("verify", q.map(({ kind, it, round, story }) => {
     const stat = statOf(it.stat);
-    const xp = kind === "story" ? storyReward(it) : kind === "step" ? STEP_XP : RANKS[it.rank].xp;
+    const xp = kind === "story" ? storyReward(it) : kind === "step" ? STEP_XP : taskXp(it);
     const k = esc(it.player) + '" data-kind="' + kind + '" data-round="' + (round || "") + '" data-id="' + esc(it.id);
     let sub = kind === "story"
       ? "завершил сюжетный квест · дедлайн " + nice(it.deadline)
@@ -2212,7 +2323,7 @@ function renderVerify() {
     let det = "";
     if (kind === "story") { const pr = progress(it); det = '<p class="hint">Прогресс: ' + (it.kind === "steps" ? pr.done + "/" + pr.total + " этапов: " + esc(it.steps.filter((x) => !x.removed).map((x) => x.t).join(", ")) : fmt(pr.done) + " / " + fmt(pr.total) + " " + esc(it.unit || "")) + "</p>"; }
     return '<div class="vi"><p class="sub">Игрок <b style="color:var(--fg)">' + esc(pname(it.player)) + "</b> " + sub + "</p>" +
-      '<p style="font-weight:600">' + (kind === "step" ? '<span class="xpn">Этап</span>' : '<span class="rank r-' + it.rank + '">' + it.rank + "</span>") + " " + esc(it.title) + ' <span class="xptag">+' + xp + " XP " + statLbl(stat) + "</span></p>" + det +
+      '<p style="font-weight:600">' + (kind === "step" ? '<span class="xpn">Этап</span>' : kind === "story" ? '<span class="rank r-' + it.rank + '">' + it.rank + "</span>" : isNewQ(it) ? kindTag(it.m) : "") + " " + esc(it.title) + (isNewQ(it) ? ' <span class="qp">' + esc(qParams(it)) + "</span>" : "") + ' <span class="xptag">+' + xp + " XP " + statLbl(stat) + "</span></p>" + det +
       (it.proofPlan ? '<p class="hint">Обещал показать: ' + esc(it.proofPlan) + "</p>" : "") +
       (it.proof ? '<p class="hint">Доказательство: ' + esc(it.proof) + "</p>" : "") + thumbsHtml(it.imgs) +
       threadHtml(kind, it.player, it.id, true, "v", false) +
@@ -2272,8 +2383,8 @@ function seenDay(pid) {
 const GUIDE = [
   // ---------- 1 · Быстрый старт ----------
   { id: "s-what", l: 1, t: "Что это за сайт", b: "<p>«Система» превращает твой день в RPG. Ты записываешь <b>квесты</b> — дела на сегодня, выполняешь их и получаешь <b>опыт (XP)</b>. Опыт поднимает уровень и характеристики. Друзья по пати видят твой прогресс и проверяют крупные достижения.</p><p>Цель сезона — стать лучшей версией себя к 31 декабря.</p>" },
-  { id: "s-quest", l: 1, t: "Добавить и выполнить квест", b: "<p>На вкладке <b>«Сегодня»</b> напиши квест в поле «Новый квест…» и нажми <b>«Принять»</b>.</p><p>Под полем плашки: <b>характеристика</b> (что качаешь), <b>ранг</b> (сколько опыта) и <b>повтор</b>. Нажми на плашку, чтобы поменять: характеристика и ранг выбираются из списка с подсказками.</p><p>Характеристики: <b>СИЛ</b> (тело: спорт, сон, питание), <b>ИНТ</b> (разум: учёба, книги), <b>ВОЛ</b> (воля: режим, привычки), <b>ХАР</b> (харизма: люди, общение), <b>ТВР</b> (творчество: музыка, проекты), <b>ФИН</b> (достаток: работа, деньги).</p><p>Сделал — поставь галочку слева от квеста. Опыт начислится сразу, «+XP» улетит в полоску опыта.</p>", v: 16 },
-  { id: "s-ranks", l: 1, t: "Ранги и опыт", b: "<p><b>Мелкие, отмечаешь сам</b> (выбирай по времени):<br><b>E · 5 XP</b> ≈ 15 минут: заправить кровать, выпить 2 л воды, прочитать 10 страниц.<br><b>D · 10 XP</b> ≈ 30 минут: прогулка, 30 минут иностранного, домашка по одному предмету.<br><b>C · 20 XP</b> ≈ 1 час или трудно себя заставить: тренировка, час учёбы, уборка на час.</p><p>Так у всех трёх ровно 20 XP за час, и дробить задачи невыгодно. Дело на 3 часа = три квеста C.</p><p><b>Крупные, проверяют друзья</b> (нужно доказательство, фото прямо в квесте):<br><b>B · 50 XP</b>: результат, который можно показать (сдать экзамен на хорошую оценку, пробежать 10 км, закончить проект).<br><b>A · 100 XP</b>: результат недель работы (закрыть сессию без долгов, сертификат, онлайн-курс целиком).<br><b>S · 200 XP</b>: раз в сезон (найти работу, выиграть соревнование, поступить или пройти отбор).</p><p>Если сомневаешься, бери ранг ниже: друзья всё видят.</p>", v: 13 },
+  { id: "s-quest", l: 1, t: "Добавить и выполнить квест", b: "<p>На вкладке <b>«Сегодня»</b> напиши квест в поле «Новый квест…». Под полем откроются три ползунка: <b>время</b>, <b>сложность</b> и <b>«нравится»</b>. Опыт видно сразу крупной цифрой. Нажми <b>«Принять»</b>.</p><p>Плашки под полем: <b>характеристика</b> (что качаешь), <b>опыт</b> (ползунки), <b>повтор</b> и ⏰.</p><p>Характеристики: <b>СИЛ</b> (тело: спорт, сон, питание), <b>ИНТ</b> (разум: учёба, книги), <b>ВОЛ</b> (воля: режим, привычки), <b>ХАР</b> (харизма: люди, общение), <b>ТВР</b> (творчество: музыка, проекты), <b>ФИН</b> (достаток: работа, деньги).</p><p>Сделал — поставь галочку слева от квеста. Опыт начислится сразу, «+XP» улетит в полоску опыта.</p>", v: 18 },
+  { id: "s-ranks", l: 1, t: "Как считается опыт", b: "<p><b>Время</b>: 20 XP за час средней задачи. После 3 часов каждый следующий час идёт за половину (8 часов = 5,5 «часа»).</p><p><b>Сложность</b>: лёгкий ×0,5, средний ×1, сложный ×1,5.</p><p><b>«Нравится»</b>: 👎 +30% (за дисциплину, делать нелюбимое труднее), — +15%, 👍 без бонуса.</p><p>Примеры: час английского, средний, — = <b>23 XP</b>. Тренировка 2 часа, сложный, 👍 = <b>60 XP</b>. Уборка 30 минут, лёгкий, 👎 = <b>7 XP</b>.</p><p><b>ПРИВЫЧКА</b> (ползунок времени на «без времени», зелёная метка): лёгкий 3, средний 5, сложный 10 XP, с тем же бонусом за 👎 или —. Не больше 5 привычек в день. С временем квест становится <b>ЗАДАЧЕЙ</b> (голубая метка).</p><p>У дня <b>16 часов</b>: сумма времени сегодняшних квестов не больше 16 ч, ползунок упирается в остаток. Букв у квестов нет, буква осталась только у ранга охотника.</p>", v: 18 },
   { id: "s-login", l: 1, t: "Вход, выход и телефон", b: "<p>Сайт: <b>aitbatyr.github.io/rpg-irl</b>. Первый раз нажми «Создать аккаунт» (почта и пароль от 6 символов), дальше просто «Войти». Внизу страницы твоя почта и кнопка «Выйти». Забыл пароль: «Забыл пароль» на экране входа, ссылка придёт на почту.</p><p>На телефоне открой сайт в Chrome → меню ⋮ → <b>«Добавить на главный экран»</b>. Появится иконка, сайт будет открываться как приложение.</p>", v: 12 },
   { id: "s-tabs", l: 1, t: "Вкладки", b: "<p><b>Сегодня</b> — квесты дня и полоска статуса. <b>Сюжет</b> — цели на недели. <b>Статус</b>: уровень и сводка сверху, а характеристики и ачивки раскрываются по нажатию; ниже карта активности (сайт запоминает, что ты держишь открытым). <b>Пати</b> — друзья, неделя, проверка квестов. <b>Ещё</b> — что нового, гайд, сообщения о багах. После обновления у «Что нового» горит метка «НОВОЕ», а в гайде синей точкой отмечены непрочитанные и изменённые разделы.</p>", v: 17 },
   { id: "s-midnight", l: 1, t: "Полночь и провалы", b: "<p>В 00:00 по времени сервера (UTC+5) день закрывается. Невыполненные квесты становятся <b>проваленными</b> и видны внизу вкладки «Сегодня» и на карте активности.</p><p>Обычный проваленный квест можно перенести на сегодня кнопкой «На сегодня».</p>", v: 17 },
@@ -2281,23 +2392,23 @@ const GUIDE = [
   { id: "b-repeat", l: 2, t: "Повторяющиеся квесты", b: "<p>В плашке «повтор» выбери: <b>каждый день</b>, <b>каждые N дней</b> (2–30) или <b>по дням недели</b>. Квест сам появляется в нужные дни, когда открываешь сайт. Повторять можно только E, D, C.</p><p>Список повторов — внизу «Сегодня» в строке «Повторяющиеся квесты». Там ✎ — изменить, × — больше не повторять.</p><p>У каждого повтора видно, как он идёт: «18 из 25 · 72%», то есть в скольких днях по расписанию он выполнен. Ниже 40% подсвечивается красным с подсказкой: может, делать реже или меньше. Друзья видят твои повторы в твоём профиле.</p>", v: 13 },
   { id: "b-story", l: 2, t: "Сюжетные квесты", b: "<p>Цели на недели с дедлайном до 31 декабря, ранг B, A или S. Прогресс — <b>этапы</b> (чек-лист) или <b>счётчик</b> (км, страницы, занятия).</p><p>Каждый этап сразу даёт 10 XP. Когда всё готово — «Завершить и отправить на проверку», друзья голосуют, ты получаешь опыт ранга.</p>" },
   { id: "b-link", l: 2, t: "Связка дневного и сюжетного", b: "<p>При создании дневного квеста в плашке «сюжет» выбери сюжетный квест. Для счётчика укажи, сколько добавить («Пробежка» +5 км), для этапов — какой этап закроется. Выполнил дневной — прогресс сюжета обновился сам.</p>" },
-  { id: "b-verify", l: 2, t: "Проверка друзьями", b: "<p>Крупный квест (B, A, S) и завершённый сюжетный уходят на проверку. Прикрепи до 3 фото или напиши, где смотреть доказательство. У друзей появляется запрос во вкладке «Пати» и цифра на вкладке.</p><p>Засчитано, если <b>большинство</b> друзей сказали «да» (при 2 друзьях оба, при 3 двое, при 4 трое), или если есть хотя бы одно «да», ни одного «нет» и прошло <b>48 часов</b>. Зеркально: одно или больше «нет», ни одного «да» и 48 часов, и квест отклонён. Если «нет» сказали столько, что большинства уже не набрать, квест отклонён, его можно отправить снова.</p>", v: 11 },
+  { id: "b-verify", l: 2, t: "Проверка друзьями", b: "<p>Ежедневные квесты друзья не проверяют, их можно только <b>оспорить</b> в течение суток. На проверку уходит завершённый <b>сюжетный квест</b> (и старые крупные B, A, S, отправленные до v18). Прикрепи до 3 фото или напиши, где смотреть доказательство. У друзей появляется запрос во вкладке «Пати» и цифра на вкладке.</p><p>Засчитано, если <b>большинство</b> друзей сказали «да» (при 2 друзьях оба, при 3 двое, при 4 трое), или если есть хотя бы одно «да», ни одного «нет» и прошло <b>48 часов</b>. Зеркально: одно или больше «нет», ни одного «да» и 48 часов, и квест отклонён. Если «нет» сказали столько, что большинства уже не набрать, квест отклонён, его можно отправить снова.</p>", v: 18 },
   { id: "b-talk", l: 2, t: "Комментарии и обсуждения", b: "<p>Под квестом на проверке или в споре есть <b>обсуждение</b>: друзья спрашивают, ты отвечаешь, можно с фото. Когда итог подведён, переписка остаётся, но писать туда уже нельзя.</p><p>Голосуя, можно оставить комментарий. К «Не засчитывать» он обязателен, к «Подтверждаю» по желанию. «Спросить» отправляет вопрос без голоса. «Оспорить» тоже требует причину.</p><p>Все твои обсуждения собраны во вкладке «Пати» в разделе «Обсуждения». Новые комментарии видны цифрой на вкладке и в плашке на «Сегодня».</p>", v: 11 },
-  { id: "b-cap", l: 2, t: "Лимит мелочи", b: "<p>С мелких квестов (E, D, C) и этапов сюжета за день засчитывается не больше <b>150 XP</b> (до 22 октября — 100). Остальное не идёт в опыт. Так нельзя набить уровень двадцатью «попить воды».</p>" },
+  { id: "b-cap", l: 2, t: "Защита от накрутки", b: "<p><b>Честные часы</b>: выполненного времени за сегодня не больше, чем прошло с 6:00. В 10 утра можно отметить максимум 4 часа задач. Планировать можно на все 16 часов, отмечай по мере выполнения. Привычки «без времени» можно отмечать когда угодно.</p><p><b>Замок 🔒</b>: у выполненного квеста нельзя поменять время, сложность и «нравится». Сними галочку, поправь и отметь заново.</p><p><b>Прозрачность</b>: друзья видят у каждого квеста время, сложность и 👎. Если за день больше 10 часов задач или опыт вдвое выше обычного (среднего за 14 дней), на карточке появится <b>«⚠ необычно много»</b>. Это не запрет, а повод присмотреться и, если что, оспорить.</p><p><b>Сервер</b> сам отклоняет невозможное: больше 16 часов или 5 привычек за день, неизвестные значения, отметку раньше честных часов.</p><p>Лимита мелочи (150 XP в день) больше нет. До 14 ноября он действовал, прошлый опыт не менялся.</p>", v: 18 },
   { id: "b-level", l: 2, t: "Уровень, характеристики, класс", b: "<p>Уровень растёт от общего опыта, каждый следующий дороже на 25 XP. <b>Ранг охотника</b>: E (1–4), D (5–9), C (10–14), B (15–19), A (20–29), S (30+).</p><p>Опыт квеста идёт в его характеристику: СИЛ, ИНТ, ВОЛ, ХАР, ТВР, ФИН. <b>Класс</b> — две самые прокачанные, например «Мудрец-Воин».</p>" },
   { id: "b-streak", l: 2, t: "Серия, неделя и ачивки", b: "<p><b>Серия</b> — дни подряд хотя бы с одним засчитанным квестом. <b>Неделя</b> в «Пати» — опыт каждого за 7 дней и места. <b>Ачивки</b> во вкладке «Статус» выдаются сами за серии, идеальные дни, крупные квесты и сотню выполненных; дают немного опыта.</p>" },
-  { id: "b-edit", l: 2, t: "Правка, перенос, удаление", b: "<p>Нажми на название невыполненного сегодняшнего квеста — можно поменять название, характеристику и ранг. Удалить (×) можно только квест, созданный сегодня.</p><p>«На сегодня» у проваленного создаёт копию на сегодня, а провал остаётся в своём дне.</p>" },
+  { id: "b-edit", l: 2, t: "Правка, перенос, удаление", b: "<p>Нажми на название невыполненного сегодняшнего квеста — можно поменять название, характеристику, время, сложность и «нравится». Выполненный сначала разотметь. Удалить (×) можно только квест, созданный сегодня.</p><p>«На сегодня» у проваленного создаёт копию на сегодня (если хватает свободного времени), а провал остаётся в своём дне.</p>", v: 18 },
   // ---------- 3 · Всё до мелочей ----------
   { id: "d-formula", l: 3, t: "Формулы", b: "<p>Опыт до следующего уровня: <b>50 + 25 × (уровень − 1)</b>. Уровень 2 — 50 XP, уровень 10 — 1350 XP всего.</p><p>Характеристика = <b>10 + 1 за каждые 25 XP</b> в ней. Опыт ачивок идёт только в уровень.</p>" },
   { id: "d-time", l: 3, t: "Время сервера", b: "<p>Дата берётся с сервера, а не с телефона: перевод часов ничего не даёт. Если связи с сервером времени нет, сверху будет предупреждение, а квесты нельзя создавать и отмечать, пока связь не вернётся.</p>" },
   { id: "d-missed", l: 3, t: "Пропуски повторов", b: "<p>Повторы создаются, когда ты открываешь сайт. Если не заходил, при следующем входе квесты за все пропущенные дни сезона появятся как проваленные с пометкой «без захода на сайт». Не заходить — не способ избежать провалов.</p>", v: 9 },
-  { id: "d-tpl", l: 3, t: "Правка повторяющегося квеста", b: "<p>✎ в списке повторов: название, характеристика, ранг (E–C), расписание. Изменения действуют <b>с завтрашнего дня</b>. Сегодняшний квест остаётся как был. Прошлые версии расписания сохраняются в истории.</p><p>× останавливает повтор, сегодняшний экземпляр остаётся. Из списка дня повтор удалить нельзя — иначе так можно было бы стирать провалы.</p>" },
+  { id: "d-tpl", l: 3, t: "Правка повторяющегося квеста", b: "<p>✎ в списке повторов: название, характеристика, время, сложность, «нравится», расписание. Изменения действуют <b>с завтрашнего дня</b>. Сегодняшний квест остаётся как был. Прошлые версии сохраняются в истории. Старый повтор с буквой при правке переходит на новые настройки с тем же опытом (E = 15 мин, D = 30 мин, C = 1 ч, 👍).</p><p>Если повторы на день не помещаются в 16 часов или 5 привычек, лишний в этот день не создаётся.</p><p>Повтор с 👎 раз в неделю спросит «всё ещё не нравится?». «Уже норм 👍» меняет его с завтра. Если до этого было 5+ выполнений с 👎, после первого выполнения с 👍 откроется ачивка «Привычка сформирована».</p><p>× останавливает повтор, сегодняшний экземпляр остаётся. Из списка дня повтор удалить нельзя — иначе так можно было бы стирать провалы.</p>", v: 18 },
   { id: "d-dispute", l: 3, t: "Споры", b: "<p>Любой выполненный мелкий квест друга и этап его сюжетного квеста можно <b>оспорить</b> в течение 24 часов после отметки — в окне профиля друга (вкладка «Пати»). Нужно написать причину. Спор сразу считается твоим голосом «нет», отдельно голосовать не надо. Опыт за квест замораживается. Владелец прикрепляет фото или отвечает в обсуждении, остальные друзья голосуют: «Подтверждаю» значит засчитать квест, «Не засчитывать» значит поддержать спор. Решает большинство. Если за 48 часов никто не сказал «да», квест отклоняется сам. Передумал: «Снять спор», и квест засчитается.</p>", v: 11 },
   { id: "d-48", l: 3, t: "Молчание = согласие (48 ч)", b: "<p>Чтобы проверка не висела, если кто-то пропал: когда есть хотя бы одно «да» и ни одного «нет», через 48 часов с момента отправки (или спора) квест засчитывается сам. Таймер виден рядом: «засчитается через 31 ч».</p><p>Работает и в обратную сторону: есть хотя бы одно «нет» (спор тоже считается «нет») и ни одного «да», через 48 часов квест отклоняется сам: «отклонится через 12 ч».</p><p><b>Ничья</b> (поровну «да» и «нет») через 48 часов тоже отклоняет квест: не убедил большинство. Можно сделать заново, понизить ранг или отправить сюжетный квест с новыми доказательствами. В общем виде: через 48 часов решают те, кто проголосовал. «Да» больше, значит засчитано, иначе отклонено. Действует для крупных, сюжетных квестов и споров.</p>", v: 11 },
   { id: "d-seal", l: 3, t: "Печать дня", b: "<p>Когда друг открывает сайт, его браузер запоминает итоги твоих прошедших дней: опыт с мелочи и число квестов. Если прошлый день потом изменился (больше опыта или меньше квестов), лишний опыт не засчитается, а на карте активности у дня появится красный уголок «⚠ день правили задним числом».</p><p>Квесты, по которым идёт спор, печать учитывает как засчитанные, так что «да» после печати не даёт ⚠.</p>", v: 17 },
   { id: "d-flags", l: 3, t: "Пометки ⚠ и что не засчитывается", b: "<p>⚠ «создан задним числом», «отмечен после своего дня», «дата из будущего» — квест не даёт опыта. ⚠ у крупного квеста на проверке «квест за прошлую дату» — подсказка друзьям быть внимательнее.</p><p>Голоса привязаны к названию и рангу: если поменять квест после голосования, голоса обнуляются.</p>" },
   { id: "d-pace", l: 3, t: "Темп, правка и продление сюжета", b: "<p>Строка темпа сравнивает прогресс с равномерным графиком от дня создания до дедлайна: синим — по графику, зелёным — опережаешь, жёлтым/красным — отстаёшь, и сколько нужно делать дальше.</p><p>«Изменить»: добавить, переименовать или убрать невыполненный этап, поменять цель счётчика. Этапы, добавленные позже, опыта не дают. Выполненные убрать нельзя.</p><p>Не успел к дедлайну — квест провален, опыт за этапы остаётся. Продлить можно один раз, награда тогда вдвое меньше.</p><p>Бросая квест кнопкой «удалить», можно написать причину. Друзья увидят её в сюжете неделю, а потом она пойдёт в итоги года.</p>", v: 11 },
-  { id: "d-rankhint", l: 3, t: "Подсказка ранга и «Чем докажешь?»", b: "<p>При выборе ранга сразу видны все шесть: время, примеры и кто проверяет. Когда пишешь название, сайт ищет похожие квесты в истории пати и подсказывает, какой ранг для них обычно ставят, например «обычно C (Час учёбы ×12)», с кнопкой «Поставить C». Для B, A, S есть поле «Чем докажешь?»: друзья увидят его при проверке. Если в названии крупного квеста есть «спать», «душ», «N минут» — сайт подскажет, что это скорее привычка (D или C). Если в мелком — «сдать», «экзамен», «выпустить» — предложит B. Подсказка ничего не запрещает.</p>", v: 13 },
+  { id: "d-rankhint", l: 3, t: "Подсказка времени", b: "<p>Когда пишешь название, сайт ищет похожие квесты в истории пати и подсказывает, сколько времени для них обычно ставят, например «обычно на 30 мин (Английский ×12)», с кнопкой «Поставить». Подсказка ничего не запрещает.</p>", v: 18 },
   { id: "d-join", l: 3, t: "Новые игроки и архив", b: "<p>В пати может быть до 12 активных игроков. Новичок получает ссылку на сайт, создаёт аккаунт, пишет своё имя, владелец подтверждает. Если это кто-то из старых игроков, владелец нажимает «Это … (старый профиль)», и вход привязывается к его профилю со всем опытом. Новичок начинает с нуля, поэтому для честного сравнения есть «Неделя» и средний опыт в день.</p><p>Неактивных владелец может отправить в архив: они пропадают из недели, проверок и голосований, а их данные сохраняются. Вернуть можно в любой момент.</p>", v: 13 },
   { id: "d-party", l: 3, t: "Пати и профиль друга", b: "<p>Нажми на друга во вкладке «Пати» — откроется окно с его квестами, сюжетом, характеристиками и картой активности. Там же кнопки «Оспорить». Если друг сегодня не открывал сайт, на карточке будет «сегодня не заходил», а в его окне кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление, что ты напоминаешь. Одному другу раз в день.</p><p><b>Зелёная точка</b> у имени значит, что сайт у друга открыт прямо сейчас. Закрыл вкладку, точка погасла. Если друга нет, на карточке видно последнее посещение: «был 20 мин назад», «был вчера в 22:14». Время точное примерно до 10 минут.</p>", v: 17 },
   { id: "b-v17", l: 2, t: "Выходной, напоминания, карта активности", b: "<p><b>Выходной</b>: 2 дня в месяц. На «Сегодня» под полоской дня: «взять сегодня» (только пока ничего не отмечено) или «на завтра». Задним числом нельзя. В выходной повторы не создаются, провалов нет, серия не сгорает, опыт за сделанное засчитывается. Отменить можно в тот же день.</p><p><b>Напоминание</b>: плашка «⏰» при создании квеста или ⏰ в строке квеста. Придёт уведомление в это время, если квест не отмечен (точность около 5 минут). У повтора время сохраняется на все дни. Нужны включённые уведомления.</p><p><b>Карта активности</b> в «Статусе» и в профиле друга: квадратик на день, яркость по числу выполненных квестов (1–2, 3–4, 5–6, 7+). Золотая рамка: закрыты все квесты дня (от трёх). Серый с 🌙: выходной. Красный уголок: день правили задним числом. Наведи или нажми на квадратик, чтобы увидеть подробности.</p><p><b>Живой фон</b> меняет цвет по рангу охотника, ночью звёзды, в декабре снег. Выключить: «Ещё → Оформление».</p>", v: 17 },
@@ -2363,9 +2474,9 @@ function bugsAdminHtml() {
 }
 const TOUR = [
   { sel: "#qTitle", t: "Квест на сегодня", x: "Напиши, что сделаешь сегодня, и нажми «Принять». Каждое дело — отдельный квест." },
-  { sel: "#qPlaques", t: "Характеристика, ранг, повтор", x: "Ранг решает, сколько опыта: E 5 · D 10 · C 20 · B 50 · A 100 · S 200. Крупные (B+) проверяют друзья. Повтор — чтобы квест появлялся сам." },
+  { sel: "#qPlaques", t: "Характеристика, опыт, повтор", x: "Опыт решают три ползунка: время, сложность и «нравится». Час средней задачи = 20 XP, за нелюбимое +30%. Повтор — чтобы квест появлялся сам." },
   { sel: "#quests", t: "Список дня", x: "Сделал — ставь галочку слева. Не успел до полуночи — квест станет проваленным. Нажми на название, чтобы поправить квест." },
-  { sel: "#strip", t: "Твой статус", x: "Уровень, опыт, серия дней и лимит мелочи: с квестов E–C за день идёт не больше 150 XP." },
+  { sel: "#strip", t: "Твой статус", x: "Ранг охотника, уровень, опыт, серия дней и сколько опыта набрано сегодня." },
   { sel: "#tabs", t: "Вкладки", x: "Сюжет — цели на недели. Статус — характеристики и ачивки. Пати — друзья и проверка. Ещё — гайд (там всё подробно) и сообщения о багах." },
 ];
 function startTour() {
@@ -2400,6 +2511,7 @@ function renderParty() {
       '<div class="bar"><i style="width:' + ((p.li.into / p.li.need) * 100).toFixed(1) + '%"></i></div>' +
       (bound
         ? '<div class="row2"><span>' + p.xp + " XP</span>" + (isOff(pl.id, today()) ? '<span style="color:var(--muted)">🌙 выходной</span>' : pl.id !== me && seenDay(pl.id) !== today() ? '<span style="color:var(--gold)">сегодня не заходил</span>' : "<span>сегодня " + p.tdDone + "/" + p.td.length + "</span>") + "<span>серия " + p.streak + "</span></div>" +
+          (() => { const o = oddDay(pl.id, today(), p); return o ? '<div class="row2"><span class="odd">⚠ необычно много: ' + esc(o) + "</span></div>" : ""; })() +
           '<div class="row2"><span>' + esc(p.cls) + " · сюжетных " + p.activeStories + "</span>" + (p.pending ? '<span style="color:var(--gold)">на проверке: ' + p.pending + "</span>" : "<span></span>") + "</div>" +
           (pl.id !== me ? '<div class="row2"><span' + (isOnline(pl.id) ? ' style="color:var(--ok)"' : "") + ">" + esc(lastSeenTxt(pl.id)) + "</span></div>" : "") +
           '<div class="row2"><span>~' + p.perDay + " XP в день" + (joinedOf(pl.id) > SEASON_START ? ' · <span style="color:var(--sys)">в игре с ' + nice(joinedOf(pl.id)) + "</span>" : "") + "</span></div>"
@@ -2458,10 +2570,7 @@ function chipsHtml(items, act, sel, attr) {
 }
 function renderForm() {
   $("statChips").innerHTML = statListHtml("stat", selStat);
-  $("rankChips").innerHTML = '<div class="rlist" role="listbox" aria-label="Ранг">' + Object.keys(RANKS).map((r) => { const i = RANK_INFO[r];
-    return '<button type="button" class="ropt" role="option" data-act="rank" data-r="' + r + '" aria-pressed="' + (r === selRank) + '" aria-selected="' + (r === selRank) + '">' +
-      '<span class="rk"><span class="rank r-' + r + '">' + r + "</span> " + RANKS[r].xp + ' XP</span><span class="rt">' + esc(i.t) + '</span><span class="rw' + (i.who === "сам" ? "" : " fr") + '">' + (i.who === "сам" ? "сам" : "друзья") + '</span><span class="rex">' + esc(i.ex) + "</span></button>"; }).join("") + "</div>";
-  $("rankHint").textContent = "E, D, C дают ровно 20 XP за час. Дело на 3 часа = три квеста C, а не один.";
+  renderXp();
   renderWarn();
   $("sStatChips").innerHTML = statListHtml("sstat", sStat);
   $("sRankChips").innerHTML = chipsHtml(["B", "A", "S"].map((r) => ({ v: r, l: r + " · " + RANKS[r].xp, rk: true })), "srank", sRank, "r");
@@ -2684,6 +2793,8 @@ $("lvOv").addEventListener("click", () => hideOv($("lvOv")));
 function showNotice(t, info) { const n = $("dbNotice"); n.textContent = t; n.classList.toggle("info", !!info); n.hidden = false; }
 function fail(e) {
   const c = e && e.code;
+  const sm = String((e && e.message) || "").match(/СИСТЕМА: (.+)/);
+  if (sm) { toast(sm[1], "ОТКАЗ"); return; }
   if (c === "invalid_argument") { toast("Система не дала записать: нет прав на это действие.", "ОТКАЗ"); return; }
   if (c === "quota_exceeded") { toast("Хранилище переполнено. Удалите старые квесты.", "ОШИБКА"); return; }
   toast("Не получилось сохранить. Проверь интернет и повтори.", "ОШИБКА");
@@ -2777,17 +2888,17 @@ function fxFly(x, y, txt, col) {
   an.onfinish = () => f.remove();
   return tgt ? 900 : 0;
 }
-function fxDone(btn, rank, xp, label) {
+function fxDone(btn, rank, xp, label, color) {
   if (RM() || !btn) return;
   const r = btn.getBoundingClientRect(); if (!r.width) return;
-  const x = r.left + r.width / 2, y = r.top + r.height / 2, col = RCOL[rank] || RCOL.C;
+  const x = r.left + r.width / 2, y = r.top + r.height / 2, col = color || RCOL[rank] || RCOL.C;
   const card = btn.closest(".qi,.sq,li,.step");
   if (card) { const cr = card.getBoundingClientRect(); const f = fxEl("fx-card", cr.left, cr.top, "", col); f.style.width = cr.width + "px"; f.style.height = cr.height + "px"; fxGone(f); }
   fxGone(fxEl("fx-check", x, y, '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg>'));
   fxGone(fxEl("fx-ring", x, y, "", col));
   setTimeout(() => fxGone(fxEl("fx-ring", x, y, "", "#ffffff")), 90);
   fxBurst(x, y, col, { E: 10, D: 14, C: 18, B: 24, A: 30, S: 40 }[rank] || 14, { E: 38, D: 46, C: 56, B: 68, A: 80, S: 96 }[rank] || 46);
-  vibe(rank === "C" ? [14, 40, 22] : rank === "D" ? [12, 30, 12] : 12);
+  vibe(["C", "B", "A", "S"].includes(rank) ? [14, 40, 22] : rank === "D" ? [12, 30, 12] : 12);
   rememberBars(Date.now() + 820);
   fxFly(x, y, label || "+" + xp + " XP", col);
 }
@@ -2817,7 +2928,7 @@ const bigSeen = new Map(); let bigSeenReady = false;
 function fxWatch() {
   if (!me || !loadedBy[me] || !storyLoadedBy[me] || !votesReady()) return;
   const fresh = [];
-  for (const t of tasksBy[me] || []) if (RANKS[t.rank] && RANKS[t.rank].big) {
+  for (const t of tasksBy[me] || []) if (taskBig(t)) {
     const k = "t:" + t.id, st = taskState(t);
     if (bigSeenReady && bigSeen.has(k) && bigSeen.get(k) !== "approved" && st === "approved") fresh.push({ title: t.title, rank: t.rank, xp: RANKS[t.rank].xp });
     bigSeen.set(k, st);
@@ -2856,7 +2967,7 @@ window.addEventListener("error", (e) => { if (!e || !e.message || /ResizeObserve
 window.addEventListener("unhandledrejection", (e) => { const r = e && e.reason; const m = r && (r.message || r.code) ? String(r.message || r.code) : String(r); if (/Failed to fetch|NetworkError|Load failed|fetch failed/i.test(m)) return; logErr(m, r && r.stack, "promise"); });
 
 // ---------- экран загрузки с советами (v17) ----------
-const TIPS = [["Система", "Квест друга можно оспорить в течение суток, если он выглядит нечестно. Спор сам считается голосом «нет»."], ["Система", "Крупные квесты B, A и S проверяют друзья. Приложи фото или ссылку, так голосовать проще."], ["Система", "Мелкие квесты дают за день не больше 150 XP. Сверх лимита опыт не начисляется."], ["Система", "Чем выше ранг квеста, тем больше искр при выполнении. Попробуй закрыть S-ранг."], ["Система", "Повторы создаются сами каждое утро. Процент рядом покажет, какая привычка проседает."], ["Система", "Нажми на друга во вкладке «Пати», чтобы увидеть его квесты, сюжет и характеристики."], ["Система", "Сюжетный квест это цель на недели. Разбей её на этапы, каждый этап даёт 10 XP."], ["Система", "Выходной можно взять 2 раза в месяц, но только заранее. Задним числом нельзя."], ["Система", "Если друг сегодня не заходил, его можно «пнуть»: ему придёт уведомление."], ["Система", "Карта активности в «Статусе» показывает весь сезон. Чем ярче квадратик, тем сильнее был день."], ["Система", "Итоги недели появляются в понедельник: опыт, место в пати и лучший день."], ["Система", "Опыт квеста уходит в его характеристику. Хочешь прокачать ИНТ, бери квесты на разум."], ["Система", "Каждые 25 XP в характеристике дают к ней +1 очко."], ["Система", "Уровень растёт от общего опыта, и каждый следующий дороже на 25 XP."], ["Система", "Закрой все квесты дня, от трёх, и Система покажет «Все квесты дня выполнены»."], ["Система", "Серия считает дни подряд, когда у тебя был хотя бы один засчитанный квест."], ["Система", "Включи уведомления в «Ещё», чтобы не пропустить голоса друзей и вечернее напоминание."], ["Система", "Нашёл баг? Внизу страницы есть «Нашёл баг? Сообщи», можно приложить скриншот."], ["Система", "Не знаешь, какой ранг поставить? Ориентир по времени: E около 15 минут, D около 30, C около часа."], ["Система", "Сайт можно установить на телефон как приложение: «Добавить на главный экран»."], ["Система", "Поставь ⏰ на квест, и в нужное время придёт напоминание."], ["Система", "Аватарку можно поставить во вкладке «Статус», нажав на кружок с буквой."], ["Система", "Гайд в «Ещё» отмечает синими точками разделы, которые изменились."], ["Система", "Живой фон меняет цвет по твоему рангу охотника: от синего на E до красного на S."], ["Тайм-менеджмент", "Правило двух минут: если дело занимает меньше двух минут, сделай его сразу."], ["Тайм-менеджмент", "Самое трудное делай первым, пока силы свежие. Остальной день покажется легче."], ["Тайм-менеджмент", "Разбивай большое на шаги по 25–30 минут. Маленький шаг легче начать."], ["Тайм-менеджмент", "Планируй вечером на завтра. Утром не придётся решать, с чего начать."], ["Тайм-менеджмент", "Помодоро: 25 минут работы, 5 минут отдыха. После четырёх кругов перерыв подольше."], ["Тайм-менеджмент", "На время важного дела убери телефон в другую комнату. Внимание вернётся."], ["Тайм-менеджмент", "Ставь 3–5 главных задач на день. Слишком длинный список чаще разочаровывает."], ["Тайм-менеджмент", "Время в дороге и в очередях можно занять чтением или карточками для учёбы."], ["Тайм-менеджмент", "Группируй похожие дела: звонки подряд, сообщения подряд, покупки за один выход."], ["Тайм-менеджмент", "Если задача пугает, спроси себя: какой первый физический шаг? Сделай только его."], ["Тайм-менеджмент", "Прикидывай, сколько займёт дело, и сравнивай с тем, сколько ушло на самом деле. Прогнозы станут точнее."], ["Тайм-менеджмент", "Матрица Эйзенхауэра: важное и срочное сразу, важное несрочное в план, остальное сократи или отдай."], ["Тайм-менеджмент", "Закон Паркинсона: работа занимает всё отведённое время. Ставь себе сроки чуть короче."], ["Тайм-менеджмент", "Отдых тоже планируется. Без пауз силы к вечеру заканчиваются."], ["Тайм-менеджмент", "Первые часы после пробуждения у многих самые ясные. Не трать их на ленту."], ["Тайм-менеджмент", "Раз в неделю пересматривай цели: что сработало, что убрать, что добавить."], ["Тайм-менеджмент", "Делай одно дело за раз. Каждое переключение съедает время и внимание."], ["Тайм-менеджмент", "В конце дня запиши, на чём остановился. Завтра начнёшь быстрее."], ["Тайм-менеджмент", "Сложную учёбу лучше делить на короткие подходы в разные дни, чем зубрить всё за ночь."], ["Дисциплина", "Не пропускай дважды подряд. Один пропуск случайность, два начало новой привычки."], ["Дисциплина", "Серия важнее идеального дня. Понемногу каждый день лучше, чем рывками."], ["Дисциплина", "Мотивация приходит после начала, а не до. Начни с пяти минут."], ["Дисциплина", "Привязывай новую привычку к старой: после чистки зубов 10 страниц книги."], ["Дисциплина", "Сделай хорошую привычку заметной: книга на подушке, форма у двери."], ["Дисциплина", "Сделай плохую привычку неудобной: убери приложение с главного экрана."], ["Дисциплина", "На 1% лучше каждый день это примерно в 37 раз лучше за год."], ["Дисциплина", "Не жди настроения. Дисциплина это делать, когда не хочется."], ["Дисциплина", "Сравнивай себя с собой вчерашним, а не с другими."], ["Дисциплина", "Сон держит всё остальное. Режим сна это тоже квест."], ["Дисциплина", "Когда тянет бросить, вспомни, зачем начинал."], ["Дисциплина", "Пати это не только соревнование, но и поддержка. Подтверди сегодня чей-нибудь квест."], ["Дисциплина", "Честность с собой важнее XP. Опыт за несделанное ничего не прокачивает."], ["Дисциплина", "Сорвался? Не наказывай себя. Просто вернись завтра."], ["Дисциплина", "Привычка в среднем закрепляется около двух месяцев, а не за 21 день. Дай себе время."], ["Дисциплина", "Окружение решает. Проводи время с теми, кто тоже растёт."], ["Дисциплина", "Отмечай квест сразу после выполнения. Это маленькая награда для мозга."], ["Дисциплина", "Не получается? Уменьши цель: 10 минут каждый день лучше, чем час раз в неделю."], ["Дисциплина", "Запиши, кем хочешь стать к концу сезона. Каждый квест это голос за этого человека."], ["Дисциплина", "Короткая прогулка прочищает голову и помогает думать."], ["Дисциплина", "Вода и нормальный завтрак тоже влияют на концентрацию."], ["Дисциплина", "Скучная работа идёт легче под музыку без слов."], ["Дисциплина", "Хвали себя за сделанное, а не только ругай за упущенное."], ["Дисциплина", "Цель без срока это мечта. Поставь дату."], ["Дисциплина", "День не задался? Сделай хотя бы один мелкий квест, и серия не прервётся."]];
+const TIPS = [["Система", "Квест друга можно оспорить в течение суток, если он выглядит нечестно. Спор сам считается голосом «нет»."], ["Система", "Завершённый сюжетный квест проверяют друзья. Приложи фото или ссылку, так голосовать проще."], ["Система", "Честные часы: выполнить можно не больше часов, чем прошло с 6:00. Отмечай задачи по мере выполнения."], ["Система", "Чем больше опыта за квест, тем больше искр при выполнении."], ["Система", "Квест «без времени» это привычка. Их можно до 5 в день."], ["Система", "У дня 16 часов. Ползунок времени не даст запланировать больше."], ["Система", "Повторы создаются сами каждое утро. Процент рядом покажет, какая привычка проседает."], ["Система", "Нажми на друга во вкладке «Пати», чтобы увидеть его квесты, сюжет и характеристики."], ["Система", "Сюжетный квест это цель на недели. Разбей её на этапы, каждый этап даёт 10 XP."], ["Система", "Выходной можно взять 2 раза в месяц, но только заранее. Задним числом нельзя."], ["Система", "Если друг сегодня не заходил, его можно «пнуть»: ему придёт уведомление."], ["Система", "Карта активности в «Статусе» показывает весь сезон. Чем ярче квадратик, тем сильнее был день."], ["Система", "Итоги недели появляются в понедельник: опыт, место в пати и лучший день."], ["Система", "Опыт квеста уходит в его характеристику. Хочешь прокачать ИНТ, бери квесты на разум."], ["Система", "Каждые 25 XP в характеристике дают к ней +1 очко."], ["Система", "Уровень растёт от общего опыта, и каждый следующий дороже на 25 XP."], ["Система", "Закрой все квесты дня, от трёх, и Система покажет «Все квесты дня выполнены»."], ["Система", "Серия считает дни подряд, когда у тебя был хотя бы один засчитанный квест."], ["Система", "Включи уведомления в «Ещё», чтобы не пропустить голоса друзей и вечернее напоминание."], ["Система", "Нашёл баг? Внизу страницы есть «Нашёл баг? Сообщи», можно приложить скриншот."], ["Система", "За нелюбимое дело (👎) опыта на 30% больше. Дисциплина ценится."], ["Система", "Сайт можно установить на телефон как приложение: «Добавить на главный экран»."], ["Система", "Поставь ⏰ на квест, и в нужное время придёт напоминание."], ["Система", "Аватарку можно поставить во вкладке «Статус», нажав на кружок с буквой."], ["Система", "Гайд в «Ещё» отмечает синими точками разделы, которые изменились."], ["Система", "Живой фон меняет цвет по твоему рангу охотника: от синего на E до красного на S."], ["Тайм-менеджмент", "Правило двух минут: если дело занимает меньше двух минут, сделай его сразу."], ["Тайм-менеджмент", "Самое трудное делай первым, пока силы свежие. Остальной день покажется легче."], ["Тайм-менеджмент", "Разбивай большое на шаги по 25–30 минут. Маленький шаг легче начать."], ["Тайм-менеджмент", "Планируй вечером на завтра. Утром не придётся решать, с чего начать."], ["Тайм-менеджмент", "Помодоро: 25 минут работы, 5 минут отдыха. После четырёх кругов перерыв подольше."], ["Тайм-менеджмент", "На время важного дела убери телефон в другую комнату. Внимание вернётся."], ["Тайм-менеджмент", "Ставь 3–5 главных задач на день. Слишком длинный список чаще разочаровывает."], ["Тайм-менеджмент", "Время в дороге и в очередях можно занять чтением или карточками для учёбы."], ["Тайм-менеджмент", "Группируй похожие дела: звонки подряд, сообщения подряд, покупки за один выход."], ["Тайм-менеджмент", "Если задача пугает, спроси себя: какой первый физический шаг? Сделай только его."], ["Тайм-менеджмент", "Прикидывай, сколько займёт дело, и сравнивай с тем, сколько ушло на самом деле. Прогнозы станут точнее."], ["Тайм-менеджмент", "Матрица Эйзенхауэра: важное и срочное сразу, важное несрочное в план, остальное сократи или отдай."], ["Тайм-менеджмент", "Закон Паркинсона: работа занимает всё отведённое время. Ставь себе сроки чуть короче."], ["Тайм-менеджмент", "Отдых тоже планируется. Без пауз силы к вечеру заканчиваются."], ["Тайм-менеджмент", "Первые часы после пробуждения у многих самые ясные. Не трать их на ленту."], ["Тайм-менеджмент", "Раз в неделю пересматривай цели: что сработало, что убрать, что добавить."], ["Тайм-менеджмент", "Делай одно дело за раз. Каждое переключение съедает время и внимание."], ["Тайм-менеджмент", "В конце дня запиши, на чём остановился. Завтра начнёшь быстрее."], ["Тайм-менеджмент", "Сложную учёбу лучше делить на короткие подходы в разные дни, чем зубрить всё за ночь."], ["Дисциплина", "Не пропускай дважды подряд. Один пропуск случайность, два начало новой привычки."], ["Дисциплина", "Серия важнее идеального дня. Понемногу каждый день лучше, чем рывками."], ["Дисциплина", "Мотивация приходит после начала, а не до. Начни с пяти минут."], ["Дисциплина", "Привязывай новую привычку к старой: после чистки зубов 10 страниц книги."], ["Дисциплина", "Сделай хорошую привычку заметной: книга на подушке, форма у двери."], ["Дисциплина", "Сделай плохую привычку неудобной: убери приложение с главного экрана."], ["Дисциплина", "На 1% лучше каждый день это примерно в 37 раз лучше за год."], ["Дисциплина", "Не жди настроения. Дисциплина это делать, когда не хочется."], ["Дисциплина", "Сравнивай себя с собой вчерашним, а не с другими."], ["Дисциплина", "Сон держит всё остальное. Режим сна это тоже квест."], ["Дисциплина", "Когда тянет бросить, вспомни, зачем начинал."], ["Дисциплина", "Пати это не только соревнование, но и поддержка. Подтверди сегодня чей-нибудь квест."], ["Дисциплина", "Честность с собой важнее XP. Опыт за несделанное ничего не прокачивает."], ["Дисциплина", "Сорвался? Не наказывай себя. Просто вернись завтра."], ["Дисциплина", "Привычка в среднем закрепляется около двух месяцев, а не за 21 день. Дай себе время."], ["Дисциплина", "Окружение решает. Проводи время с теми, кто тоже растёт."], ["Дисциплина", "Отмечай квест сразу после выполнения. Это маленькая награда для мозга."], ["Дисциплина", "Не получается? Уменьши цель: 10 минут каждый день лучше, чем час раз в неделю."], ["Дисциплина", "Запиши, кем хочешь стать к концу сезона. Каждый квест это голос за этого человека."], ["Дисциплина", "Короткая прогулка прочищает голову и помогает думать."], ["Дисциплина", "Вода и нормальный завтрак тоже влияют на концентрацию."], ["Дисциплина", "Скучная работа идёт легче под музыку без слов."], ["Дисциплина", "Хвали себя за сделанное, а не только ругай за упущенное."], ["Дисциплина", "Цель без срока это мечта. Поставь дату."], ["Дисциплина", "День не задался? Сделай хотя бы один мелкий квест, и серия не прервётся."]];
 let tipIdx = -1;
 function showTip() {
   let last = -1; try { last = +localStorage.getItem("sys.tip"); } catch {}
@@ -3045,7 +3156,8 @@ $("addForm").addEventListener("submit", async (e) => {
   if (!title || !me || !canWrite) return;
   if (!clockOk) { toast("Нет связи со временем сервера. Подожди немного и повтори.", "ВРЕМЯ"); return; }
   const repeat = $("qRepeat").value !== "";
-  if (repeat && RANKS[selRank].big) { toast("Повторять можно только квесты E, D, C."); return; }
+  const m = STEPS_MIN[selT], mel = { m, e: selE, l: selL }, xp = xpOf(m, selE, selL);
+  if (!okMEL(m, selE, selL)) return;
   const draft = repeat ? draftTemplate() : null;
   if (repeat && !draft) { toast($("qRepeat").value === "every" ? "Укажи интервал от 2 до 30 дней." : "Выбери хотя бы один день недели."); return; }
   let lf;
@@ -3053,8 +3165,12 @@ $("addForm").addEventListener("submit", async (e) => {
   $("addBtn").disabled = true;
   try {
     const rem = /^\d\d:\d\d$/.test($("qRemind").value) ? $("qRemind").value : "";
-    const base = { title, stat: selStat, rank: selRank, ...lf, ...(rem ? { remind: rem } : {}) };
-    const plan = RANKS[selRank].big && !repeat ? $("qProofPlan").value.trim().slice(0, 120) : "";
+    const base = { title, stat: selStat, ...mel, ...lf, ...(rem ? { remind: rem } : {}) };
+    const nxDue = repeat ? nextDue({ rep: draft.rep, start: draft.start }, today()) : today();
+    if (nxDue === today()) {
+      if (m > DAY_MIN - dayUsed(me, today())) { toast("На сегодня столько времени уже нет: свободно " + fmtMin(Math.max(0, DAY_MIN - dayUsed(me, today()))) + "."); $("addBtn").disabled = false; return; }
+      if (m === 0 && dayHabits(me, today()) >= HABITS_MAX) { toast("Привычек на сегодня уже " + HABITS_MAX + " из " + HABITS_MAX + ". Выбери время."); openGrp = "rank"; renderPlaques(); $("addBtn").disabled = false; return; }
+    }
     if (repeat) {
       const tref = db.collection("q/" + uid + "/daily").doc();
       const tpl = { ...base, rep: draft.rep, start: draft.start, createdAt: now() };
@@ -3063,10 +3179,10 @@ $("addForm").addEventListener("submit", async (e) => {
       if (nx === today()) await taskDoc("d-" + tref.id + "-" + today()).set({ ...base, date: today(), done: false, createdAt: now(), fromDaily: tref.id });
       toast("Повторяющийся квест создан: «" + title + "», " + repLabel(tpl) + (nx && nx !== today() ? ". Первый раз " + nice(nx) : ""));
     } else {
-      await db.collection("q/" + uid + "/tasks").add({ ...base, ...(plan ? { proofPlan: plan } : {}), date: today(), done: false, createdAt: now() });
-      if (RANKS[selRank].big && !plan) toast("Совет: у крупного квеста лучше сразу написать, чем докажешь.", "ПОДСКАЗКА");
-      toast("Квест принят: «" + title + "» · " + statOf(selStat).s + " · " + selRank + " · " + RANKS[selRank].xp + " XP");
+      await db.collection("q/" + uid + "/tasks").add({ ...base, date: today(), done: false, createdAt: now() });
+      toast("Квест принят: «" + title + "» · " + statOf(selStat).s + " · " + (m ? fmtMin(m) : "привычка") + " · +" + xp + " XP");
     }
+    openGrp = ""; xpAuto = true;
     $("qTitle").value = ""; $("qAmount").value = ""; $("qRepeat").value = ""; $("qProofPlan").value = ""; $("qRemind").value = ""; selDays.clear(); renderWarn(); renderPlaques();
   } catch (err) { fail(err); }
   $("addBtn").disabled = false;
@@ -3078,17 +3194,22 @@ $("qRepeat").addEventListener("change", renderLinkSelect);
 $("qEvery").addEventListener("input", renderRepeat);
 $("qRemind").addEventListener("change", renderPlaques);
 $("qTitle").addEventListener("input", renderWarn);
+["xTime", "xEff", "xLike"].forEach((id) => $(id).addEventListener("input", (e) => {
+  const v = num(e.target.value);
+  if (id === "xTime") selT = v; else if (id === "xEff") selE = v; else selL = v;
+  if (id !== "xTime") store.set("sys.mel", selE + "." + selL);
+  renderXp(); renderPlaques(); renderWarn();
+}));
 $("qRepeat").addEventListener("change", renderWarn);
 document.addEventListener("input", (e) => {
   const id = e.target && e.target.id || "";
   const dk = e.target && e.target.dataset && e.target.dataset.draft;
   if (dk) drafts[dk] = e.target.value;
-  if (id.startsWith("et-t-") || id.startsWith("et-r-")) { const k = id.slice(5); const w = $("et-w-" + k); if (w) { const t = rankWarn(($("et-t-" + k) || {}).value || "", ($("et-r-" + k) || {}).value || ""); w.textContent = t ? "⚠ " + t : ""; w.hidden = !t; } }
   if (id === "gSearch") { gQuery = e.target.value.trim().toLowerCase(); renderGuide(); }
 });
 document.addEventListener("change", (e) => {
   const id = e.target && e.target.id || "";
-  if (id.startsWith("et-r-")) { const k = id.slice(5); const w = $("et-w-" + k); if (w) { const t = rankWarn(($("et-t-" + k) || {}).value || "", e.target.value); w.textContent = t ? "⚠ " + t : ""; w.hidden = !t; } }
+  if (/-[mel]$/.test(id) && $(id.slice(0, -2) + "-x")) { const pre = id.slice(0, -2), v = melRead(pre); if (v) $(pre + "-x").textContent = "+" + xpOf(v.m, v.e, v.l) + " XP"; }
   if (id === "bugFile") { const f = e.target.files && e.target.files[0]; $("bugFileName").textContent = f ? f.name : ""; }
   if (e.target && e.target.dataset && e.target.dataset.push && window.SISTEMA_PUSH && pushUI.st) {
     const pr = { ...(pushUI.st.prefs || {}) }; pr[e.target.dataset.push] = e.target.checked; pushUI.st.prefs = pr;
@@ -3160,7 +3281,7 @@ document.addEventListener("click", async (e) => {
     b.disabled = false;
     return;
   }
-  if (act === "pl") { openGrp = openGrp === b.dataset.k ? "" : b.dataset.k; renderPlaques(); return; }
+  if (act === "pl") { if (openGrp === "rank" && b.dataset.k === "rank") xpAuto = false; openGrp = openGrp === b.dataset.k ? "" : b.dataset.k; renderPlaques(); return; }
   if (act === "tedit") { editTask = b.dataset.id; renderQuests(); const f = $("et-t-" + b.dataset.id); if (f) f.focus(); return; }
   if (act === "tcancel") { editTask = null; renderQuests(); return; }
   if (act === "tpledit") { tplEdit = b.dataset.id; const tp = templates.find((x) => x.id === tplEdit); tplDays.clear(); (repOf(tp).days || [wdOf(today())]).forEach((d) => tplDays.add(d)); openKeys.add("tpl"); renderQuests(); return; }
@@ -3168,7 +3289,7 @@ document.addEventListener("click", async (e) => {
   if (act === "tewday") { const d = num(b.dataset.d); if (tplDays.has(d)) tplDays.delete(d); else tplDays.add(d); b.setAttribute("aria-pressed", String(tplDays.has(d))); return; }
   if (act === "fclose") { friendId = null; renderFriend(); renderParty(); return; }
   if (act === "stat") { selStat = b.dataset.k; store.set("sys.stat", selStat); openGrp = ""; renderForm(); return; }
-  if (act === "rank") { selRank = b.dataset.r; store.set("sys.rank", selRank); openGrp = ""; renderForm(); return; }
+  if (act === "settime") { const i = num(b.dataset.i); if (i >= 0 && i < STEPS_MIN.length) { selT = i; renderXp(); renderPlaques(); renderWarn(); } return; }
   if (act === "sstat") { sStat = b.dataset.k; renderForm(); return; }
   if (act === "srank") { sRank = b.dataset.r; renderForm(); return; }
   if (act === "skind") { sKind = b.dataset.k; renderForm(); return; }
@@ -3317,16 +3438,22 @@ document.addEventListener("click", async (e) => {
     }
     if (act === "toggle") {
       const t = myTask(b.dataset.id); if (!t || t.date !== today()) return;
-      const big = RANKS[t.rank].big, st = taskState(t);
+      const big = taskBig(t), st = taskState(t);
       if (big) {
         if (st === "todo" || st === "rejected") { proofOpen = "t:" + t.id; renderAll(); const i = $("proof-" + t.id); if (i) i.focus(); }
         else { await taskDoc(t.id).update({ done: false }); toast("Заявка на проверку отозвана."); }
         return;
       }
+      // честные часы: выполненного времени за сегодня не больше, чем прошло с 6:00
+      if (!t.done && isNewQ(t) && t.m > 0) {
+        const lim = sinceSix(), dm = dayDoneMin(me, today(), t.id);
+        if (dm + t.m > lim) { toast("С 6:00 прошло " + fmtHM(lim) + ", а выполнено уже " + fmtHM(dm) + ". Квест на " + fmtMin(t.m) + " можно отметить позже.", "ЧЕСТНЫЕ ЧАСЫ"); return; }
+      }
+      const xp = taskXp(t);
       b.disabled = true;
-      if (!t.done) { fxDone(b, t.rank, RANKS[t.rank].xp); checkPerfectDay(t.id); }
+      if (!t.done) { fxDone(b, isNewQ(t) ? xpTier(xp) : t.rank, xp, null, qFx(t)); checkPerfectDay(t.id); }
       await taskDoc(t.id).update({ done: !t.done, doneAt: t.done ? null : now() });
-      if (!t.done && (RM() || t.link)) toast("Квест выполнен. +" + RANKS[t.rank].xp + " XP" + (t.link ? " · прогресс сюжета обновлён" : ""));
+      if (!t.done && (RM() || t.link)) toast("Квест выполнен. +" + xp + " XP" + (t.link ? " · прогресс сюжета обновлён" : ""));
       return;
     }
     if (act === "submit") {
@@ -3358,7 +3485,9 @@ document.addEventListener("click", async (e) => {
       const t = myTask(b.dataset.id);
       if (!t || t.fromDaily || t.moved || t.date >= today()) return;
       const nid = "m-" + t.id;
-      const copy = { title: t.title, stat: t.stat, rank: t.rank, date: today(), done: false, createdAt: now(), movedFrom: t.id, movedFromDate: t.date };
+      const copy = { title: t.title, stat: t.stat, ...(isNewQ(t) ? { m: t.m, e: t.e, l: t.l } : { rank: t.rank }), date: today(), done: false, createdAt: now(), movedFrom: t.id, movedFromDate: t.date };
+      if (isNewQ(t) && t.m > DAY_MIN - dayUsed(me, today())) { toast("На сегодня столько времени уже нет: свободно " + fmtMin(Math.max(0, DAY_MIN - dayUsed(me, today()))) + "."); return; }
+      if (isNewQ(t) && t.m === 0 && dayHabits(me, today()) >= HABITS_MAX) { toast("Привычек на сегодня уже " + HABITS_MAX + "."); return; }
       if (t.link) { copy.link = t.link; if (t.amount != null) copy.amount = t.amount; if (t.linkStep != null) copy.linkStep = t.linkStep; }
       b.disabled = true;
       await taskDoc(nid).set(copy);
@@ -3366,28 +3495,41 @@ document.addEventListener("click", async (e) => {
       toast("Квест перенесён на сегодня. В своём дне он остаётся проваленным.");
       return;
     }
+    if (act === "likeno" || act === "likeyes") {
+      const tp = templates.find((x) => x.id === b.dataset.id && !x.deleted); if (!tp || !isNewQ(tp)) return;
+      b.disabled = true;
+      if (act === "likeno") { await db.doc("q/" + uid + "/daily/" + tp.id).update({ likeAsked: today() }); toast("Хорошо, спрошу через неделю. За 👎 по-прежнему +30% опыта."); return; }
+      const { id: _d, ...rest } = tp;
+      const prevVer = { title: tp.title, stat: tp.stat, m: tp.m, e: tp.e, l: tp.l, rep: repOf(tp), start: tplStart(tp), until: addDays(today(), 1) };
+      await db.doc("q/" + uid + "/daily/" + tp.id).set({ ...rest, l: 2, likeAsked: today(), start: addDays(today(), 1), editedAt: now(), hist: histOf(tp).concat([prevVer]).slice(-20) });
+      toast("С завтра «" + tp.title + "» с 👍. Выполни его, и откроется ачивка «Привычка сформирована» (нужно 5+ выполнений с 👎 до этого).", "СИСТЕМА");
+      return;
+    }
     if (act === "tdel") { await db.doc("q/" + uid + "/daily/" + b.dataset.id).update({ deleted: true, deletedAt: now() }); if (tplEdit === b.dataset.id) tplEdit = null; toast("Квест больше не будет повторяться. Сегодняшний остаётся."); return; }
     if (act === "tsave") {
       const t = myTask(b.dataset.id); if (!t || t.done || t.date !== today() || t.fromDaily) return;
-      const title = ($("et-t-" + t.id)?.value || "").trim().slice(0, 120), stat = $("et-s-" + t.id)?.value, rank = $("et-r-" + t.id)?.value;
+      const title = ($("et-t-" + t.id)?.value || "").trim().slice(0, 120), stat = $("et-s-" + t.id)?.value, v = melRead("et-" + t.id);
       if (!title) { toast("Название не может быть пустым."); return; }
-      if (!statOf(stat) || !RANKS[rank]) return;
+      if (!statOf(stat) || !v) return;
+      if (v.m > DAY_MIN - dayUsed(me, today(), t.id)) { toast("На сегодня столько времени уже нет: свободно " + fmtMin(Math.max(0, DAY_MIN - dayUsed(me, today(), t.id))) + "."); return; }
+      if (v.m === 0 && !(isNewQ(t) && t.m === 0) && dayHabits(me, today(), t.id) >= HABITS_MAX) { toast("Привычек уже " + HABITS_MAX + " из " + HABITS_MAX + ". Выбери время."); return; }
       editTask = null;
-      await taskDoc(t.id).update({ title, stat, rank });
-      toast("Квест изменён: «" + title + "» · " + statOf(stat).s + " · " + rank + " · " + RANKS[rank].xp + " XP");
+      await taskDoc(t.id).update({ title, stat, m: v.m, e: v.e, l: v.l });
+      toast("Квест изменён: «" + title + "» · " + statOf(stat).s + " · +" + xpOf(v.m, v.e, v.l) + " XP");
       return;
     }
     if (act === "tplsave") {
       const tp = templates.find((x) => x.id === tplEdit && !x.deleted); if (!tp) return;
-      const title = ($("te-title")?.value || "").trim().slice(0, 120), stat = $("te-stat")?.value, rank = $("te-rank")?.value, mode = $("te-rep")?.value;
-      if (!title || !statOf(stat) || !["E", "D", "C"].includes(rank)) { toast("Проверь название, характеристику и ранг."); return; }
+      const title = ($("te-title")?.value || "").trim().slice(0, 120), stat = $("te-stat")?.value, v = melRead("te"), mode = $("te-rep")?.value;
+      if (!title || !statOf(stat) || !v) { toast("Проверь название, характеристику и время."); return; }
       let rp = { type: "daily" };
       if (mode === "every") { const n = Math.round(num($("te-n")?.value)); if (n < 2 || n > 30) { toast("Интервал — от 2 до 30 дней."); return; } rp = { type: "every", n }; }
       if (mode === "weekdays") { if (!tplDays.size) { toast("Выбери хотя бы один день недели."); return; } rp = { type: "weekdays", days: [...tplDays].sort() }; }
       const { id: _drop, ...rest } = tp;
-      const prevVer = { title: tp.title, stat: tp.stat, rank: tp.rank, rep: repOf(tp), start: tplStart(tp), until: addDays(today(), 1) };
+      const prevVer = { title: tp.title, stat: tp.stat, ...(isNewQ(tp) ? { m: tp.m, e: tp.e, l: tp.l } : { rank: tp.rank }), rep: repOf(tp), start: tplStart(tp), until: addDays(today(), 1) };
       const hist = histOf(tp).concat([prevVer]).slice(-20);
-      await db.doc("q/" + uid + "/daily/" + tp.id).set({ ...rest, title, stat, rank, rep: rp, start: addDays(today(), 1), editedAt: now(), hist });
+      const { rank: _r, ...rest2 } = rest;
+      await db.doc("q/" + uid + "/daily/" + tp.id).set({ ...rest2, title, stat, m: v.m, e: v.e, l: v.l, rep: rp, start: addDays(today(), 1), editedAt: now(), hist });
       tplEdit = null;
       toast("Повторяющийся квест изменён. Новые настройки — с завтрашнего дня.");
       return;
@@ -3633,9 +3775,11 @@ async function ensureDailies() {
   if (ensuring || !me || !canWrite || !clockOk || !loadedBy[me] || !templatesLoaded || !storyLoadedBy[me]) return;
   ensuring = true;
   const d = today();
+  const qFields = (v, tp) => (isNewQ(v) && okMEL(v.m, v.e, v.l) ? { m: v.m, e: v.e, l: v.l } : RANKS[v.rank] && !RANKS[v.rank].big ? { rank: v.rank } : isNewQ(tp) ? { m: tp.m, e: tp.e, l: tp.l } : { rank: tp.rank });
+  let addM = 0, addH = 0;
   try {
     for (const tp of templates) {
-      if (!RANKS[tp.rank] || RANKS[tp.rank].big || !statOf(tp.stat) || typeof tp.title !== "string") continue;
+      if (!(isNewQ(tp) ? okMEL(tp.m, tp.e, tp.l) : RANKS[tp.rank] && !RANKS[tp.rank].big) || !statOf(tp.stat) || typeof tp.title !== "string") continue;
       // пропущенные дни (до 7 назад) — записываются как проваленные
       const endDay = tp.deleted ? dayOf(num(tp.deletedAt)) : null;
       let from = firstStart(tp); if (from < SEASON_START) from = SEASON_START;
@@ -3647,7 +3791,7 @@ async function ensureDailies() {
         const mref = taskDoc(mid);
         if ((await mref.get()).exists) continue;
         const v = versionAt(tp, md) || tp;
-        await mref.set({ title: v.title || tp.title, stat: statOf(v.stat) ? v.stat : tp.stat, rank: RANKS[v.rank] ? v.rank : tp.rank, date: md, done: false, createdAt: now(), fromDaily: tp.id, missed: true });
+        await mref.set({ title: v.title || tp.title, stat: statOf(v.stat) ? v.stat : tp.stat, ...qFields(v, tp), date: md, done: false, createdAt: now(), fromDaily: tp.id, missed: true });
       }
       if (tp.deleted || !isDue(tp, d) || isOff(me, d)) continue;
       const id = "d-" + tp.id + "-" + d;
@@ -3655,10 +3799,14 @@ async function ensureDailies() {
       const ref = taskDoc(id);
       const snap = await ref.get();
       if (snap.exists) continue;
-      const doc = { title: tp.title, stat: tp.stat, rank: tp.rank, date: d, done: false, createdAt: now(), fromDaily: tp.id, ...(typeof tp.remind === "string" && /^\d\d:\d\d$/.test(tp.remind) ? { remind: tp.remind } : {}) };
+      const qf = qFields(tp, tp);
+      // бюджет дня: не больше 16 ч и 5 привычек, лишний повтор сегодня не создаётся
+      if (qf.m != null && (qf.m > DAY_MIN - dayUsed(me, d) - addM || (qf.m === 0 && dayHabits(me, d) + addH >= HABITS_MAX))) continue;
+      if (qf.m != null) { addM += qf.m; if (qf.m === 0) addH++; }
+      const doc = { title: tp.title, stat: tp.stat, ...qf, date: d, done: false, createdAt: now(), fromDaily: tp.id, ...(typeof tp.remind === "string" && /^\d\d:\d\d$/.test(tp.remind) ? { remind: tp.remind } : {}) };
       const s = tp.link ? myStory(tp.link) : null;
       if (s && storyState(s) === "active" && s.kind === "count" && num(tp.amount) > 0) { doc.link = s.id; doc.amount = num(tp.amount); }
-      await ref.set(doc);
+      try { await ref.set(doc); } catch {}
     }
   } catch {}
   ensuring = false;
@@ -3792,7 +3940,7 @@ function renderTestBar() {
 // ---------- boot ----------
 window.SISTEMA_NAV = (url) => { const m = /#(today|story|status|party|more)\b/.exec(String(url || "")); if (m) setTab(m[1]); };
 { const h0 = /^#(today|story|status|party|more)$/.exec(location.hash || ""); if (h0) { try { localStorage.setItem("sys.tab", h0[1]); history.replaceState(null, "", location.pathname + location.search); } catch {} } }
-{ const s0 = store.get("sys.stat"); if (statOf(s0)) selStat = s0; const r0 = store.get("sys.rank"); if (RANKS[r0]) selRank = r0; const t0 = store.get("sys.tab"); if (["today", "story", "status", "party", "more"].includes(t0)) tab = t0; }
+{ const s0 = store.get("sys.stat"); if (statOf(s0)) selStat = s0; const x0 = String(store.get("sys.mel") || "").split(".").map(Number); if (x0.length === 2 && [0, 1, 2].includes(x0[0]) && [0, 1, 2].includes(x0[1])) { selE = x0[0]; selL = x0[1]; } const t0 = store.get("sys.tab"); if (["today", "story", "status", "party", "more"].includes(t0)) tab = t0; }
 document.addEventListener("toggle", (e) => {
   const d = e.target;
   if (d && d.dataset && d.dataset.key) {

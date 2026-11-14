@@ -22,9 +22,12 @@ def make(seed=7):
         for day in days:
             for (t, st, rk) in random.sample(POOL, random.randint(3, 5)):
                 done = random.random() < 0.65
-                docs[f'q/{uid}/tasks/{tid()}'] = {'title': t, 'stat': st, 'rank': rk, 'date': day, 'done': done, 'createdAt': ms(day, 8), **({'doneAt': ms(day, random.randint(10, 22))} if done else {})}
+                q = {'m': {'E': 15, 'D': 30, 'C': 60}[rk], 'e': random.randint(0, 2), 'l': random.randint(0, 2)} if day >= '2026-11-14' else {'rank': rk}
+                docs[f'q/{uid}/tasks/{tid()}'] = {'title': t, 'stat': st, **q, 'date': day, 'done': done, 'createdAt': ms(day, 8), **({'doneAt': ms(day, random.randint(10, 22))} if done else {})}
         docs[f'q/{uid}/meta/prefs'] = {'tourDone': True, 'seenVer': 99, 'lastSeen': ms(days[-1], 22) if slot == 'aldiyar' else ms(TODAY, 0, 5) if days else 0}
-    for (t, st, rk) in POOL[:5]:
-        docs[f'q/u_me/tasks/{tid()}'] = {'title': t, 'stat': st, 'rank': rk, 'date': TODAY, 'done': False, 'createdAt': ms(TODAY, 0, 1)}
+    # сегодня: первая привычка (её можно отметить в любое время), две задачи нового вида и два старых квеста с буквой
+    TODAYQ = [{'m': 0, 'e': 1, 'l': 1}, {'m': 30, 'e': 1, 'l': 0}, {'m': 60, 'e': 2, 'l': 2}, {'rank': 'D'}, {'rank': 'C'}]
+    for i, ((t, st, rk), q) in enumerate(zip(POOL[:5], TODAYQ)):
+        docs[f'q/u_me/tasks/{tid()}'] = {'title': t, 'stat': st, **q, 'date': TODAY, 'done': False, 'createdAt': ms(TODAY, 0, 1 + i)}
     accs = [{'auth_id': 'a-me', 'uid': 'u_me', 'email': 'ci@sistema.local', 'admin': True, 'created_at': '2026-10-15T00:00:00Z'}]
     return {'docs': docs, 'accounts': accs, 'session': {'user': {'id': 'a-me', 'email': 'ci@sistema.local'}}}
