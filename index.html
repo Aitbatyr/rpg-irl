@@ -208,7 +208,7 @@ input::placeholder{color:var(--dim)}
 .log{overflow-x:auto}
 .logsvg{display:block;width:100%;min-width:520px;height:auto}
 .overdue{display:flex;flex-direction:column;gap:6px;margin-top:14px}
-.od{display:flex;gap:10px;align-items:center;justify-content:space-between;font-size:13px;padding:8px 10px;border:1px solid rgba(255,93,115,.25);color:var(--muted)}
+.od{display:flex;gap:10px;align-items:center;justify-content:space-between;font-size:13px;padding:8px 10px;border:1px solid var(--line-soft);color:var(--muted)}
 .od span{min-width:0;overflow-wrap:anywhere}
 .od b{color:var(--fg);font-weight:500}
 
@@ -313,7 +313,7 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 .recap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .rc-big{border:1px solid var(--line-soft);padding:10px;display:flex;flex-direction:column;gap:4px;min-width:0}
 .rc-big b{font:800 20px var(--f-display);color:var(--fg)}
-.rc-big b small{font-size:13px;color:var(--bad)}
+.rc-big b small{font-size:13px;color:var(--muted);font-family:var(--f-body);font-weight:500}
 .rc-big span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 @media (max-width:480px){.recap{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .vnote.wk{border-color:var(--sys);color:var(--sys)}
@@ -353,6 +353,9 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 .fh{margin:8px 0 0;font:700 12px/1 var(--f-display);letter-spacing:.2em;text-transform:uppercase;color:var(--sys)}
 /* ---------- v8 ---------- */
 .plaques{display:flex;flex-wrap:wrap;gap:6px}
+.plaques>.plq{flex:1 1 0;min-width:0}
+.plq .cv{margin-left:auto;color:var(--muted);flex:none}
+@media (max-width:560px){.plaques>.plq{flex:1 1 calc(50% - 3px)}}
 .plq{display:inline-flex;align-items:center;gap:6px;font:600 13px/1.2 var(--f-body);color:var(--fg);background:rgba(94,200,255,.06);border:1px solid var(--line);padding:8px 11px;cursor:pointer;max-width:100%}
 .plq span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .plq:hover{background:rgba(94,200,255,.12)}
@@ -457,7 +460,7 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 .foot{display:flex;gap:8px;justify-content:center;align-items:center;color:var(--dim);font-size:13px;padding-top:4px}
 .linkbtn{background:none;border:0;color:var(--muted);font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:4px}
 .linkbtn:hover{color:var(--sys)}
-.od .cnt{font-family:var(--f-mono);color:var(--bad);font-weight:700}
+.od .cnt{font-family:var(--f-mono);color:var(--gold);font-weight:700}
 .tour{position:fixed;inset:0;z-index:70}
 .tour-hole{position:fixed;border:2px solid var(--gold);box-shadow:0 0 0 9999px rgba(3,6,14,.8),0 0 18px rgba(255,207,92,.5);transition:all .25s ease;pointer-events:none}
 .tour-box{position:fixed;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));margin:0 auto;max-width:440px;background:var(--panel-solid);border:1px solid var(--gold);padding:14px 16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 0 24px rgba(0,0,0,.6)}
@@ -476,7 +479,7 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 .wrow .wp{white-space:nowrap;color:var(--fg)}.wrow .wp i{font-style:normal;color:var(--muted)}.wrow .wp .md{margin-right:4px}
 .wrow .wb{display:flex;align-items:center;gap:8px;min-width:0}.wrow .wb .bar{flex:1;min-width:40px}
 .bar.ok i{background:linear-gradient(90deg,#1fae75,var(--ok));box-shadow:0 0 8px rgba(73,227,160,.4)}
-.wrow .wn{font:12px var(--f-mono);color:var(--muted);white-space:nowrap}
+.wrow .wn{font:12px var(--f-mono);color:var(--muted);white-space:nowrap;min-width:104px;text-align:right}
 .wrow .wc{color:var(--sys);transition:transform .2s;text-align:center}
 .wrow[open] .wc{transform:rotate(180deg)}
 .wrow .wbody{padding:2px 12px 12px;border-top:1px solid var(--line-soft)}
@@ -549,11 +552,12 @@ span.remchip{cursor:default}
 .remrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.remrow input{max-width:130px}
 /* ---------- v17: карта активности ---------- */
 .hmwrap{overflow-x:auto;padding-bottom:4px}
-.hmg{display:grid;grid-template-columns:22px repeat(var(--cols),minmax(14px,1fr));gap:3px;max-width:calc(22px + var(--cols) * 24px);font:10px var(--f-mono);color:var(--dim)}
+.hmg{display:grid;grid-template-columns:22px repeat(var(--cols),minmax(12px,1fr));gap:3px;font:10px var(--f-mono);color:var(--dim)}
 .hmm{white-space:nowrap;overflow:visible;line-height:12px;height:12px}
 .hmw{line-height:1;align-self:center}
-.hm{aspect-ratio:1;min-width:14px;border:1px solid var(--line-soft);background:rgba(94,200,255,.03);padding:0;font-size:9px;line-height:1;display:grid;place-items:center;cursor:pointer;color:var(--muted);position:relative}
+.hm{aspect-ratio:1;min-width:12px;border:1px solid var(--line-soft);background:rgba(94,200,255,.03);padding:0;font-size:9px;line-height:1;display:grid;place-items:center;cursor:pointer;color:var(--muted);position:relative}
 .hm.none{border:0;background:none;cursor:default}
+.hm.emp{background:none;border-color:rgba(94,200,255,.08);cursor:default}
 .hm.l1{background:rgba(94,200,255,.22);border-color:rgba(94,200,255,.3)}
 .hm.l2{background:rgba(94,200,255,.45);border-color:rgba(94,200,255,.5)}
 .hm.l3{background:rgba(94,200,255,.72);border-color:rgba(94,200,255,.8)}
@@ -619,6 +623,52 @@ span.remchip{cursor:default}
 .xpbox input[type=range]::-moz-range-thumb{width:13px;height:13px;background:var(--bg);border:2px solid var(--sys);border-radius:0;transform:rotate(45deg);box-shadow:0 0 12px var(--sys-glow)}
 .xpbox input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid var(--fg);outline-offset:3px}
 .tedit .xptag,.er .xptag{align-self:center}
+/* v20: строки повторов, бейджи, спокойные предупреждения */
+.rrl{display:flex;flex-direction:column;gap:6px}
+.rr{display:grid;grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"m x a" "b b b";gap:6px 12px;align-items:center;padding:10px 12px;border:1px solid var(--line-soft);border-left:3px solid var(--sys);background:rgba(6,12,24,.45)}
+.rr.hab{border-left-color:var(--ok)}
+.rrm{grid-area:m;min-width:0}
+.rrt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rrt b{font-weight:600;font-size:14px;color:var(--fg);overflow-wrap:anywhere}
+.rrp{font-size:12px;color:var(--muted);margin-top:3px}
+.rrx{grid-area:x;font:600 13px var(--f-mono);color:var(--gold);white-space:nowrap}
+.rra{grid-area:a;display:flex;gap:2px}
+.rrb{grid-area:b;display:flex;align-items:center;gap:10px}
+.pbar{display:block;flex:1;height:4px;background:rgba(94,200,255,.1);position:relative;overflow:hidden;min-width:40px}
+.pbar i{position:absolute;inset:0 auto 0 0;background:var(--ok)}
+.pbar.y i{background:var(--gold)}.pbar.r i{background:var(--bad);opacity:.75}
+.rrn{font:12px var(--f-mono);color:var(--muted);white-space:nowrap;min-width:104px;text-align:right}
+.bdg{display:inline-block;margin-left:8px;padding:1px 7px;font:600 11px/1.5 var(--f-mono);color:#ff8a9b;border:1px solid rgba(255,93,115,.35);background:rgba(255,93,115,.07);vertical-align:1px}
+.bdg.y{color:var(--gold);border-color:rgba(255,207,92,.35);background:rgba(255,207,92,.06)}
+.rnote{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.45;color:var(--muted);border:1px solid rgba(255,207,92,.28);background:rgba(255,207,92,.04);padding:8px 10px;margin-bottom:8px}
+.rnote>i{font-style:normal;color:var(--gold)}
+.rnote b{color:var(--fg);font-weight:600}
+.fold>.rrl{padding:0 12px 12px}.fold>.rnote{margin:0 12px 8px}
+/* v20: выходной на любой день */
+.offplan{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 10px}
+.offch{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--fg);border:1px solid rgba(127,149,186,.4);background:rgba(127,149,186,.1);padding:2px 2px 2px 8px}
+.offcal{display:flex;flex-wrap:wrap;gap:12px 24px;margin:0 0 12px;padding:12px;border:1px solid var(--line-soft);background:rgba(6,12,24,.45)}
+.offcal>.hint{flex-basis:100%;margin:0}
+.ocm{flex:1 1 210px;max-width:260px}
+.ocmh{font-weight:600;font-size:13px;margin-bottom:6px;text-transform:capitalize}.ocmh span{font-weight:400;color:var(--muted);text-transform:none}
+.ocg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.ocw{font:10px var(--f-mono);color:var(--dim);text-align:center}
+.ocd{aspect-ratio:1;border:1px solid var(--line-soft);background:rgba(94,200,255,.04);color:var(--fg);font:12px var(--f-mono);cursor:pointer;padding:0}
+.ocd:hover:not(:disabled){border-color:var(--sys)}
+.ocd:disabled{opacity:.3;cursor:not-allowed}
+.ocd.td{border-color:var(--fg)}
+.ocd.on{background:rgba(127,149,186,.3);border-color:rgba(160,180,215,.8)}
+.ocd.on::after{content:"🌙";font-size:8px;display:block;line-height:1}
+/* v20: итоги недели */
+.rc-big .pbar{margin-top:2px;flex:none;height:4px}
+.rcmore{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+.rcm{border:1px solid var(--line-soft);padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.rcm span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.rcm b{font-weight:600;font-size:13px;color:var(--fg);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+@media (max-width:480px){.rcmore{grid-template-columns:1fr}}
+.newsl{display:flex;flex-direction:column;gap:6px;padding:0 12px 12px}
+.newsl>.fold{margin-top:0}
+.newsl .news{padding:0 12px 10px}
 /* v19: окно перевода старых квестов */
 .ov .panel.migr{max-width:560px;gap:10px}
 .migr h2{font-style:italic;font-size:24px;margin:2px 0}
@@ -683,7 +733,7 @@ span.remchip{cursor:default}
   <div class="tabp" data-tab="today">
     <div class="strip" id="strip"></div>
     <button type="button" class="vnote" id="vNote" data-act="tab" data-t="party" hidden></button>
-    <button type="button" class="vnote wk" id="wkNote" data-act="tab" data-t="status" hidden></button>
+    <button type="button" class="vnote wkn" id="wkNote" data-act="tab" data-t="status" hidden></button>
 
     <section class="panel" aria-labelledby="qT">
       <div class="ph"><h2 class="ptitle" id="qT">Квесты дня</h2><span class="sub" id="qSub"></span></div>
@@ -858,9 +908,9 @@ span.remchip{cursor:default}
       <button type="button" class="btn sm ghost" data-act="tour" style="align-self:flex-start;margin-top:10px">Пройти обучение заново</button>
     </section>
     <section class="panel" id="bugPanel" aria-labelledby="bT">
-      <div class="ph"><h2 class="ptitle" id="bT">Сообщить о баге</h2></div>
+      <div class="ph"><h2 class="ptitle" id="bT">Баг или пожелание</h2></div>
       <form id="bugForm" class="addq" autocomplete="off">
-        <textarea id="bugText" rows="4" maxlength="1500" placeholder="Что случилось? Что нажимал, что ожидал, что получилось." aria-label="Описание бага"></textarea>
+        <textarea id="bugText" rows="4" maxlength="1500" placeholder="Что случилось или что хочется улучшить? Для бага: что нажимал, что ожидал, что получилось." aria-label="Описание бага или пожелания"></textarea>
         <div class="row" style="align-items:center">
           <label class="filebtn" id="bugFileLbl">Прикрепить скриншот<input type="file" id="bugFile" accept="image/*"></label>
           <span class="hint" id="bugFileName"></span>
@@ -872,7 +922,7 @@ span.remchip{cursor:default}
       <div id="myBugs" class="bugs"></div>
     </section>
   </div>
-  <div class="foot"><button type="button" class="linkbtn" data-act="guideopen">Гайд</button><span aria-hidden="true">·</span><button type="button" class="linkbtn" data-act="bugopen">Нашёл баг? Сообщи</button></div>
+  <div class="foot"><button type="button" class="linkbtn" data-act="guideopen">Гайд</button><span aria-hidden="true">·</span><button type="button" class="linkbtn" data-act="bugopen">Нашёл баг или есть пожелания?</button></div>
 </div>
 
 <div id="imgOv" class="imgov" hidden role="dialog" aria-modal="true" aria-label="Фото"><button type="button" class="btn sm ghost x2" data-act="imgclose">Закрыть ×</button><img id="imgBig" alt="Фото"></div>
@@ -1092,19 +1142,27 @@ function repStats(pid) {
     const id = typeof t.fromDaily === "string" ? t.fromDaily : null;
     if (!id || typeof t.date !== "string" || t.date > t0 || t.date < SEASON_START) continue;
     const g = (by[id] = by[id] || { id, title: t.title, rank: t.rank, last: "", due: 0, done: 0 });
-    if (t.date >= g.last) { g.last = t.date; g.title = t.title; g.rank = t.rank; }
+    if (t.date >= g.last) { g.last = t.date; g.title = t.title; g.rank = t.rank; g.lt = t; }
     if ((t.date === t0 || isOff(pid, t.date)) && !t.done) continue;
     g.due++; if (t.done) g.done++;
   }
   for (const k in by) by[k].pct = by[k].due ? Math.round((by[k].done / by[k].due) * 100) : null;
   return by;
 }
-const repStatHtml = (st) => (st && st.due ? '<span class="repst' + (st.due >= 5 && st.pct < 40 ? " low" : "") + '" title="Выполнено дней из тех, когда квест был по расписанию">' + st.done + " из " + st.due + " · " + st.pct + "%</span>" : "");
+// v20: строка повтора: название + метка, параметры мелко, опыт справа, выполнение полоской
+const pctCls = (p) => (p >= 70 ? "" : p >= 40 ? " y" : " r");
+function repRowHtml(o) {
+  const q = o.q || {}, xp = taskXp(q), st = o.st;
+  const params = [isNewQ(q) ? qParams(q) : "", o.sched || ""].filter(Boolean).join(" · ");
+  return '<div class="rr' + (isNewQ(q) && q.m === 0 ? " hab" : "") + '"><div class="rrm"><div class="rrt"><b>' + esc(o.title) + "</b>" + (isNewQ(q) ? kindTag(q.m) : "") + "</div>" + (params ? '<div class="rrp">' + esc(params) + "</div>" : "") + "</div>" +
+    (xp ? '<span class="rrx">+' + xp + " XP</span>" : "") + (o.acts ? '<span class="rra">' + o.acts + "</span>" : "") +
+    (st && st.due ? '<div class="rrb" title="Выполнено дней из тех, когда квест был по расписанию"><span class="pbar' + pctCls(st.pct) + '"><i style="width:' + st.pct + '%"></i></span><span class="rrn">' + st.done + " из " + st.due + " · " + st.pct + "%</span></div>" : "") + "</div>";
+}
 function repListHtml(pid) {
   const st = repStats(pid), weekAgo = addDays(today(), -7);
   const list = Object.values(st).filter((g) => g.last >= weekAgo && g.due).sort((a, b) => b.pct - a.pct);
   if (!list.length) return "";
-  return fold("frep:" + pid, "Повторы · " + list.length, '<div class="tpl">' + list.map((g) => '<span class="t">' + esc(g.title) + " " + repStatHtml(g) + "</span>").join("") + "</div>");
+  return fold("frep:" + pid, "Повторы · " + list.length, '<div class="rrl">' + list.map((g) => repRowHtml({ title: g.title, q: g.lt, st: g })).join("") + "</div>");
 }
 function repLabel(tp) {
   const r = repOf(tp);
@@ -1161,7 +1219,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 19;
+const APP_VERSION = 20;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -1202,6 +1260,21 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 20, date: "2026-11-15", title: "Аккуратнее и удобнее", items: [
+    "Повторяющиеся квесты (свои и у друзей): каждая строка на всю ширину. Название с меткой, ниже время, сложность и расписание, справа опыт, а выполнение показано цветной полоской.",
+    "Меньше красного: «Проваленные за неделю» и «плохо идут» с маленьким бейджем-числом, совет по плохо идущим повторам в спокойной плашке с ⚠.",
+    "Плашки под полем «Новый квест» растянуты на всю ширину, на телефоне по две в ряд.",
+    "Выходной на любой день: «выбрать день» открывает календарь на этот и следующий месяц. Запланированные выходные видны списком, × отменяет. Лимит 2 в месяц считается по месяцу самого дня.",
+    "Роза характеристик рисуется по общей планке (50 или больше, если кто-то перерос), поэтому одна прокачанная характеристика больше не выглядит раздутой.",
+    "Заголовок «Характеристики» без цифр: они и так есть в списке.",
+    "Карта активности на весь год по всей ширине. На телефоне листается вбок и сразу открыта на сегодняшнем дне.",
+    "Подсказка дня на карте короче: «выполнено 1 из 6 · +10 XP».",
+    "Итоги недели: «12 из 33» с полоской вместо красного «/ 21✗», ровные полоски в прошлых неделях, лучший день и рост характеристик отдельными карточками.",
+    "«Прошлые обновления»: каждая версия отдельной вкладкой.",
+    "Закрытые сообщения о багах старше недели спрятаны (не удалены), есть «показать старые».",
+    "Ссылка внизу теперь «Нашёл баг или есть пожелания?».",
+    "Исправлено: плашка «📊 Итоги недели» на «Сегодня» была сжата в узкий столбик.",
+  ] },
   { v: 19, date: "2026-11-14", title: "Перевод старых квестов на новый опыт", items: [
     "При первом входе всплывает окно «Новая система опыта»: все повторы с буквой и сегодняшние невыполненные квесты с буквой в одном списке.",
     "У каждого три выбора (время, сложность, 👎 / — / 👍) и сразу видно старый и новый опыт. Значения подставлены так, чтобы опыт не изменился: E = 15 мин, D = 30 мин, C = 1 ч, 👍.",
@@ -1676,7 +1749,11 @@ function renderTop() {
 
 function radarSVG(p) {
   const cx = 120, cy = 112, R = 78, n = STATS.length;
-  const max = Math.max(20, ...STATS.map((s) => p.stats[s.k]));
+  // v20: общая планка для всех (50 или больше, если кто-то перерос), а не по своей самой большой характеристике
+  let top = 50;
+  for (const pl of activePlayers()) if (roster[pl.id]) for (const s of STATS) top = Math.max(top, profile(pl.id).stats[s.k]);
+  for (const s of STATS) top = Math.max(top, p.stats[s.k]);
+  const max = Math.ceil(top / 10) * 10;
   const pt = (i, r) => { const a = -Math.PI / 2 + (i * 2 * Math.PI) / n; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
   let g = "";
   for (const f of [0.33, 0.66, 1]) g += '<polygon points="' + STATS.map((_, i) => pt(i, R * f).join(",")).join(" ") + '" fill="none" stroke="var(--line-soft)" stroke-width="1"/>';
@@ -1727,7 +1804,7 @@ function statusHtml(pid) {
     '<div class="lvlrow"><div class="lvl">УРОВЕНЬ<b>' + p.li.L + '</b></div><div class="xpn">' + p.li.into + " / " + p.li.need + " XP</div></div>" +
     '<div class="bar"><i style="width:' + ((p.li.into / p.li.need) * 100).toFixed(1) + '%"></i></div>' +
     '<div class="mini m4"><div><b>' + p.xp + '</b><span>всего XP</span></div><div><b>' + p.streak + '</b><span>серия, дн</span></div><div><b>' + p.tdDone + "/" + p.td.length + '</b><span>сегодня</span></div><div><b>+' + p.todayXp + "</b><span>XP сегодня</span></div></div>" +
-    fold("st:stats", "Характеристики · " + STATS.map((x) => x.s + " " + p.stats[x.k]).join(" · "),
+    fold("st:stats", "Характеристики",
       '<div class="statsbox">' + radarSVG(p) + '<ul class="stats">' +
       STATS.map((s) => '<li title="' + esc(s.hint) + '"><span class="k">' + statIco(s.k) + s.s + '</span><span class="n">' + s.n + '</span><span class="v">' + p.stats[s.k] + "</span></li>").join("") +
       "</ul></div>"));
@@ -1762,17 +1839,17 @@ function recapCardHtml(r) {
   const pct = r.done + r.failed ? Math.round((r.done / (r.done + r.failed)) * 100) : null;
   return '<div class="recap"><div class="rc-big"><b>+' + r.xp + "</b><span>XP за неделю</span></div>" +
     '<div class="rc-big"><b>' + (MEDALS[r.place - 1] ? MEDALS[r.place - 1] + " " : "") + r.place + '</b><span>место из ' + r.of + "</span></div>" +
-    '<div class="rc-big"><b>' + r.done + (r.failed ? '<small> / ' + r.failed + "✗</small>" : "") + "</b><span>выполнено" + (pct != null ? " · " + pct + "%" : "") + "</span></div>" +
+    '<div class="rc-big"><b>' + r.done + (r.done + r.failed ? " <small>из " + (r.done + r.failed) + "</small>" : "") + "</b><span>выполнено" + (pct != null ? " · " + pct + "%" : "") + "</span>" + (pct != null ? '<span class="pbar' + pctCls(pct) + '"><i style="width:' + pct + '%"></i></span>' : "") + "</div>" +
     '<div class="rc-big"><b>' + (r.rDue ? Math.round((r.rDone / r.rDue) * 100) + "%" : "—") + "</b><span>повторы" + (r.rDue ? " · " + r.rDone + " из " + r.rDue : "") + "</span></div></div>" +
-    '<div class="hint" style="margin-top:8px">' + (r.best ? "Лучший день: <b style=\"color:var(--fg)\">" + WDS[wdOf(r.best.d) - 1] + " " + nice(r.best.d) + "</b>, " + r.best.xp + " XP. " : "") +
-    (gains.length ? "Рост характеристик: " + gains.slice(0, 3).map((x) => x.s + " +" + r.gain[x.k]).join(", ") + "." : "Характеристики за неделю не выросли.") + "</div>";
+    '<div class="rcmore"><div class="rcm"><span>🏆 Лучший день</span><b>' + (r.best ? WDS[wdOf(r.best.d) - 1] + " " + nice(r.best.d) + " · +" + r.best.xp + " XP" : "—") + "</b></div>" +
+    '<div class="rcm"><span>📈 Рост характеристик</span><b>' + (gains.length ? gains.slice(0, 3).map((x) => "<span>" + statIco(x.k) + " " + x.s + " +" + r.gain[x.k] + "</span>").join("") : "без роста") + "</b></div></div>";
 }
 function weekRowHtml(x) {
   const tot = x.done + x.failed, pct = tot ? Math.round((x.done / tot) * 100) : null;
   const md = MEDALS[x.place - 1];
   return '<details class="wrow"><summary><span class="wd">' + weekLbl(x.ws) + '</span><span class="wx">+' + x.xp + ' XP</span>' +
     '<span class="wp">' + (md ? '<span class="md">' + md + "</span>" : "") + x.place + " место <i>из " + x.of + "</i></span>" +
-    '<span class="wb"><span class="bar ok"><i style="width:' + (pct || 0) + '%"></i></span><span class="wn">' + (pct != null ? pct + "%" : "—") + " · " + x.done + "✓ " + x.failed + "✗</span></span>" +
+    '<span class="wb"><span class="pbar' + pctCls(pct || 0) + '"><i style="width:' + (pct || 0) + '%"></i></span><span class="wn">' + (pct != null ? pct + "%" : "—") + " · " + x.done + " из " + tot + "</span></span>" +
     '<span class="wc" aria-hidden="true">▾</span></summary><div class="wbody">' + recapCardHtml(x) + "</div></details>";
 }
 function renderRecap() {
@@ -2024,20 +2101,41 @@ function tplEditorHtml() {
     '<div class="chips" id="te-days"' + (r.type === "weekdays" ? "" : " hidden") + ">" + WD.map((w, i) => '<button type="button" class="chip" data-act="tewday" data-d="' + (i + 1) + '" aria-pressed="' + tplDays.has(i + 1) + '">' + w + "</button>").join("") + "</div>" +
     '<div class="acts"><button class="btn sm" data-act="tplsave">Сохранить</button><button class="btn sm ghost" data-act="tplcancel">Отмена</button></div></div>';
 }
+let offPick = false;
+const MONTHS_NOM = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
 function offBoxHtml() {
   if (!me || !canWrite || !loadedBy[me]) return "";
-  const t0 = today(), t1 = addDays(t0, 1);
-  if (isOff(me, t0)) return '<div class="offnote on">🌙 <span><b>Сегодня выходной.</b> Повторы не создаются, провалов нет, серия не сгорает. Квесты ставить можно, опыт засчитается.</span><button type="button" class="linkbtn" data-act="offcancel" data-d="' + t0 + '">отменить</button></div>';
+  const t0 = today(), t1 = addDays(t0, 1), set = offSet(me);
   const doneToday = (tasksBy[me] || []).some((t) => t.date === t0 && t.done);
-  const left0 = offLeft(t0), left1 = offLeft(t1), tomOff = isOff(me, t1);
-  const mon = MONTHS_IN[Number(t0.slice(5, 7)) - 1];
-  let h = '<div class="offnote">🌙 <span>' + (tomOff ? "<b>Завтра выходной.</b> " : "Выходной: ") + "осталось " + Math.max(0, left0) + " из " + OFF_PER_MONTH + " в " + mon + ".</span>";
-  if (tomOff) h += '<button type="button" class="linkbtn" data-act="offcancel" data-d="' + t1 + '">отменить</button>';
+  const planned = [...set].filter((d) => d > t0).sort();
+  let h;
+  if (isOff(me, t0)) h = '<div class="offnote on">🌙 <span><b>Сегодня выходной.</b> Повторы не создаются, провалов нет, серия не сгорает. Квесты ставить можно, опыт засчитается.</span><button type="button" class="linkbtn" data-act="offcancel" data-d="' + t0 + '">отменить</button>';
   else {
-    if (!doneToday && left0 > 0) h += '<button type="button" class="linkbtn" data-act="off" data-d="' + t0 + '">взять сегодня</button>';
-    if (left1 > 0) h += '<button type="button" class="linkbtn" data-act="off" data-d="' + t1 + '">на завтра</button>';
+    h = '<div class="offnote">🌙 <span>Выходные: в ' + MONTHS_IN[Number(t0.slice(5, 7)) - 1] + " осталось " + Math.max(0, offLeft(t0)) + " из " + OFF_PER_MONTH + ".</span>";
+    if (!doneToday && offLeft(t0) > 0) h += '<button type="button" class="linkbtn" data-act="off" data-d="' + t0 + '">взять сегодня</button>';
+    if (!set.has(t1) && offLeft(t1) > 0) h += '<button type="button" class="linkbtn" data-act="off" data-d="' + t1 + '">на завтра</button>';
   }
-  return h + "</div>";
+  h += '<button type="button" class="linkbtn" data-act="offpick" aria-expanded="' + offPick + '">' + (offPick ? "скрыть календарь" : "выбрать день") + "</button></div>";
+  if (planned.length) h += '<div class="offplan">' + planned.map((d) => '<span class="offch">🌙 ' + WDS[wdOf(d) - 1] + " " + nice(d) + '<button type="button" class="x" data-act="offcancel" data-d="' + d + '" aria-label="Отменить выходной ' + nice(d) + '" title="Отменить">×</button></span>').join("") + "</div>";
+  if (offPick) h += offCalHtml(set, doneToday);
+  return h;
+}
+// мини-календарь: этот и следующий месяц, прошлые дни нельзя, лимит по месяцу самого дня
+function offCalHtml(set, doneToday) {
+  const t0 = today(), y = Number(t0.slice(0, 4)), m = Number(t0.slice(5, 7));
+  let h = '<div class="offcal">';
+  for (let k = 0; k < 2; k++) {
+    const mm = ((m - 1 + k) % 12) + 1, yy = y + Math.floor((m - 1 + k) / 12);
+    const first = yy + "-" + String(mm).padStart(2, "0") + "-01", left = offLeft(first);
+    h += '<div class="ocm"><div class="ocmh">' + MONTHS_NOM[mm - 1] + " <span>· осталось " + Math.max(0, left) + " из " + OFF_PER_MONTH + '</span></div><div class="ocg">' + WD.map((w) => '<span class="ocw">' + w + "</span>").join("");
+    for (let i = 1; i < wdOf(first); i++) h += "<span></span>";
+    for (let d = first; d.slice(0, 7) === first.slice(0, 7); d = addDays(d, 1)) {
+      const on = set.has(d), dis = on ? d < t0 : d < t0 || (d === t0 && doneToday) || left <= 0 || d > LAST_DAY;
+      h += '<button type="button" class="ocd' + (on ? " on" : "") + (d === t0 ? " td" : "") + '" data-act="' + (on ? "offcancel" : "off") + '" data-d="' + d + '" data-pick="1"' + (dis ? " disabled" : "") + ' aria-label="' + WDS[wdOf(d) - 1] + " " + nice(d) + (on ? ", выходной, нажми, чтобы отменить" : "") + '" aria-pressed="' + on + '">' + Number(d.slice(8)) + "</button>";
+    }
+    h += "</div></div>";
+  }
+  return h + '<div class="hint">Нажми на день, чтобы взять выходной. Ещё раз, чтобы отменить. Прошлые дни выбрать нельзя.</div></div>';
 }
 function renderQuests() {
   const pid = mainPid(), mine = !!me && pid === me;
@@ -2065,7 +2163,7 @@ function renderQuests() {
     '<div class="od"><span><b>' + esc(g.title) + '</b> <span class="cnt">×' + g.dates.length + "</span> · " + rangeTxt(g.dates) + " · повтор" + (g.missed ? ", без захода на сайт: " + g.missed : "") + "</span></div>");
   const sRows = singles.map((t) => '<div class="od"><span><b>' + esc(t.title) + "</b> · " + nice(t.date) + (t.moved ? " · перенесён на сегодня" : "") + "</span>" + (canWrite && !t.moved ? '<button class="btn sm ghost" data-act="move" data-id="' + esc(t.id) + '">На сегодня</button>' : "") + "</div>");
   setHtml("overdue", od.length
-    ? fold("od", '<span style="color:var(--bad)">Проваленные за неделю · ' + od.length + "</span>", '<div class="overdue">' + sRows.concat(gRows).join("") + "</div>")
+    ? fold("od", 'Проваленные за неделю<span class="bdg">' + od.length + "</span>", '<div class="overdue">' + sRows.concat(gRows).join("") + "</div>")
     : "");
 
   const live = templates.filter((tp) => !tp.deleted), repSt = mine ? repStats(me) : {};
@@ -2074,7 +2172,14 @@ function renderQuests() {
   setHtml("likeAsk", ask ? '<div class="likeask"><span>«' + esc(ask.title) + "» всё ещё не нравится?</span>" + '<button type="button" class="btn sm ghost" data-act="likeno" data-id="' + esc(ask.id) + '">Да, всё ещё</button><button type="button" class="btn sm" data-act="likeyes" data-id="' + esc(ask.id) + '">Уже норм 👍</button></div>' : "");
   const lowRep = live.filter((tp) => { const r = repSt[tp.id]; return r && r.due >= 5 && r.pct < 40; });
   setHtml("templates", mine && live.length
-    ? fold("tpl", "Повторяющиеся квесты · " + live.length + (lowRep.length ? ' · <span style="color:var(--bad)">плохо идут: ' + lowRep.length + "</span>" : ""), (lowRep.length ? '<div class="replow">' + lowRep.map((tp) => "«" + esc(tp.title) + "» выполняется в " + repSt[tp.id].pct + "% дней.").join(" ") + " Может, реже (например, 3 раза в неделю) или меньше (30 минут вместо часа)? Нажми ✎, чтобы изменить.</div>" : "") + '<div class="tpl">' + live.map((tp) => { const nx = nextDue(tp, today()), rs = repSt[tp.id]; return '<span class="t">' + esc(tp.title) + " " + (isNewQ(tp) ? kindTag(tp.m) : "") + ' <span class="xpn">+' + taskXp(tp) + " XP · " + esc(repLabel(tp)) + (nx && nx !== today() ? " · след. " + nice(nx) : nx === today() ? " · сегодня" : "") + "</span> " + repStatHtml(rs) + (canWrite ? '<button class="x" data-act="tpledit" data-id="' + esc(tp.id) + '" aria-label="Изменить" title="Изменить" style="font-size:13px">✎</button><button class="x" data-act="tdel" data-id="' + esc(tp.id) + '" aria-label="Больше не повторять" title="Больше не повторять">×</button>' : "") + "</span>"; }).join("") + "</div>" + tplEditorHtml())
+    ? fold("tpl", "Повторяющиеся квесты · " + live.length + (lowRep.length ? '<span class="bdg y" title="Выполняются реже, чем в 40% дней">плохо идут: ' + lowRep.length + "</span>" : ""),
+      (lowRep.length ? '<div class="rnote"><i>⚠</i><span>Плохо идут: ' + lowRep.map((tp) => "<b>" + esc(tp.title) + "</b> " + repSt[tp.id].pct + "%").join(", ") + ". Может, реже (например, 3 раза в неделю) или меньше (30 минут вместо часа)? Нажми ✎.</span></div>" : "") +
+      '<div class="rrl">' + live.map((tp) => {
+        const nx = nextDue(tp, today());
+        const sched = repLabel(tp) + (nx && nx !== today() ? " · след. " + nice(nx) : nx === today() ? " · сегодня" : "");
+        const acts = canWrite ? '<button class="x" data-act="tpledit" data-id="' + esc(tp.id) + '" aria-label="Изменить" title="Изменить" style="font-size:13px">✎</button><button class="x" data-act="tdel" data-id="' + esc(tp.id) + '" aria-label="Больше не повторять" title="Больше не повторять">×</button>' : "";
+        return repRowHtml({ title: tp.title, q: tp, sched, st: repSt[tp.id], acts });
+      }).join("") + "</div>" + tplEditorHtml())
     : "");
 }
 
@@ -2314,8 +2419,8 @@ function timeSuggest(title) {
 function renderPlaques() {
   const mode = $("qRepeat").value, tp = mode ? draftTemplate() : null, st = statOf(selStat);
   const sid = $("qLink").value, sl = sid && me ? storyOf(me, sid) : null;
-  const pl = (k, cls, lb, txt, ico) => '<button type="button" class="plq' + cls + '" data-act="pl" data-k="' + k + '" aria-expanded="' + (openGrp === k) + '" aria-controls="qOpts"><span class="lb">' + lb + "</span>" + (ico || "") + "<span>" + esc(txt) + "</span> ▾</button>";
-  let h = pl("stat", "", "стат", st.s + " · " + st.n, statIco(st.k)) + pl("rank", "", "опыт", (STEPS_MIN[selT] ? "задача · " + fmtMin(STEPS_MIN[selT]) : "привычка") + " · +" + xpOf(STEPS_MIN[selT], selE, selL) + " XP") +
+  const pl = (k, cls, lb, txt, ico) => '<button type="button" class="plq' + cls + '" data-act="pl" data-k="' + k + '" aria-expanded="' + (openGrp === k) + '" aria-controls="qOpts"><span class="lb">' + lb + "</span>" + (ico || "") + "<span>" + esc(txt) + '</span><span class="cv" aria-hidden="true">▾</span></button>';
+  let h = pl("stat", "", "стат", st.s + " · " + st.n, statIco(st.k)) + pl("rank", "", "опыт", (STEPS_MIN[selT] ? fmtMin(STEPS_MIN[selT]) : "привычка") + " · +" + xpOf(STEPS_MIN[selT], selE, selL)) +
     pl("rep", "", "повтор", mode ? (tp ? repLabel(tp) : "настрой") : "нет") +
     (STANDALONE ? pl("rem", "", "⏰", ($("qRemind").value || "нет")) : "");
   if (linkAvail) h += pl("link", "", "сюжет", sl ? sl.title : "нет");
@@ -2455,11 +2560,11 @@ const GUIDE = [
   { id: "d-rankhint", l: 3, t: "Подсказка времени", b: "<p>Когда пишешь название, сайт ищет похожие квесты в истории пати и подсказывает, сколько времени для них обычно ставят, например «обычно на 30 мин (Английский ×12)», с кнопкой «Поставить». Подсказка ничего не запрещает.</p>", v: 18 },
   { id: "d-join", l: 3, t: "Новые игроки и архив", b: "<p>В пати может быть до 12 активных игроков. Новичок получает ссылку на сайт, создаёт аккаунт, пишет своё имя, владелец подтверждает. Если это кто-то из старых игроков, владелец нажимает «Это … (старый профиль)», и вход привязывается к его профилю со всем опытом. Новичок начинает с нуля, поэтому для честного сравнения есть «Неделя» и средний опыт в день.</p><p>Неактивных владелец может отправить в архив: они пропадают из недели, проверок и голосований, а их данные сохраняются. Вернуть можно в любой момент.</p>", v: 13 },
   { id: "d-party", l: 3, t: "Пати и профиль друга", b: "<p>Нажми на друга во вкладке «Пати» — откроется окно с его квестами, сюжетом, характеристиками и картой активности. Там же кнопки «Оспорить». Если друг сегодня не открывал сайт, на карточке будет «сегодня не заходил», а в его окне кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление, что ты напоминаешь. Одному другу раз в день.</p><p><b>Зелёная точка</b> у имени значит, что сайт у друга открыт прямо сейчас. Закрыл вкладку, точка погасла. Если друга нет, на карточке видно последнее посещение: «был 20 мин назад», «был вчера в 22:14». Время точное примерно до 10 минут.</p>", v: 17 },
-  { id: "b-v17", l: 2, t: "Выходной, напоминания, карта активности", b: "<p><b>Выходной</b>: 2 дня в месяц. На «Сегодня» под полоской дня: «взять сегодня» (только пока ничего не отмечено) или «на завтра». Задним числом нельзя. В выходной повторы не создаются, провалов нет, серия не сгорает, опыт за сделанное засчитывается. Отменить можно в тот же день.</p><p><b>Напоминание</b>: плашка «⏰» при создании квеста или ⏰ в строке квеста. Придёт уведомление в это время, если квест не отмечен (точность около 5 минут). У повтора время сохраняется на все дни. Нужны включённые уведомления.</p><p><b>Карта активности</b> в «Статусе» и в профиле друга: квадратик на день, яркость по числу выполненных квестов (1–2, 3–4, 5–6, 7+). Золотая рамка: закрыты все квесты дня (от трёх). Серый с 🌙: выходной. Красный уголок: день правили задним числом. Наведи или нажми на квадратик, чтобы увидеть подробности.</p><p><b>Живой фон</b> меняет цвет по рангу охотника, ночью звёзды, в декабре снег. Выключить: «Ещё → Оформление».</p>", v: 17 },
+  { id: "b-v17", l: 2, t: "Выходной, напоминания, карта активности", b: "<p><b>Выходной</b>: 2 дня в месяц. На «Сегодня» под полоской дня: «взять сегодня» (только пока ничего не отмечено), «на завтра» или «выбрать день»: календарь на этот и следующий месяц, можно взять любой день вперёд. Лимит считается по месяцу самого дня. Запланированные выходные видны списком, × отменяет (пока день не начался). Задним числом нельзя. В выходной повторы не создаются, провалов нет, серия не сгорает, опыт за сделанное засчитывается. Отменить можно в тот же день.</p><p><b>Напоминание</b>: плашка «⏰» при создании квеста или ⏰ в строке квеста. Придёт уведомление в это время, если квест не отмечен (точность около 5 минут). У повтора время сохраняется на все дни. Нужны включённые уведомления.</p><p><b>Карта активности</b> в «Статусе» и в профиле друга: квадратик на день, яркость по числу выполненных квестов (1–2, 3–4, 5–6, 7+). Золотая рамка: закрыты все квесты дня (от трёх). Серый с 🌙: выходной. Красный уголок: день правили задним числом. Наведи или нажми на квадратик, чтобы увидеть подробности.</p><p><b>Живой фон</b> меняет цвет по рангу охотника, ночью звёзды, в декабре снег. Выключить: «Ещё → Оформление».</p>", v: 20 },
   { id: "b-push", l: 2, t: "Уведомления", b: "<p>«Ещё» → <b>«Уведомления»</b> → «Включить уведомления» и разреши их в браузере. Настройка на каждом устройстве своя.</p><p>Что приходит: <b>друг ждёт твоего голоса</b>; <b>твой квест оспорили</b> или по нему проголосовали; <b>новый комментарий</b> в обсуждении, где ты участвуешь; <b>в 21:00</b> напоминание, если квесты дня не закрыты или ты сегодня не заходил; <b>друг тебя «пнул»</b>; <b>в понедельник в 9:00</b> итоги недели готовы. Любой тип можно выключить галочкой. «Прислать тестовое» проверяет, что всё работает.</p><p>На iPhone уведомления работают, только если сайт добавлен на экран «Домой» и открыт с иконки. На Android надёжнее всего через Chrome.</p>", v: 16 },
   { id: "b-week", l: 2, t: "Итоги недели и аватарка", b: "<p><b>Итоги недели</b>: каждый понедельник наверху вкладки «Статус» карточка за прошлую неделю (пн–вс): опыт, место в пати, выполнено и провалено, процент повторов, лучший день и какие характеристики выросли. Ниже «Прошлые недели»: по строке на неделю (даты, опыт, место, полоска выполнено/провалено), нажатие раскрывает итоги целиком. Пока не посмотрел свежие итоги, на «Сегодня» висит плашка, а в понедельник в 9:00 приходит уведомление.</p><p><b>Аватарка</b>: во вкладке «Статус» нажми на кружок со своей буквой и выбери картинку. Под именем: «открыть» (посмотреть крупно) и «убрать аватарку».</p><p>Чужую аватарку можно открыть на весь экран: нажми на неё в пати, в профиле друга или в обсуждении. Закрыть: нажатие по экрану или «Закрыть ×».</p>", v: 16 },
   { id: "d-season", l: 3, t: "Итоги сезона", b: "<p>1 января во вкладке «Пати» откроются итоги сезона 1: победитель, опыт, уровень, лучшая серия, сюжетные квесты и ачивки каждого. Сезон 2 настроим вместе.</p>" },
-  { id: "d-bugs", l: 3, t: "Сообщения о багах", b: "<p>«Ещё» → «Сообщить о баге» (или ссылка внизу любой вкладки). Опиши, что случилось, можно приложить скриншот. Версия, вкладка, время и устройство добавятся сами.</p><p>Статусы: 🆕 Новое · 🔍 Проверяется · 🛠 В работе · ✅ Исправлено · ❎ Не баг · 🔁 Не воспроизводится · 📎 Дубликат · 💡 Идея. Ответ появится в «Мои сообщения», а на «Ещё» загорится точка. Неактуальное владелец может закрыть: оно помечается «закрыто».</p>", v: 12 },
+  { id: "d-bugs", l: 3, t: "Сообщения о багах", b: "<p>«Ещё» → «Баг или пожелание» (или ссылка «Нашёл баг или есть пожелания?» внизу любой вкладки). Пожелания и идеи тоже сюда. Опиши, что случилось, можно приложить скриншот. Версия, вкладка, время и устройство добавятся сами.</p><p>Статусы: 🆕 Новое · 🔍 Проверяется · 🛠 В работе · ✅ Исправлено · ❎ Не баг · 🔁 Не воспроизводится · 📎 Дубликат · 💡 Идея. Ответ появится в «Мои сообщения», а на «Ещё» загорится точка. Неактуальное владелец может закрыть: оно помечается «закрыто».</p>", v: 20 },
   { id: "d-data", l: 3, t: "Где хранятся данные и кто что видит", b: "<p>Сайт лежит на GitHub, а данные в базе Supabase. Правила доступа проверяет сама база, поэтому обойти их через браузер нельзя: каждый меняет только свои квесты, голоса и сообщения, а данные пати видят только её участники. Пока владелец не подтвердил вход, новичок видит только состав пати.</p><p>Каждую ночь в 01:30 делается резервная копия всей базы в закрытое хранилище, к ней можно вернуться на любой день. Ничего не удаляется насовсем: удалённые сюжетные квесты и старые расписания хранятся для итогов года.</p>", v: 12 },
 ];
 
@@ -2497,6 +2602,7 @@ function renderMyBugs() {
       '<div class="bt">' + esc(r.text) + "</div>" + bugImg(r) + (st.note ? '<div class="bn">' + esc(st.note) + "</div>" : "") + "</div>";
   }).join("") : '<div class="hint">Ты пока ничего не отправлял.</div>');
 }
+let bugsOld = false;
 function bugsAdminHtml() {
   const all = [];
   for (const p of PLAYERS) if (roster[p.id] && subs[p.id]) for (const r of reportsBy[p.id] || []) all.push({ ...r, pid: p.id, key: roster[p.id] + "__" + r.id });
@@ -2514,7 +2620,13 @@ function bugsAdminHtml() {
       '<input type="text" id="bn-' + key + '" maxlength="300" placeholder="Комментарий для автора" value="' + esc(st.note || "") + '" aria-label="Комментарий"><button class="btn sm" data-act="bugset" data-k="' + key + '">Сохранить</button><button class="btn sm ghost" data-act="bugclose" data-v="1" data-k="' + key + '">Закрыть</button></div></div>';
   };
   return '<div class="lbl"' + (fresh ? ' style="color:var(--gold)"' : "") + ">Сообщения о багах · " + open.length + (fresh ? " · новых: " + fresh : "") + '</div><div class="bugs">' + (open.length ? open.slice(0, 40).map(card).join("") : '<div class="hint">Открытых сообщений нет.</div>') + "</div>" +
-    (closed.length ? fold("bugsClosed", "Закрытые · " + closed.length, '<div class="bugs">' + closed.slice(0, 60).map(card).join("") + "</div>") : "");
+    (closed.length ? (() => {
+      // v20: закрытые старше 7 дней прячем (не удаляем, они остаются в базе и бэкапе)
+      const fresh7 = closed.filter((r) => num((bugStatus[r.key] || {}).closedAt) > now() - 7 * 864e5), oldC = closed.length - fresh7.length;
+      const shown = bugsOld ? closed : fresh7;
+      return fold("bugsClosed", "Закрытые · " + fresh7.length + (oldC ? " · старых " + oldC : ""), '<div class="bugs">' + (shown.length ? shown.slice(0, 60).map(card).join("") : '<div class="hint">За последнюю неделю ничего не закрывали.</div>') + "</div>" +
+        (oldC ? '<button type="button" class="linkbtn" data-act="bugsold" style="margin-top:8px">' + (bugsOld ? "скрыть старые" : "показать старые (" + oldC + ")") + "</button>" : ""));
+    })() : "");
 }
 const TOUR = [
   { sel: "#qTitle", t: "Квест на сегодня", x: "Напиши, что сделаешь сегодня, и нажми «Принять». Каждое дело — отдельный квест." },
@@ -2563,7 +2675,15 @@ function renderParty() {
   }).join("") + (archived.length ? '<div class="arch hint">В архиве: ' + archived.map((p) => esc(p.name)).join(", ") + "</div>" : ""));
 }
 
-function renderLog() { const r = heatHtml(mainPid(), "heat"); setHtml("heat", r.html); $("hmSub").textContent = r.sub; }
+function renderLog() { const r = heatHtml(mainPid(), "heat"); setHtml("heat", r.html); $("hmSub").textContent = r.sub; hmScroll("heat"); }
+// на узком экране год не влезает: при первой отрисовке прокрутить к сегодняшнему дню
+function hmScroll(id) {
+  const w = document.querySelector("#" + id + " .hmwrap"); if (!w || w.dataset.sc) return;
+  const td = w.querySelector(".hm.today"); if (!td) return;
+  if (!w.clientWidth) { const n = Number(w.dataset.tr || 0); if (n < 8) { w.dataset.tr = n + 1; setTimeout(() => hmScroll(id), 150); } return; }
+  w.dataset.sc = "1";
+  if (w.scrollWidth > w.clientWidth) w.scrollLeft = Math.max(0, td.offsetLeft - w.clientWidth * 0.7);
+}
 // ---------- карта активности (v17): квадратик = день, заливка по числу выполненных квестов ----------
 const MON_SH = ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
 const hmLevel = (n) => (n <= 0 ? 0 : n <= 2 ? 1 : n <= 4 ? 2 : n <= 6 ? 3 : 4);
@@ -2577,15 +2697,16 @@ function dayInfoText(x) {
   if (!x.joined) return wd + ", " + nice(x.d) + ": ещё не в пати";
   if (x.future) return wd + ", " + nice(x.d) + ": ещё впереди";
   let s = wd + ", " + nice(x.d) + ": ";
-  s += x.total ? "выполнено " + x.done + " из " + x.total + (x.miss ? ", не выполнено " + x.miss : "") : x.done ? "выполнено " + x.done : "квестов не было";
-  if (x.xp) s += ", +" + x.xp + " XP";
+  s += x.total ? "выполнено " + x.done + " из " + x.total : x.done ? "выполнено " + x.done : "квестов не было";
+  if (x.xp) s += " · +" + x.xp + " XP";
   if (x.off) s += " · 🌙 выходной";
   if (x.total >= 3 && !x.miss) s += " · все квесты закрыты";
   if (x.tam) s += " · ⚠ день правили задним числом";
   return s;
 }
 function heatHtml(pid, slot) {
-  const start = SEASON_START, end = LAST_DAY, t0 = today();
+  // v20: весь год (янв–дек) по всей ширине; дни до сезона и до регистрации просто пустые
+  const start = SEASON_START.slice(0, 4) + "-01-01", end = SEASON_START.slice(0, 4) + "-12-31", t0 = today();
   const mon = addDays(start, -((new Date(toUTC(start)).getUTCDay() + 6) % 7));
   const cols = [];
   for (let w = mon; w <= end; w = addDays(w, 7)) cols.push(w);
@@ -2597,8 +2718,9 @@ function heatHtml(pid, slot) {
     for (const w of cols) {
       const d = addDays(w, r);
       if (d < start || d > end) { grid += '<span class="hm none"></span>'; continue; }
+      if (d < SEASON_START) { grid += '<span class="hm emp"></span>'; continue; }
       const x = dayInfo(pid, d);
-      if (!x.joined) { grid += '<span class="hm none"></span>'; continue; }
+      if (!x.joined) { grid += '<span class="hm emp"></span>'; continue; }
       if (!x.future) { total++; if (x.done) active++; if (x.total >= 3 && !x.miss) perfect++; }
       const cls = "hm" + (x.future ? " fut" : " l" + hmLevel(x.done)) + (x.off ? " off" : "") + (!x.future && x.total >= 3 && !x.miss ? " pf" : "") + (x.tam ? " tam" : "") + (d === t0 ? " today" : "");
       grid += '<button type="button" class="' + cls + '" data-act="hm" data-p="' + esc(pid) + '" data-d="' + d + '" data-slot="' + slot + '" aria-label="' + esc(dayInfoText(x)) + '">' + (x.off ? "🌙" : "") + "</button>";
@@ -2747,6 +2869,7 @@ function newAnswers() {
 function setTab(t) {
   if (!["today", "story", "status", "party", "more"].includes(t)) t = "today";
   tab = t; store.set("sys.tab", t);
+  if (t === "status") { const hw = document.querySelector("#heat .hmwrap"); if (hw) hw.dataset.tr = ""; setTimeout(() => hmScroll("heat"), 30); }
   if (t === "more") markSeen(); else { newsHi = false; renderNewsHi(); }
   cmtBase = t === "party" ? num(prefs.cmtSeen) : null;
   renderTabs();
@@ -2792,14 +2915,14 @@ function renderFriend() {
   setHtml("fStories", storiesHtml(friendId));
   setHtml("fRep", repListHtml(friendId));
   setHtml("fStatus", statsOnlyHtml(friendId));
-  setHtml("fHeat", heatHtml(friendId, "f").html);
+  setHtml("fHeat", heatHtml(friendId, "f").html); requestAnimationFrame(() => hmScroll("fHeat"));
 }
 function renderNews() {
   const [cur, ...old] = NEWS;
   $("verLbl").textContent = "версия " + cur.v + " · " + nice(cur.date);
   const ul = (items) => "<ul>" + items.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul>";
   $("news").innerHTML = '<div class="news"><h3>' + esc(cur.title) + "</h3>" + ul(cur.items) + "</div>" +
-    fold("oldnews", "Прошлые обновления · " + old.length, '<div class="news">' + old.map((n) => "<h4>v" + n.v + " · " + nice(n.date) + " · " + esc(n.title) + "</h4>" + ul(n.items)).join("") + "</div>");
+    fold("oldnews", "Прошлые обновления · " + old.length, '<div class="newsl">' + old.map((n) => fold("news:" + n.v, "<b>v" + n.v + "</b> · " + nice(n.date) + " · " + esc(n.title), '<div class="news">' + ul(n.items) + "</div>")).join("") + "</div>");
 }
 
 function renderAll() {
@@ -3304,6 +3427,7 @@ document.addEventListener("click", async (e) => {
   if (act === "tshift" && TEST_MODE) { const v = b.dataset.v; testShift = v === "0" ? 0 : testShift + num(v); renderTestBar(); renderAll(); ensureDailies(); writeSeals(); return; }
   if (act === "tab") { setTab(b.dataset.t); return; }
   if (act === "guideopen") { setTab("more"); setTimeout(() => { const g = $("guidePanel"); if (g) g.scrollIntoView({ block: "start" }); }, 30); return; }
+  if (act === "bugsold") { bugsOld = !bugsOld; openKeys.add("bugsClosed"); renderAdmin(); return; }
   if (act === "bugopen") { setTab("more"); setTimeout(() => { const g = $("bugPanel"); if (g) g.scrollIntoView({ block: "start" }); const t = $("bugText"); if (t) t.focus(); }, 30); return; }
   if (act === "glvl") { gLvl = num(b.dataset.l) || 1; gQuery = ""; $("gSearch").value = ""; renderGuide(); return; }
   if (act === "tour") { startTour(); return; }
@@ -3440,23 +3564,24 @@ document.addEventListener("click", async (e) => {
       return;
     }
     if (!me) return;
+    if (act === "offpick") { offPick = !offPick; renderQuests(); return; }
     if (act === "off" || act === "offcancel") {
       const d = b.dataset.d;
       if (!d || !DATE_RE.test(d) || d < today()) return;
       const raw = (Array.isArray(prefs.offDays) ? prefs.offDays : []).filter((x) => x && typeof x.d === "string" && x.d >= addDays(today(), -62));
       if (act === "offcancel") {
         writePrefs({ offDays: raw.filter((x) => x.d !== d) }); renderAll();
-        toast(d === today() ? "Выходной отменён. Повторы на сегодня вернутся." : "Выходной на завтра отменён.");
+        toast(d === today() ? "Выходной отменён. Повторы на сегодня вернутся." : "Выходной " + WDS[wdOf(d) - 1] + " " + nice(d) + " отменён.");
         setTimeout(ensureDailies, 400);
         return;
       }
       if (d === today() && (tasksBy[me] || []).some((t) => t.date === d && t.done)) { toast("Сегодня уже есть выполненные квесты. Выходной можно взять только до первой отметки."); return; }
-      if (offLeft(d) <= 0) { toast("Выходные на этот месяц закончились."); return; }
-      if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = d === today() ? "точно сегодня?" : "точно на завтра?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = d === today() ? "взять сегодня" : "на завтра"; }, 3500); return; }
+      if (offLeft(d) <= 0) { toast("Выходные на " + MONTHS_NOM[Number(d.slice(5, 7)) - 1] + " закончились."); return; }
+      if (b.dataset.sure !== "1" && b.dataset.pick !== "1") { b.dataset.sure = "1"; b.textContent = d === today() ? "точно сегодня?" : "точно на завтра?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = d === today() ? "взять сегодня" : "на завтра"; }, 3500); return; }
       b.disabled = true;
       writePrefs({ offDays: raw.filter((x) => x.d !== d).concat([{ d, at: now() }]) }); renderAll();
       if (d === today()) for (const t of (tasksBy[me] || []).filter((x) => x.date === d && x.fromDaily && !x.done)) taskDoc(t.id).delete().catch(() => {});
-      toast(d === today() ? "Сегодня выходной. Повторы убраны, серия не сгорит." : "Завтра выходной.");
+      toast(d === today() ? "Сегодня выходной. Повторы убраны, серия не сгорит." : d === addDays(today(), 1) ? "Завтра выходной." : "Выходной: " + WDS[wdOf(d) - 1] + " " + nice(d) + ".");
       vibe(12);
       return;
     }
