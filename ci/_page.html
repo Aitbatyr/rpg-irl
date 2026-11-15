@@ -1323,7 +1323,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 20;
+const APP_VERSION = 21;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -1355,7 +1355,7 @@ function offSet(pid) {
 const isOff = (pid, d) => !!pid && offSet(pid).has(d);
 const offLeft = (d) => OFF_PER_MONTH - [...offSet(me)].filter((x) => x.slice(0, 7) === d.slice(0, 7)).length;
 const MONTHS_IN = ["январе", "феврале", "марте", "апреле", "мае", "июне", "июле", "августе", "сентябре", "октябре", "ноябре", "декабре"];
-const lastAch = {};
+const lastAch = {}, achToasted = new Set(), maxLvSeen = {};
 const openKeys = new Set();
 try { const k0 = JSON.parse(localStorage.getItem("sys.open") || "[]"); if (Array.isArray(k0)) k0.forEach((k) => typeof k === "string" && k.startsWith("st:") && openKeys.add(k)); } catch {}
 const saveOpen = () => { try { localStorage.setItem("sys.open", JSON.stringify([...openKeys].filter((k) => k.startsWith("st:")))); } catch {} };
@@ -1364,6 +1364,10 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 21, date: "2026-11-15", title: "Исправления", items: [
+    "Исправлено: тост ачивки (например «Две недели») и окно нового уровня больше не повторяются, если снять галочку и отметить квест снова.",
+    "Исправлено: «Уже норм 👍» обещал ачивку «Привычка сформирована», даже когда у повтора не набралось 5 выполнений с 👎. Теперь пишет про неё только когда она правда откроется.",
+  ] },
   { v: 20, date: "2026-11-15", title: "Аккуратнее и удобнее", items: [
     "Повторяющиеся квесты (свои и у друзей): каждая строка на всю ширину. Название с меткой, ниже время, сложность и расписание, справа опыт, а выполнение показано цветной полоской.",
     "Меньше красного: «Проваленные за неделю» и «плохо идут» с маленьким бейджем-числом, совет по плохо идущим повторам в спокойной плашке с ⚠.",
@@ -3086,10 +3090,12 @@ function renderAll() {
   renderTop(); renderTabs(); setHtml("strip", stripHtml(mainPid())); renderStatus(); renderStories(); renderVerify(); renderTalk(); renderQuests(); renderLinkSelect(); renderWeek(); renderSeason(); renderParty(); renderAch(); renderLog(); renderAdmin(); renderBadges(); renderIdentity(); renderFriend(); renderMyBugs();
   if (me && loadedBy[me] && storyLoadedBy[me] && votesReady()) {
     const L = profile(me).li.L;
-    if (lastLevel[me] != null && L > lastLevel[me]) levelUp(L);
-    lastLevel[me] = L;
+    // окно нового уровня и тост ачивки показываем один раз: сняли галочку и отметили снова, повтора нет
+    if (lastLevel[me] != null && L > lastLevel[me] && L > (maxLvSeen[me] || 0)) levelUp(L);
+    lastLevel[me] = L; maxLvSeen[me] = Math.max(maxLvSeen[me] || 0, L);
     const got = profile(me).ach;
-    if (lastAch[me]) for (const a of ACH) if (got[a.k] && !lastAch[me][a.k]) toast("Ачивка «" + a.n + "» · +" + a.xp + " XP", "ДОСТИЖЕНИЕ");
+    if (lastAch[me]) for (const a of ACH) if (got[a.k] && !lastAch[me][a.k] && !achToasted.has(a.k)) toast("Ачивка «" + a.n + "» · +" + a.xp + " XP", "ДОСТИЖЕНИЕ");
+    for (const a of ACH) if (got[a.k]) achToasted.add(a.k);
     lastAch[me] = { ...got };
   }
   fxWatch();
@@ -3834,7 +3840,8 @@ document.addEventListener("click", async (e) => {
       const prevVer = { title: tp.title, stat: tp.stat, m: tp.m, e: tp.e, l: tp.l, rep: repOf(tp), start: tplStart(tp), until: addDays(today(), 1) };
       await db.doc("q/" + uid + "/daily/" + tp.id).set({ ...rest, l: 2, likeAsked: today(), start: addDays(today(), 1), editedAt: now(), hist: histOf(tp).concat([prevVer]).slice(-20) });
       await tplToday(tp, { l: 2 });
-      toast("«" + tp.title + "» теперь с 👍. Выполни его, и откроется ачивка «Привычка сформирована» (нужно 5+ выполнений с 👎 до этого).", "СИСТЕМА");
+      const bad = (tasksBy[me] || []).filter((t) => t.fromDaily === tp.id && isNewQ(t) && t.l === 0 && countsTask(t)).length;
+      toast("«" + tp.title + "» теперь с 👍." + (bad >= 5 ? " Выполни его, и откроется ачивка «Привычка сформирована»." : ""), "СИСТЕМА");
       return;
     }
     if (act === "tdel") { await db.doc("q/" + uid + "/daily/" + b.dataset.id).update({ deleted: true, deletedAt: now() }); if (tplEdit === b.dataset.id) tplEdit = null; toast("Квест больше не будет повторяться. Сегодняшний остаётся."); return; }
