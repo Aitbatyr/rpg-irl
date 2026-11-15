@@ -644,6 +644,14 @@ span.remchip{cursor:default}
 .rnote>i{font-style:normal;color:var(--gold)}
 .rnote b{color:var(--fg);font-weight:600}
 .fold>.rrl{padding:0 12px 12px}.fold>.rnote{margin:0 12px 8px}
+/* v20: порядок квестов перетаскиванием */
+.qi.dr{grid-template-columns:14px 30px minmax(0,1fr) auto;padding-left:6px}
+.drag{width:14px;height:34px;padding:0;border:0;background:none;color:var(--dim);cursor:grab;touch-action:none;display:grid;place-items:center;-webkit-user-select:none;user-select:none}
+.drag svg{width:10px;height:18px;fill:currentColor}
+.drag:hover,.drag:focus-visible{color:var(--sys)}
+.drag:focus-visible{outline:1px solid var(--sys);outline-offset:1px}
+.qi.dragging{border-color:var(--sys);box-shadow:0 0 18px var(--sys-glow);position:relative;z-index:3;background:rgba(10,22,44,.95)}
+.qi.dragging .drag{cursor:grabbing;color:var(--sys)}
 /* v20: выходной на любой день */
 .offplan{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 10px}
 .offch{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--fg);border:1px solid rgba(127,149,186,.4);background:rgba(127,149,186,.1);padding:2px 2px 2px 8px}
@@ -1369,6 +1377,7 @@ const NEWS = [
     "«Прошлые обновления»: каждая версия отдельной вкладкой.",
     "Закрытые сообщения о багах старше недели спрятаны (не удалены), есть «показать старые».",
     "Ссылка внизу теперь «Нашёл баг или есть пожелания?».",
+    "Свой порядок квестов дня: зажми точки ⠿ слева от квеста и перетащи. Порядок повторов запоминается на все дни, друзья видят квесты в том же порядке.",
     "Исправлено: плашка «📊 Итоги недели» на «Сегодня» была сжата в узкий столбик.",
   ] },
   { v: 19, date: "2026-11-14", title: "Перевод старых квестов на новый опыт", items: [
@@ -2110,7 +2119,7 @@ function melSelects(pre, v, except, tpl) {
     '<span class="xptag" id="' + pre + '-x">+' + xpOf(STEPS_MIN[v[0]], v[1], v[2]) + " XP</span>";
 }
 const melRead = (pre) => { const m = STEPS_MIN[num(($(pre + "-m") || {}).value)], e = num(($(pre + "-e") || {}).value), l = num(($(pre + "-l") || {}).value); return okMEL(m, e, l) ? { m, e, l } : null; };
-function questItem(t, mine, prof) {
+function questItem(t, mine, prof, drag) {
   const st = taskState(t);
   const big = taskBig(t);
   const stat = statOf(t.stat);
@@ -2164,20 +2173,71 @@ function questItem(t, mine, prof) {
   let remChip = remTxt || remOk ? (remOk ? '<button type="button" class="remchip' + (remTxt ? " on" : "") + '" data-act="remedit" data-id="' + id + '" title="Напоминание">⏰' + (remTxt ? " " + remTxt : "") + "</button>" : '<span class="remchip on">⏰ ' + remTxt + "</span>") : "";
   if (remOk && remEdit === t.id) extra += '<div class="proof remrow"><input type="time" id="rem-' + id + '" value="' + remTxt + '" aria-label="Время напоминания"><button class="btn sm" data-act="remsave" data-id="' + id + '">Напомнить</button>' + (remTxt ? '<button class="btn sm ghost" data-act="remdel" data-id="' + id + '">Убрать</button>' : "") + (t.fromDaily ? '<span class="hint" style="margin:0">У повтора время сохранится и на следующие дни.</span>' : "") + "</div>";
   const kp = isNewQ(t) ? kindTag(t.m) + '<span class="qp">' + esc(qParams(t)) + "</span>" + (mine && t.done && t.date === today() ? '<span class="qp" title="Выполненный квест нельзя менять. Сними галочку, поправь и отметь заново.">🔒</span>' : "") : "";
-  return '<li class="qi' + (pressed ? " done" : "") + '" style="--rc:' + qCol(t) + '">' + chk +
+  const qk = qKey(t);
+  return '<li class="qi' + (pressed ? " done" : "") + (drag ? " dr" : "") + '" style="--rc:' + qCol(t) + '"' + (drag ? ' data-qk="' + esc(qk) + '"' : "") + ">" +
+    (drag ? '<button type="button" class="drag" data-qk="' + esc(qk) + '" aria-label="Порядок: зажми и перетащи, или стрелки вверх и вниз" title="Зажми и перетащи"><svg viewBox="0 0 12 20" aria-hidden="true"><circle cx="3" cy="4" r="1.6"/><circle cx="9" cy="4" r="1.6"/><circle cx="3" cy="10" r="1.6"/><circle cx="9" cy="10" r="1.6"/><circle cx="3" cy="16" r="1.6"/><circle cx="9" cy="16" r="1.6"/></svg></button>' : "") + chk +
     '<div style="min-width:0"><div class="qt">' + (editable ? '<button type="button" class="qtbtn" data-act="tedit" data-id="' + id + '" title="Нажми, чтобы изменить">' + esc(t.title) + "</button>" : esc(t.title)) + '</div><div class="meta">' + kp + '<span title="' + esc(stat.n) + '">' + statLbl(stat) + "</span>" + badge + linkLabel(t) + remChip + "</div></div>" + right + extra + "</li>";
 }
 
 const canDelete = (t) => t.date === today() && !t.done && !t.fromDaily && !t.movedFrom && !t.movedAt;
+// v20: свой порядок квестов дня. Ключ: повтор = "d:" + id шаблона (порядок сохраняется на все дни), иначе id квеста
+const qKey = (t) => (typeof t.fromDaily === "string" ? "d:" + t.fromDaily : t.id);
+const qOrderOf = (pid) => { const p = pid === me ? prefs : prefsBy[pid] || {}; return Array.isArray(p.qOrder) ? p.qOrder.filter((x) => typeof x === "string") : []; };
+let qDrag = null;
+function saveQOrder(ul) {
+  const keys = [...ul.querySelectorAll("li.qi.dr")].map((li) => li.dataset.qk);
+  const rest = qOrderOf(me).filter((k) => !keys.includes(k));
+  writePrefs({ qOrder: keys.concat(rest).slice(0, 300) });
+  renderQuests();
+}
+document.addEventListener("pointerdown", (e) => {
+  const h = e.target && e.target.closest ? e.target.closest(".drag") : null;
+  if (!h || !canWrite || (e.pointerType === "mouse" && e.button !== 0)) return;
+  const li = h.closest("li.qi"); if (!li) return;
+  e.preventDefault();
+  qDrag = { li, ul: li.parentElement, id: e.pointerId, moved: false, h };
+  try { h.setPointerCapture(e.pointerId); } catch {}
+  li.classList.add("dragging");
+  vibe(8);
+});
+document.addEventListener("pointermove", (e) => {
+  if (!qDrag || e.pointerId !== qDrag.id) return;
+  e.preventDefault();
+  for (const it of qDrag.ul.querySelectorAll("li.qi.dr")) {
+    if (it === qDrag.li) continue;
+    const r = it.getBoundingClientRect();
+    if (e.clientY < r.top || e.clientY > r.bottom) continue;
+    const after = e.clientY > r.top + r.height / 2;
+    if (after && it.nextElementSibling !== qDrag.li) { it.after(qDrag.li); qDrag.moved = true; }
+    else if (!after && it.previousElementSibling !== qDrag.li) { it.before(qDrag.li); qDrag.moved = true; }
+    break;
+  }
+  if (e.clientY < 70) window.scrollBy(0, -10); else if (e.clientY > window.innerHeight - 70) window.scrollBy(0, 10);
+}, { passive: false });
+const qDrop = () => { if (!qDrag) return; const d = qDrag; qDrag = null; d.li.classList.remove("dragging"); if (d.moved) { saveQOrder(d.ul); toast("Порядок квестов сохранён."); } };
+document.addEventListener("pointerup", qDrop);
+document.addEventListener("pointercancel", qDrop);
+document.addEventListener("keydown", (e) => {
+  const h = e.target && e.target.closest ? e.target.closest(".drag") : null;
+  if (!h || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return;
+  const li = h.closest("li.qi"), sib = e.key === "ArrowUp" ? li.previousElementSibling : li.nextElementSibling;
+  if (!sib || !sib.classList.contains("dr")) return;
+  e.preventDefault();
+  if (e.key === "ArrowUp") sib.before(li); else sib.after(li);
+  const k = h.dataset.qk;
+  saveQOrder(li.parentElement);
+  const nh = document.querySelector('#quests .drag[data-qk="' + CSS.escape(k) + '"]'); if (nh) nh.focus();
+});
 function questsListHtml(pid) {
   const mine = !!me && pid === me;
   const prof = profile(pid);
-  const list = (tasksBy[pid] || []).filter((t) => t.date === today()).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+  const ord = qOrderOf(pid), pos = (t) => { const i = ord.indexOf(qKey(t)); return i < 0 ? 1e9 : i; };
+  const list = (tasksBy[pid] || []).filter((t) => t.date === today()).sort((a, b) => pos(a) - pos(b) || (a.createdAt || 0) - (b.createdAt || 0));
   let html;
   if (!db || !loadedBy[pid]) html = '<li class="empty">Загружаю квесты из системы…</li>';
   else if (!roster[pid]) html = '<li class="empty">' + esc(pname(pid)) + " ещё не привязан к аккаунту. Квесты появятся после входа.</li>";
   else if (!list.length) html = '<li class="empty">' + (mine ? "На сегодня квестов нет. Что сделаешь до конца дня?" : esc(pname(pid)) + " ещё не взял квесты на сегодня.") + "</li>";
-  else html = list.map((t) => questItem(t, mine, prof)).join("");
+  else html = list.map((t) => questItem(t, mine, prof, mine && canWrite && list.length > 1 && editTask !== t.id)).join("");
   if (!mine && loadedBy[pid]) {
     const yd = (tasksBy[pid] || []).filter((t) => t.date === addDays(today(), -1) && t.done).sort((a, b) => (a.doneAt || 0) - (b.doneAt || 0));
     if (yd.length) html += '<li class="lbl" style="margin-top:6px">Вчера · можно оспорить в течение суток</li>' + yd.map((t) => questItem(t, false, prof)).join("");
@@ -2240,7 +2300,7 @@ function renderQuests() {
   $("qSub").textContent = mine ? nice(today()) : "игрок " + pname(pid);
   setHtml("offBox", offBoxHtml());
   setHtml("dayprog", r.total ? '<div class="bar"><i style="width:' + ((r.done / r.total) * 100).toFixed(0) + '%"></i></div><span class="xpn">' + r.done + "/" + r.total + "</span>" : "");
-  setHtml("quests", r.html);
+  if (!qDrag) setHtml("quests", r.html);
   if (mine) { renderXp(); renderPlaques(); }
 
   const od = mine ? tasksBy[me].filter((t) => t.date < today() && t.date >= addDays(today(), -7) && (!t.done || taskState(t) === "rejected") && !(isOff(me, t.date) && !t.done)).sort((a, b) => b.date.localeCompare(a.date)) : [];
@@ -2628,7 +2688,7 @@ function seenDay(pid) {
 const GUIDE = [
   // ---------- 1 · Быстрый старт ----------
   { id: "s-what", l: 1, t: "Что это за сайт", b: "<p>«Система» превращает твой день в RPG. Ты записываешь <b>квесты</b> — дела на сегодня, выполняешь их и получаешь <b>опыт (XP)</b>. Опыт поднимает уровень и характеристики. Друзья по пати видят твой прогресс и проверяют крупные достижения.</p><p>Цель сезона — стать лучшей версией себя к 31 декабря.</p>" },
-  { id: "s-quest", l: 1, t: "Добавить и выполнить квест", b: "<p>На вкладке <b>«Сегодня»</b> напиши квест в поле «Новый квест…». Под полем откроются три ползунка: <b>время</b>, <b>сложность</b> и <b>«нравится»</b>. Опыт видно сразу крупной цифрой. Нажми <b>«Принять»</b>.</p><p>Плашки под полем: <b>характеристика</b> (что качаешь), <b>опыт</b> (ползунки), <b>повтор</b> и ⏰.</p><p>Характеристики: <b>СИЛ</b> (тело: спорт, сон, питание), <b>ИНТ</b> (разум: учёба, книги), <b>ВОЛ</b> (воля: режим, привычки), <b>ХАР</b> (харизма: люди, общение), <b>ТВР</b> (творчество: музыка, проекты), <b>ФИН</b> (достаток: работа, деньги).</p><p>Сделал — поставь галочку слева от квеста. Опыт начислится сразу, «+XP» улетит в полоску опыта.</p>", v: 18 },
+  { id: "s-quest", l: 1, t: "Добавить и выполнить квест", b: "<p>На вкладке <b>«Сегодня»</b> напиши квест в поле «Новый квест…». Под полем откроются три ползунка: <b>время</b>, <b>сложность</b> и <b>«нравится»</b>. Опыт видно сразу крупной цифрой. Нажми <b>«Принять»</b>.</p><p>Плашки под полем: <b>характеристика</b> (что качаешь), <b>опыт</b> (ползунки), <b>повтор</b> и ⏰.</p><p>Характеристики: <b>СИЛ</b> (тело: спорт, сон, питание), <b>ИНТ</b> (разум: учёба, книги), <b>ВОЛ</b> (воля: режим, привычки), <b>ХАР</b> (харизма: люди, общение), <b>ТВР</b> (творчество: музыка, проекты), <b>ФИН</b> (достаток: работа, деньги).</p><p>Сделал — поставь галочку слева от квеста. Опыт начислится сразу, «+XP» улетит в полоску опыта.</p><p><b>Порядок</b>: зажми точки ⠿ слева от квеста и перетащи вверх или вниз (с клавиатуры: стрелки). Порядок повторов запоминается на все дни.</p>", v: 20 },
   { id: "s-ranks", l: 1, t: "Как считается опыт", b: "<p><b>Время</b>: 20 XP за час средней задачи. После 3 часов каждый следующий час идёт за половину (8 часов = 5,5 «часа»).</p><p><b>Сложность</b>: лёгкий ×0,5, средний ×1, сложный ×1,5.</p><p><b>«Нравится»</b>: 👎 +30% (за дисциплину, делать нелюбимое труднее), — +15%, 👍 без бонуса.</p><p>Примеры: час английского, средний, — = <b>23 XP</b>. Тренировка 2 часа, сложный, 👍 = <b>60 XP</b>. Уборка 30 минут, лёгкий, 👎 = <b>7 XP</b>.</p><p><b>ПРИВЫЧКА</b> (ползунок времени на «без времени», зелёная метка): лёгкий 3, средний 5, сложный 10 XP, с тем же бонусом за 👎 или —. Не больше 5 привычек в день. С временем квест становится <b>ЗАДАЧЕЙ</b> (голубая метка).</p><p>У дня <b>16 часов</b>: сумма времени сегодняшних квестов не больше 16 ч, ползунок упирается в остаток. Букв у квестов нет, буква осталась только у ранга охотника.</p><p><b>Старые квесты с буквой</b> переводятся в окне «Новая система опыта»: оно всплывает при первом входе после обновления, а потом открывается с плашки на «Сегодня». Выполненные квесты не меняются.</p>", v: 19 },
   { id: "s-login", l: 1, t: "Вход, выход и телефон", b: "<p>Сайт: <b>aitbatyr.github.io/rpg-irl</b>. Первый раз нажми «Создать аккаунт» (почта и пароль от 6 символов), дальше просто «Войти». Внизу страницы твоя почта и кнопка «Выйти». Забыл пароль: «Забыл пароль» на экране входа, ссылка придёт на почту.</p><p>На телефоне открой сайт в Chrome → меню ⋮ → <b>«Добавить на главный экран»</b>. Появится иконка, сайт будет открываться как приложение.</p>", v: 12 },
   { id: "s-tabs", l: 1, t: "Вкладки", b: "<p><b>Сегодня</b> — квесты дня и полоска статуса. <b>Сюжет</b> — цели на недели. <b>Статус</b>: уровень и сводка сверху, а характеристики и ачивки раскрываются по нажатию; ниже карта активности (сайт запоминает, что ты держишь открытым). <b>Пати</b> — друзья, неделя, проверка квестов. <b>Ещё</b> — что нового, гайд, сообщения о багах. После обновления у «Что нового» горит метка «НОВОЕ», а в гайде синей точкой отмечены непрочитанные и изменённые разделы.</p>", v: 17 },
