@@ -1126,6 +1126,7 @@ const LIKE = [{ n: "не нравится", k: 1.3 }, { n: "нейтрально
 const DAY_MIN = 960, HABITS_MAX = 5, ODD_MIN = 600, LEGEND_MIN = 6000;
 const isNewQ = (t) => !!t && typeof t.m === "number";
 const isPlan = (s) => !!s && s.kind === "plan"; // v22: сюжетный квест нового вида
+const stCol = (st) => (st === "expired" || st === "rejected" ? "var(--bad)" : st === "approved" || st === "late" || st === "closed" ? "var(--ok)" : "var(--story)");
 const okMEL = (m, e, l) => STEPS_MIN.includes(m) && [0, 1, 2].includes(e) && [0, 1, 2].includes(l);
 const xpOf = (m, e, l) => (!okMEL(m, e, l) ? 0 : m === 0 ? Math.round(EFF[e].h * LIKE[l].k) : Math.max(1, Math.round(20 * (Math.min(m / 60, 3) + Math.max(0, m / 60 - 3) * 0.5) * EFF[e].k * LIKE[l].k)));
 const taskXp = (t) => (isNewQ(t) ? xpOf(t.m, t.e, t.l) : RANKS[t.rank] ? RANKS[t.rank].xp : 0);
@@ -1404,6 +1405,7 @@ const NEWS = [
     "Срок вышел: «Продлить» (бонус за уже сделанное вдвое меньше, за оставшееся полный, продлевать можно сколько угодно) или «Закрыть без бонуса» (опыт за шаги остаётся). Бросить и создать заново больше невыгодно.",
     "Старые сюжетные квесты переводятся окном «Сюжет по новым правилам»: сделанные этапы остаются по 10 XP, остальным ставишь день и время.",
     "Сверху вкладки «Сюжет» короткое «Как это работает?». Гайд обновлён.",
+    "Цвет полосы слева у сюжетного квеста теперь всегда про состояние: фиолетовый идёт или на проверке, красный нужно внимание, зелёный завершён. У старых квестов цвет больше не зависит от буквы.",
   ] },
   { v: 21, date: "2026-11-15", title: "Исправления", items: [
     "Исправлено: тост ачивки (например «Две недели») и окно нового уровня больше не повторяются, если снять галочку и отметить квест снова.",
@@ -2441,7 +2443,7 @@ function editBlock(s) {
 function storyCard(s, mine) {
   if (isPlan(s)) return plCard(s, mine);
   const st0 = storyState(s), needMig = mine && canWrite && ["active", "expired", "rejected"].includes(st0);
-  if (needMig) return '<div class="sq" style="--rc:var(--story)"><div class="h"><div style="min-width:0"><div class="ttl">' + esc(s.title) + '</div><div class="meta"><span class="rank r-' + s.rank + '">' + s.rank + "</span><span>до " + nice(s.deadline) + '</span><span class="xpn">старый формат</span></div></div></div>' +
+  if (needMig) return '<div class="sq" style="--rc:' + stCol(st0) + '"><div class="h"><div style="min-width:0"><div class="ttl">' + esc(s.title) + '</div><div class="meta"><span class="rank r-' + s.rank + '">' + s.rank + "</span><span>до " + nice(s.deadline) + '</span><span class="xpn">старый формат</span></div></div></div>' +
     '<div class="hint">Сюжет теперь по новым правилам. Переведи квест: сделанные этапы остаются по 10 XP, остальным поставишь день и время.</div><div class="acts"><button class="btn sm" data-act="smigopen" style="--sys:var(--story)">Перевести на новый сюжет</button></div></div>';
   const st = st0, pr = progress(s), can = mine && canWrite, id = esc(s.id);
   const over = today() > s.deadline;
@@ -2513,10 +2515,10 @@ function storyCard(s, mine) {
         : '<button class="x" data-act="sdel" data-id="' + id + '" style="font-size:13px">удалить</button>';
     }
   }
-  return '<div class="sq' + (st === "expired" ? " exp" : "") + '" style="--rc:var(--r' + s.rank + ')">' +
+  return '<div class="sq' + (st === "expired" ? " exp" : "") + '" style="--rc:' + stCol(st) + '">' +
     '<div class="h"><div style="min-width:0"><div class="ttl">' + esc(s.title) + '</div><div class="meta"><span class="rank r-' + s.rank + '">' + s.rank + "</span><span>" + statLbl(stat, true) + "</span><span>до " + nice(s.deadline) + "</span>" + badge + "</div></div>" +
     '<span class="xptag">+' + storyReward(s) + " XP</span></div>" +
-    '<div><div class="bar' + (pr.full ? " gold" : "") + '"><i style="width:' + pct.toFixed(1) + '%"></i></div><div class="meta" style="margin-top:4px;justify-content:space-between;font-size:12px;color:var(--muted)"><span class="xpn">' + progTxt + "</span>" + (nLinked ? "<span>дневных квестов: " + nLinked + "</span>" : "") + "</div>" + paceOf(s, pr) + "</div>" +
+    '<div><div class="bar plbar" style="margin:0"><i style="width:' + pct.toFixed(1) + "%" + (st === "approved" || st === "late" ? ";background:var(--ok);box-shadow:none" : st === "expired" || st === "rejected" ? ";background:var(--bad);box-shadow:none" : "") + '"></i></div><div class="meta" style="margin-top:4px;justify-content:space-between;font-size:12px;color:var(--muted)"><span class="xpn">' + progTxt + "</span>" + (nLinked ? "<span>дневных квестов: " + nLinked + "</span>" : "") + "</div>" + paceOf(s, pr) + "</div>" +
     body + ((s.proof || imgIds(s.imgs).length) && s.done ? '<div class="hint">' + (s.proof ? "Доказательство: " + esc(s.proof) : "Доказательство:") + "</div>" + thumbsHtml(s.imgs) : "") +
     (acts ? '<div class="acts">' + acts + "</div>" : "") + (s.done ? threadHtml("story", s.player, s.id, st === "pending", "s") : "") + "</div>";
 }
@@ -2767,7 +2769,8 @@ const PL_HOW = '<details class="plhow" id="plHow"' + "__OPEN__" + '><summary>К�
   "<li><b>Шаги.</b> Разбей цель на шаги. Каждый шаг даёт опыт, как квест дня: время × сложность × «нравится».</li>" +
   "<li><b>Дата у шага необязательна.</b> Шаг с датой появится на «Сегодня» в свой день. Без даты просто отметь, когда сделаешь.</li>" +
   "<li><b>Все шаги сделаны</b> → квест сам уходит друзьям → одобрили → <b>бонус +50%</b> от опыта шагов.</li>" +
-  "<li>Не успел к сроку: <b>продли</b> (бонус за уже сделанное вдвое меньше) или <b>закрой без бонуса</b>.</li></ol></details>";
+  "<li>Не успел к сроку: <b>продли</b> (бонус за уже сделанное вдвое меньше) или <b>закрой без бонуса</b>.</li></ol>" +
+  '<p class="hint" style="margin:8px 0 0">Полоса слева у квеста: <b style="color:var(--story)">фиолетовая</b> идёт или на проверке, <b style="color:var(--bad)">красная</b> нужно внимание (пропуск, срок вышел, не засчитали), <b style="color:var(--ok)">зелёная</b> завершён.</p></details>';
 
 // ---------- «Сюжет сегодня» на вкладке «Сегодня» ----------
 function planTodayHtml() {
