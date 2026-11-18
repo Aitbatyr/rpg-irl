@@ -451,6 +451,7 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 .cin{display:flex;gap:6px;width:100%}
 .cin input{flex:1;min-width:0}
 .ondot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px rgba(73,227,160,.85);flex:none;vertical-align:middle}
+.ondot.away{background:var(--gold);box-shadow:0 0 8px rgba(255,207,92,.8)}
 .onl{font:600 12px var(--f-body);color:var(--ok);margin-left:6px;letter-spacing:0;text-transform:none}
 .dropped{display:flex;flex-direction:column;gap:4px;margin-top:6px}
 .newans{font:700 10px/1 var(--f-mono);color:var(--bg);background:var(--gold);padding:3px 5px}
@@ -1501,6 +1502,7 @@ const NEWS = [
     "Срок вышел: «Продлить» (бонус за уже сделанное вдвое меньше, за оставшееся полный, продлевать можно сколько угодно) или «Закрыть без бонуса» (опыт за шаги остаётся). Бросить и создать заново больше невыгодно.",
     "Старые сюжетные квесты переводятся окном «Сюжет по новым правилам»: сделанные этапы остаются по 10 XP, остальным ставишь день и время.",
     "Сверху вкладки «Сюжет» короткое «Как это работает?». Гайд обновлён.",
+    "Онлайн как в Steam, три состояния: зелёная точка «онлайн» (сайт на экране), жёлтая «отошёл» (сайт открыт, но свёрнут или 5 минут без действий), без точки «был …» (не в сети).",
     "Цвет полосы слева у сюжетного квеста теперь всегда про состояние: фиолетовый идёт или на проверке, красный нужно внимание, зелёный завершён. У старых квестов цвет больше не зависит от буквы.",
   ] },
   { v: 21, date: "2026-11-15", title: "Исправления", items: [
@@ -2145,13 +2147,16 @@ function linkLabel(t) {
 // ---------- photos, comments, online ----------
 const MAX_IMGS = 3, CMT_MAX = 300;
 const pendImgs = {}, upBusy = {}, drafts = {}, droppedBy = {};
-let dispOpen = null, cmtBase = null, online = new Set(), votesVer = 0, tiVer = -1, tiCache = new Map();
+let dispOpen = null, cmtBase = null, online = new Set(), awayAt = new Map(), votesVer = 0, tiVer = -1, tiCache = new Map();
 const san = (x) => String(x).replace(/[^A-Za-z0-9_-]/g, "_");
 const imgIds = (a) => (Array.isArray(a) ? a.filter((x) => typeof x === "string" && /^[A-Za-z0-9_-]{6,80}$/.test(x)).slice(0, MAX_IMGS) : []);
 const draftVal = (k, def) => esc(drafts[k] != null ? drafts[k] : def || "");
 const meActive = () => !!me && isActive(PLAYERS.find((p) => p.id === me));
-const isOnline = (pid) => !!roster[pid] && online.has(roster[pid]);
-const onDot = (pid) => (isOnline(pid) ? '<span class="ondot" title="Сейчас на сайте" aria-label="онлайн"></span>' : "");
+// три состояния, как в Steam: онлайн (сайт на экране и игрок что-то делает), отошёл (сайт открыт, но свёрнут или 5 мин без действий), не в сети
+const isOnline = (pid) => !!roster[pid] && online.has(roster[pid]); // сайт открыт (онлайн или отошёл)
+const isAway = (pid) => isOnline(pid) && awayAt.has(roster[pid]);
+const isHere = (pid) => isOnline(pid) && !isAway(pid);
+const onDot = (pid) => (!isOnline(pid) ? "" : isAway(pid) ? '<span class="ondot away" title="Сайт открыт, но отошёл" aria-label="отошёл"></span>' : '<span class="ondot" title="Сейчас на сайте" aria-label="онлайн"></span>');
 const plCmt = (n) => (n % 10 === 1 && n % 100 !== 11 ? "новый комментарий" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "новых комментария" : "новых комментариев");
 function thumbsHtml(ids) {
   const a = imgIds(ids); if (!a.length) return "";
@@ -3421,7 +3426,7 @@ const GUIDE = [
   { id: "d-pace", l: 3, t: "Срок, продление и закрытие сюжета", b: "<p>Срок задаётся при создании и потом не меняется. Если срок вышел, а шаги не все сделаны, остаются две кнопки: <b>«Продлить»</b> (на неделю или на 2 недели, не позже 31 декабря) или <b>«Закрыть без бонуса»</b> (опыт за сделанные шаги остаётся).</p><p>Продлевать можно сколько угодно. Каждое продление уменьшает вдвое бонус только за <b>уже сделанные</b> шаги, за оставшиеся бонус полный. Поэтому бросить и создать квест заново невыгодно: за сделанное бонуса не будет совсем. Цифры видны в карточке. После срока шаги менять и убирать нельзя.</p><p>Пока ни один друг не проголосовал, квест можно «Вернуть с проверки», чтобы добавить шаги. Если друзья не засчитали: «Отправить снова» или «Вернуть в работу». Удалить квест можно, пока в нём нет сделанных шагов.</p><p>Старые квесты (с буквами B, A, S) переводятся окном «Сюжет по новым правилам»: сделанные этапы остаются по 10 XP, остальным ставишь день и время.</p>", v: 22 },
   { id: "d-rankhint", l: 3, t: "Подсказка времени", b: "<p>Когда пишешь название, сайт ищет похожие квесты в истории пати и подсказывает, сколько времени для них обычно ставят, например «обычно на 30 мин (Английский ×12)», с кнопкой «Поставить». Подсказка ничего не запрещает.</p>", v: 18 },
   { id: "d-join", l: 3, t: "Новые игроки и архив", b: "<p>В пати может быть до 12 активных игроков. Новичок получает ссылку на сайт, создаёт аккаунт, пишет своё имя, владелец подтверждает. Если это кто-то из старых игроков, владелец нажимает «Это … (старый профиль)», и вход привязывается к его профилю со всем опытом. Новичок начинает с нуля, поэтому для честного сравнения есть «Неделя» и средний опыт в день.</p><p>Неактивных владелец может отправить в архив: они пропадают из недели, проверок и голосований, а их данные сохраняются. Вернуть можно в любой момент.</p>", v: 13 },
-  { id: "d-party", l: 3, t: "Пати и профиль друга", b: "<p>Нажми на друга во вкладке «Пати» — откроется окно с его квестами, сюжетом, характеристиками и картой активности. Там же кнопки «Оспорить». Если друг сегодня не открывал сайт, на карточке будет «сегодня не заходил», а в его окне кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление, что ты напоминаешь. Одному другу раз в день.</p><p><b>Зелёная точка</b> у имени значит, что сайт у друга открыт прямо сейчас. Закрыл вкладку, точка погасла. Если друга нет, на карточке видно последнее посещение: «был 20 мин назад», «был вчера в 22:14». Время точное примерно до 10 минут.</p>", v: 17 },
+  { id: "d-party", l: 3, t: "Пати и профиль друга", b: "<p>Нажми на друга во вкладке «Пати» — откроется окно с его квестами, сюжетом, характеристиками и картой активности. Там же кнопки «Оспорить». Если друг сегодня не открывал сайт, на карточке будет «сегодня не заходил», а в его окне кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление, что ты напоминаешь. Одному другу раз в день.</p><p><b>Зелёная точка</b> у имени значит, что сайт у друга открыт прямо сейчас. Закрыл вкладку, точка погасла. Если друга нет, на карточке видно последнее посещение: «был 20 мин назад», «был вчера в 22:14». Время точное примерно до 10 минут.</p><p>Состояние друга как в Steam: <b style=\"color:var(--ok)\">● онлайн</b> сайт открыт на экране, <b style=\"color:var(--gold)\">● отошёл</b> сайт открыт, но свёрнут или 5 минут без действий, без точки «был …» значит не в сети.</p>", v: 22 },
   { id: "b-v17", l: 2, t: "Выходной, напоминания, карта активности", b: "<p><b>Выходной</b>: 2 дня в месяц. На «Сегодня» под полоской дня: «взять сегодня» (только пока ничего не отмечено), «на завтра» или «выбрать день»: календарь на этот и следующий месяц, можно взять любой день вперёд. Лимит считается по месяцу самого дня. Запланированные выходные видны списком, × отменяет (пока день не начался). Задним числом нельзя. В выходной повторы не создаются, провалов нет, серия не сгорает, опыт за сделанное засчитывается. Отменить можно в тот же день.</p><p><b>Напоминание</b>: плашка «⏰» при создании квеста или ⏰ в строке квеста. Придёт уведомление в это время, если квест не отмечен (точность около 5 минут). У повтора время сохраняется на все дни. Нужны включённые уведомления.</p><p><b>Карта активности</b> в «Статусе» и в профиле друга: квадратик на день, яркость по числу выполненных квестов (1–2, 3–4, 5–6, 7+). Золотая рамка: закрыты все квесты дня (от трёх). Серый с 🌙: выходной. Красный уголок: день правили задним числом. Наведи или нажми на квадратик, чтобы увидеть подробности.</p><p><b>Живой фон</b> меняет цвет по рангу охотника, ночью звёзды, в декабре снег. Выключить: «Ещё → Оформление».</p>", v: 20 },
   { id: "b-push", l: 2, t: "Уведомления", b: "<p>«Ещё» → <b>«Уведомления»</b> → «Включить уведомления» и разреши их в браузере. Настройка на каждом устройстве своя.</p><p>Что приходит: <b>друг ждёт твоего голоса</b>; <b>твой квест оспорили</b> или по нему проголосовали; <b>новый комментарий</b> в обсуждении, где ты участвуешь; <b>в 21:00</b> напоминание, если квесты дня не закрыты или ты сегодня не заходил; <b>друг тебя «пнул»</b>; <b>в понедельник в 9:00</b> итоги недели готовы. Любой тип можно выключить галочкой. «Прислать тестовое» проверяет, что всё работает.</p><p>На iPhone уведомления работают, только если сайт добавлен на экран «Домой» и открыт с иконки. На Android надёжнее всего через Chrome.</p>", v: 16 },
   { id: "b-week", l: 2, t: "Итоги недели и аватарка", b: "<p><b>Итоги недели</b>: каждый понедельник наверху вкладки «Статус» карточка за прошлую неделю (пн–вс): опыт, место в пати, выполнено и провалено, процент повторов, лучший день и какие характеристики выросли. Ниже «Прошлые недели»: по строке на неделю (даты, опыт, место, полоска выполнено/провалено), нажатие раскрывает итоги целиком. Пока не посмотрел свежие итоги, на «Сегодня» висит плашка, а в понедельник в 9:00 приходит уведомление.</p><p><b>Аватарка</b>: во вкладке «Статус» нажми на кружок со своей буквой и выбери картинку. Под именем: «открыть» (посмотреть крупно) и «убрать аватарку».</p><p>Чужую аватарку можно открыть на весь экран: нажми на неё в пати, в профиле друга или в обсуждении. Закрыть: нажатие по экрану или «Закрыть ×».</p>", v: 16 },
@@ -3531,7 +3536,7 @@ function renderParty() {
         ? '<div class="row2"><span>' + p.xp + " XP</span>" + (isOff(pl.id, today()) ? '<span style="color:var(--muted)">🌙 выходной</span>' : pl.id !== me && seenDay(pl.id) !== today() ? '<span style="color:var(--gold)">сегодня не заходил</span>' : "<span>сегодня " + p.tdDone + "/" + p.td.length + "</span>") + "<span>серия " + p.streak + "</span></div>" +
           (() => { const o = oddDay(pl.id, today(), p); return o ? '<div class="row2"><span class="odd">⚠ необычно много: ' + esc(o) + "</span></div>" : ""; })() +
           '<div class="row2"><span>' + esc(p.cls) + " · сюжетных " + p.activeStories + "</span>" + (p.pending ? '<span style="color:var(--gold)">на проверке: ' + p.pending + "</span>" : "<span></span>") + "</div>" +
-          (pl.id !== me ? '<div class="row2"><span' + (isOnline(pl.id) ? ' style="color:var(--ok)"' : "") + ">" + esc(lastSeenTxt(pl.id)) + "</span></div>" : "") +
+          (pl.id !== me ? '<div class="row2"><span' + (isHere(pl.id) ? ' style="color:var(--ok)"' : isAway(pl.id) ? ' style="color:var(--gold)"' : "") + ">" + esc(lastSeenTxt(pl.id)) + "</span></div>" : "") +
           '<div class="row2"><span>~' + p.perDay + " XP в день" + (joinedOf(pl.id) > SEASON_START ? ' · <span style="color:var(--sys)">в игре с ' + nice(joinedOf(pl.id)) + "</span>" : "") + "</span></div>"
         : '<div class="row2"><span>Не вошёл в систему</span></div>') + "</button>";
   }).join("") + (archived.length ? '<div class="arch hint">В архиве: ' + archived.map((p) => esc(p.name)).join(", ") + "</div>" : ""));
@@ -3711,7 +3716,12 @@ function markSeen() {
 function touchSeen(gap) {
   if (clockOk && prefsLoaded && me && now() - num(prefs.lastSeen) >= (gap || 10 * 60e3)) writePrefs({ lastSeen: now() });
 }
+function awayTxt(pid) {
+  const m = Math.max(0, Math.round((now() - num(awayAt.get(roster[pid]))) / 60e3));
+  return "отошёл" + (m < 1 || !awayAt.get(roster[pid]) ? "" : m < 60 ? " " + m + " мин назад" : " " + Math.floor(m / 60) + " ч назад");
+}
 function lastSeenTxt(pid) {
+  if (isAway(pid)) return awayTxt(pid);
   if (isOnline(pid)) return "онлайн сейчас";
   let ls = num((prefsBy[pid] || {}).lastSeen);
   for (const t of tasksBy[pid] || []) ls = Math.max(ls, num(t.createdAt), num(t.doneAt));
@@ -3769,7 +3779,7 @@ function renderFriend() {
   document.body.style.overflow = friendId ? "hidden" : "";
   if (!friendId) { hideOv(ov); return; }
   showOv(ov);
-  const fn = avaHtml(friendId, "md") + esc(pname(friendId)) + (isOnline(friendId) ? ' <span class="ondot" aria-hidden="true"></span><span class="onl">онлайн</span>' : roster[friendId] ? '<span class="onl" style="color:var(--muted)">' + esc(lastSeenTxt(friendId)) + "</span>" : "");
+  const fn = avaHtml(friendId, "md") + esc(pname(friendId)) + (isHere(friendId) ? ' <span class="ondot" aria-hidden="true"></span><span class="onl">онлайн</span>' : isAway(friendId) ? ' <span class="ondot away" aria-hidden="true"></span><span class="onl" style="color:var(--gold)">' + esc(awayTxt(friendId)) + "</span>" : roster[friendId] ? '<span class="onl" style="color:var(--muted)">' + esc(lastSeenTxt(friendId)) + "</span>" : "");
   if ($("fName").innerHTML !== fn) $("fName").innerHTML = fn;
   setHtml("fStrip", stripHtml(friendId));
   setHtml("fNudge", nudgeHtml(friendId));
@@ -5160,13 +5170,28 @@ renderAll.day = today();
   }
   if (uid) window.claude.use("room").then((r) => {
     if (!r) return;
-    r.presence({ uid }).catch(() => {});
+    // своё состояние: отошёл, если вкладка свёрнута или 5 минут нет действий
+    let lastAct = Date.now(), sent = null;
+    const sendState = () => {
+      const away = document.hidden || Date.now() - lastAct > 5 * 60e3;
+      if (away === sent) return;
+      sent = away;
+      r.presence({ uid, away, at: away ? (document.hidden ? now() : now() - (Date.now() - lastAct)) : 0 }).catch(() => {});
+    };
+    const poke = () => { lastAct = Date.now(); if (sent) sendState(); };
+    ["pointerdown", "keydown", "wheel", "touchstart", "scroll"].forEach((ev) => window.addEventListener(ev, poke, { passive: true, capture: true }));
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) lastAct = Date.now(); sendState(); });
+    setInterval(sendState, 20000);
+    sendState();
     r.onPeers((c) => {
-      const set = new Set();
-      for (const p of c.peers || []) if (p && p.kind === "viewer") { const id = p.by || (p.presence && typeof p.presence.uid === "string" ? p.presence.uid : null); if (id) set.add(id); }
-      const key = [...set].sort().join(",");
-      if (key === [...online].sort().join(",")) return;
-      online = set; renderParty(); renderFriend();
+      const set = new Set(), aw = new Map();
+      for (const p of c.peers || []) if (p && p.kind === "viewer") {
+        const id = p.by || (p.presence && typeof p.presence.uid === "string" ? p.presence.uid : null); if (!id) continue;
+        set.add(id); if (p.presence && p.presence.away) aw.set(id, num(p.presence.at) || now());
+      }
+      const key = [...set].sort().map((id) => id + (aw.has(id) ? ":a" + aw.get(id) : "")).join(",");
+      if (key === [...online].sort().map((id) => id + (awayAt.has(id) ? ":a" + awayAt.get(id) : "")).join(",")) return;
+      online = set; awayAt = aw; renderParty(); renderFriend();
     }, () => {});
   }).catch(() => {});
   if (!uid) showNotice("Не удалось определить аккаунт. Войди в claude.ai, чтобы играть. Пока доступен только просмотр.");

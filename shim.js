@@ -152,7 +152,7 @@
     let state = {}, joined = false;
     const fns = new Set();
     const ch = sb.channel("online", { config: { presence: { key: account.uid } } });
-    const peers = () => { const st = ch.presenceState(); return Object.keys(st).map((k) => ({ peer: k, by: k, kind: "viewer", isMe: k === account.uid, sameTab: false, guest: false, presence: (st[k] && st[k][0]) || {}, updatedAt: Date.now() })); };
+    const peers = () => { const st = ch.presenceState(); return Object.keys(st).map((k) => ({ peer: k, by: k, kind: "viewer", isMe: k === account.uid, sameTab: false, guest: false, presence: (st[k] && (st[k].find((m) => m && !m.away) || st[k][0])) || {}, updatedAt: Date.now() })); };
     const emit = () => { const ps = peers(); fns.forEach((f) => { try { f({ peers: ps, joined: [], left: [], updated: [] }); } catch {} }); };
     ch.on("presence", { event: "sync" }, emit).subscribe(async (st) => { if (st === "SUBSCRIBED") { joined = true; try { await ch.track(state); } catch {} } });
     return Object.freeze({
