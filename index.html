@@ -285,7 +285,7 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(255,207,92,.7)}
 .tabp{display:flex;flex-direction:column;gap:18px;min-width:0}
 @media (max-width:760px){
-  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;background:var(--panel-solid);border-top:1px solid var(--line);border-bottom:0;padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);box-shadow:0 -8px 24px rgba(0,0,0,.45)}
+  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;background:var(--panel-solid);border-top:1px solid var(--line);border-bottom:0;padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);box-shadow:0 -8px 24px rgba(0,0,0,.45)}
   .tab{justify-content:center;padding:14px 2px 12px;font-size:11px;letter-spacing:.06em;border-bottom:0;border-top:2px solid transparent}
   .tab[aria-current=page]{border-top-color:var(--sys)}
   .tab .badge,.tab .dot{position:absolute;top:5px;right:8px}
@@ -801,6 +801,72 @@ details.pldn summary::-webkit-details-marker{display:none}
 .smqh{display:flex;flex-direction:column;gap:2px}
 .smq .mrow{margin-bottom:0}
 @media (max-width:560px){.plstats .plopt{flex:1 1 45%}.pladd{flex-direction:column}.plh{grid-template-columns:auto minmax(0,1fr)}.plx{grid-column:2;text-align:left}.plx small{display:inline;margin-left:6px}}
+/* ---------- v23: дневник ---------- */
+:root{--diary:#ff9ecf}
+.dtitle{color:var(--diary)}
+.badge.dbadge{background:var(--diary);color:#2a0b1b}
+.dseg{display:inline-flex;border:1px solid var(--line)}
+.dseg button{background:none;border:0;color:var(--muted);font:600 12px var(--f-mono);letter-spacing:.08em;padding:8px 12px;cursor:pointer;position:relative}
+.dseg button+button{border-left:1px solid var(--line-soft)}
+.dseg button[aria-pressed=true]{color:var(--fg);background:rgba(255,158,207,.14);box-shadow:inset 0 0 0 1px var(--diary)}
+.dseg .badge{position:absolute;top:-8px;right:-6px}
+.dhow{border:1px solid rgba(255,158,207,.4);background:rgba(255,158,207,.06);padding:11px 14px;margin-bottom:12px}
+.dhow summary{cursor:pointer;font-weight:600;color:var(--diary);list-style:none}
+.dhow summary::-webkit-details-marker{display:none}
+.dhow summary::after{content:" ▾";color:var(--muted)}
+.dhow[open] summary::after{content:" ▴"}
+.dhow ul{margin:8px 0 0;padding-left:20px;font-size:14px;color:var(--muted)}.dhow li{margin:4px 0}.dhow b{color:var(--fg)}
+.dadd{display:block;width:100%;padding:14px;margin-bottom:12px;background:rgba(255,158,207,.1);border:1px dashed var(--diary);color:var(--diary);font:600 14px var(--f-mono);letter-spacing:.06em;cursor:pointer;box-shadow:0 0 14px rgba(255,158,207,.16)}
+.dadd:hover{background:rgba(255,158,207,.18)}
+.dweek{display:flex;gap:4px;margin-bottom:14px}
+.dwd{flex:1;text-align:center;border:1px solid var(--line-soft);padding:6px 0 4px;background:rgba(6,12,24,.5)}
+.dwd .e{font-size:20px;line-height:1.2;display:block;min-height:24px;color:var(--dim)}
+.dwd .n{font:10px var(--f-mono);color:var(--dim)}
+.dwd.td{border-color:var(--diary)}
+.dform{border:1px solid var(--diary);background:rgba(26,8,20,.45);padding:14px;margin-bottom:14px;display:flex;flex-direction:column;gap:14px;box-shadow:0 0 18px rgba(255,158,207,.12)}
+.dfh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ddate{font:600 13px var(--f-mono);color:var(--diary)}
+.dmoods{display:flex;gap:6px}
+.dmoods button{flex:1;background:rgba(6,12,24,.5);border:1px solid var(--line-soft);padding:8px 2px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--fg)}
+.dmoods button .e{font-size:24px;line-height:1}
+.dmoods button .t{font-size:11px;color:var(--muted)}
+.dmoods button[aria-pressed=true]{border-color:var(--diary);background:rgba(255,158,207,.14);box-shadow:inset 0 0 0 1px var(--diary)}
+.dmoods button[aria-pressed=true] .t{color:var(--fg)}
+.dform input[type=text],.dform textarea{width:100%}
+.dform textarea{min-height:110px;resize:vertical;line-height:1.5}
+.dvis{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line-soft);background:rgba(6,12,24,.5);cursor:pointer;text-align:left;width:100%;color:var(--fg)}
+.dvis .ic{font-size:20px}
+.dvis b{display:block;font-size:14px}
+.dvis span.s{font-size:12px;color:var(--muted)}
+.dvis[aria-pressed=true]{border-color:var(--ok)}
+.dday{margin-top:16px}.dday:first-child{margin-top:0}
+.ddayh{font:600 11px var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.dent{border:1px solid var(--line-soft);border-left:3px solid var(--diary);background:rgba(6,12,24,.55);padding:11px 12px;margin-bottom:8px}
+.dent.priv{border-left-color:var(--dim)}
+.deh{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start}
+.dem{font-size:26px;line-height:1}
+.det{font-weight:600;font-size:15px;overflow-wrap:anywhere}
+.demeta{font-size:12px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.dwho{display:inline-flex;align-items:center;gap:6px;font:600 13px var(--f-body);color:var(--fg);background:none;border:0;padding:0;cursor:pointer}
+.dnew{font:700 10px var(--f-mono);letter-spacing:.12em;color:#2a0b1b;background:var(--diary);padding:2px 6px}
+.detx{margin-top:8px;font-size:15px;white-space:pre-wrap;overflow-wrap:anywhere}
+.detx.clip{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.dmore{background:none;border:0;padding:0;color:var(--sys);font-size:13px;cursor:pointer;margin-top:2px}
+.detools{display:flex;gap:2px;align-items:center}
+.deye{background:none;border:1px solid var(--line-soft);color:var(--muted);cursor:pointer;font:500 12px var(--f-body);padding:4px 8px;white-space:nowrap}
+.deye.open{color:var(--ok);border-color:rgba(73,227,160,.5)}
+.drx{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.drc{background:rgba(6,12,24,.5);border:1px solid var(--line-soft);padding:3px 8px;cursor:pointer;font-size:14px;display:inline-flex;gap:4px;align-items:center;color:var(--fg)}
+.drc b{font:600 12px var(--f-mono);color:var(--muted)}
+.drc.mine{border-color:var(--diary);background:rgba(255,158,207,.12)}
+.drc.mine b{color:var(--fg)}
+.drc:disabled{cursor:default}
+.drc.add{color:var(--muted);font-size:13px}
+.dpick{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--line);background:var(--panel-solid)}
+.dpick button{background:none;border:0;font-size:20px;cursor:pointer;padding:2px 4px}
+.dcbtn{background:none;border:0;color:var(--sys);cursor:pointer;font-size:13px;padding:0}
+.dasf{border:1px dashed var(--gold);background:rgba(255,207,92,.06);color:var(--gold);padding:8px 12px;font-size:13px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+@media (max-width:560px){.dmoods button .t{display:none}.deh{grid-template-columns:auto minmax(0,1fr)}.detools{grid-column:2;justify-self:start;margin-top:2px}}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
@@ -830,6 +896,7 @@ details.pldn summary::-webkit-details-marker{display:none}
   <nav class="tabs" id="tabs" aria-label="Разделы">
     <button type="button" class="tab" data-act="tab" data-t="today" id="tab-today">Сегодня</button>
     <button type="button" class="tab" data-act="tab" data-t="story" id="tab-story">Сюжет</button>
+    <button type="button" class="tab" data-act="tab" data-t="diary" id="tab-diary">Дневник<span class="badge dbadge" id="diaryBadge" hidden></span></button>
     <button type="button" class="tab" data-act="tab" data-t="status" id="tab-status">Статус</button>
     <button type="button" class="tab" data-act="tab" data-t="party" id="tab-party">Пати<span class="badge" id="partyBadge" hidden></span></button>
     <button type="button" class="tab" data-act="tab" data-t="more" id="tab-more">Ещё<span class="dot" id="moreDot" hidden></span></button>
@@ -941,6 +1008,12 @@ details.pldn summary::-webkit-details-marker{display:none}
   </div>
 
   <!-- ===== СТАТУС ===== -->
+  <div class="tabp" data-tab="diary" hidden>
+    <section class="panel" aria-labelledby="dT">
+      <div class="ph"><h2 class="ptitle dtitle" id="dT">Дневник</h2><div class="dseg" role="group" aria-label="Чьи записи"><button type="button" data-act="dview" data-v="mine" aria-pressed="true">Мои</button><button type="button" data-act="dview" data-v="friends" aria-pressed="false">Друзья<span class="badge dbadge" id="dFrBadge" hidden></span></button></div></div>
+      <div id="diaryBody"></div>
+    </section>
+  </div>
   <div class="tabp" data-tab="status" hidden>
     <section class="panel" id="recapPanel" hidden aria-labelledby="rcT">
       <div class="ph"><h2 class="ptitle" id="rcT">Итоги недели</h2><span class="sub" id="recapSub"></span></div>
@@ -1069,6 +1142,8 @@ details.pldn summary::-webkit-details-marker{display:none}
     <div id="fRep"></div>
     <h3 class="fh">Сюжет</h3>
     <div class="qlist" id="fStories"></div>
+    <h3 class="fh">Дневник</h3>
+    <div id="fDiary"></div>
     <h3 class="fh">Характеристики и ачивки</h3>
     <div id="fStatus"></div>
     <h3 class="fh">Активность</h3>
@@ -1354,7 +1429,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 22;
+const APP_VERSION = 23;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -1395,6 +1470,13 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 23, date: "2026-11-19", title: "Дневник", items: [
+    "Новая вкладка «Дневник». Каждая запись это событие дня: настроение (5 смайлов), заголовок и текст. Записать можно только за сегодня.",
+    "Новая запись по умолчанию 🔒 «только мне»: её видишь только ты, сервер не отдаёт её друзьям. Нажми на замок, чтобы стало 👁 «друзьям», и обратно.",
+    "Открытые записи друзей во вкладке «Дневник → Друзья» и в окне друга в «Пати». Можно ставить реакции 🔥 ❤️ 😂 😮 💪 и писать комментарии.",
+    "Править запись можно только в её день, удалить в любой момент. Сверху полоска настроения за неделю и кнопка «👀 Как видят друзья».",
+    "Опыта за дневник нет: он для тебя, не для очков.",
+  ] },
   { v: 22, date: "2026-11-18", title: "Сюжетные квесты заново", items: [
     "Сюжетный квест теперь это цель + срок + шаги. Создание на одной странице: цель, срок кнопками (неделя, 2 недели, месяц… или своя дата), характеристика, шаги. Букв B, A, S и счётчика больше нет.",
     "Шаг как квест дня: время × сложность × «нравится», опыт по той же формуле. У шага кнопки «дата» (мини-календарь, «Без даты», повтор до срока) и «время · сложность».",
@@ -2107,7 +2189,7 @@ function threadIndex() {
   for (const p of PLAYERS) for (const x of votesBy[p.id] || []) {
     if (!x || typeof x.owner !== "string" || typeof x.task !== "string") continue;
     const at = num(x.at), text = (typeof x.text === "string" ? x.text : typeof x.note === "string" ? x.note : "").slice(0, CMT_MAX);
-    if (x.kind === "comment" && ["task", "story", "step"].includes(x.ik)) { if (text || imgIds(x.imgs).length) push(x.ik + ":" + x.owner + ":" + x.task, { by: p.id, at, text, imgs: x.imgs, tag: "" }); }
+    if (x.kind === "comment" && ["task", "story", "step", "diary"].includes(x.ik)) { if (text || imgIds(x.imgs).length) push(x.ik + ":" + x.owner + ":" + x.task, { by: p.id, at, text, imgs: x.imgs, tag: "" }); }
     else if (x.kind === "dispute" && text) push("task:" + x.owner + ":" + x.task, { by: p.id, at, text, tag: "оспорил", cls: "no" });
     else if (x.kind === "sdispute" && text) push("step:" + x.owner + ":" + x.task, { by: p.id, at, text, tag: "оспорил", cls: "no" });
     else if ((x.kind === "task" || x.kind === "story" || x.kind === "step") && text && (x.vote === "yes" || x.vote === "no")) push(x.kind + ":" + x.owner + ":" + x.task, { by: p.id, at, text, tag: x.vote === "yes" ? "да" : "нет", cls: x.vote });
@@ -2116,10 +2198,11 @@ function threadIndex() {
   tiCache = m; tiVer = votesVer; return m;
 }
 function threadItem(ik, owner, id) {
+  if (ik === "diary") { const e = (diaryBy[owner] || []).find((x) => x.id === id); return e ? { title: e.title, open: true } : null; }
   if (ik === "task") { const t = (tasksBy[owner] || []).find((x) => x.id === id); if (!t) return null; const st = taskState(t); return { title: t.title, open: taskBig(t) ? st === "pending" : st === "disputed" }; }
   if (ik === "story") { const s = storyOf(owner, id); return s ? { title: s.title, open: storyState(s) === "pending" } : null; }
   const [sid, si] = id.split("~"), s = storyOf(owner, sid), i = num(si);
-  return s && s.kind === "steps" && s.steps[i] ? { title: s.steps[i].t + " · " + s.title, open: stepState(s, i) === "disputed" } : null;
+  return s && (s.kind === "steps" || isPlan(s)) && s.steps[i] ? { title: s.steps[i].t + " · " + s.title, open: stepState(s, i) === "disputed" } : null;
 }
 const cmtSeen = () => (cmtBase != null ? cmtBase : num(prefs.cmtSeen));
 function threadHtml(ik, owner, id, open, loc, compose) {
@@ -2159,7 +2242,7 @@ function renderTalk() {
   panel.hidden = !out.length;
   const un = unreadCmts();
   $("talkSub").textContent = un ? un + " " + plCmt(un) : "твои квесты и споры, где ты участвуешь";
-  setHtml("talk", out.slice(0, 12).map((o) => '<div class="vi"><p class="sub">' + (o.owner === me ? "Твой" : "<b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b> ·") + " " + (o.ik === "step" ? "этап" : o.ik === "story" ? "сюжетный квест" : "квест") + " «" + esc(o.ti.title) + "»</p>" + threadHtml(o.ik, o.owner, o.id, o.ti.open, "t") + "</div>").join(""));
+  setHtml("talk", out.slice(0, 12).map((o) => '<div class="vi"><p class="sub">' + (o.owner === me ? "Твой" : "<b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b> ·") + " " + (o.ik === "step" ? "этап" : o.ik === "story" ? "сюжетный квест" : o.ik === "diary" ? "запись в дневнике" : "квест") + " «" + esc(o.ti.title) + "»</p>" + threadHtml(o.ik, o.owner, o.id, o.ti.open, "t") + "</div>").join(""));
   if (tab === "party" && un > 0 && !document.hidden) writePrefs({ cmtSeen: now() });
 }
 function droppedHtml(pid) {
@@ -3090,6 +3173,191 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && plEd) { plEd = null; plRender(); }
 });
 
+// ---------- v23: дневник ----------
+// Запись = событие дня: настроение, заголовок, текст. Пишется только за сегодня, правится только в свой день, удаляется всегда.
+// Открытые записи лежат в q/{uid}/diary (читают все в пати), скрытые в p/{uid}/diary (сервер даёт читать только автору).
+// Реакции и комментарии друзей только у открытых записей: реакции в v/{uid}/votes (kind "react"), комментарии как обсуждения (ik "diary").
+const D_MOODS = [["😞", "плохо"], ["😕", "так себе"], ["😐", "нормально"], ["🙂", "хорошо"], ["😄", "отлично"]];
+const D_REACTS = ["🔥", "❤️", "😂", "😮", "💪"];
+const D_TITLE = 80, D_TEXT = 3000;
+const diaryBy = {};
+let myPriv = [], privLoaded = false, subPriv = null, privUid = null;
+let dView = "mine", dAsFriend = false, dForm = null, dDel = null, dPick = null, dSeenBase = null;
+const dOpenC = new Set(), dMore = new Set();
+const validEntry = (e) => !!e && typeof e.d === "string" && DATE_RE.test(e.d) && typeof e.title === "string" && typeof e.text === "string" && [0, 1, 2, 3, 4].includes(e.mood);
+const myEntries = () => (me ? (diaryBy[me] || []).concat(myPriv) : []);
+const dEntryOf = (owner, id) => (diaryBy[owner] || []).find((e) => e.id === id) || (owner === me ? myPriv.find((e) => e.id === id) : null);
+let dRxVer = -1, dRx = new Map();
+function dReacts(owner, id) {
+  if (dRxVer !== votesVer) {
+    dRx = new Map();
+    for (const p of PLAYERS) for (const x of votesBy[p.id] || []) {
+      if (!x || x.kind !== "react" || x.ik !== "diary" || typeof x.owner !== "string" || typeof x.task !== "string" || !Array.isArray(x.rs)) continue;
+      const k = x.owner + ":" + x.task, m = dRx.get(k) || {};
+      for (const r of x.rs) if (D_REACTS.includes(r)) (m[r] = m[r] || []).push(p.id);
+      dRx.set(k, m);
+    }
+    dRxVer = votesVer;
+  }
+  return dRx.get(owner + ":" + id) || {};
+}
+const dTm = (at) => { const d = new Date(num(at) + TZ); return pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()); };
+const dAgo = (d) => (d === today() ? "Сегодня" : d === addDays(today(), -1) ? "Вчера" : nice(d));
+const dNewCount = () => {
+  if (!me || !prefsLoaded) return 0;
+  const seen = num(prefs.diarySeen);
+  let n = 0; for (const p of PLAYERS) if (p.id !== me) for (const e of diaryBy[p.id] || []) if (num(e.at) > seen) n++;
+  return n;
+};
+
+function dEntryHtml(e, ctx) {
+  const mine = e.player === me && !dAsFriend && canWrite, A = 'data-p="' + esc(e.player) + '" data-id="' + esc(e.id) + '"', canEdit = mine && e.d === today();
+  const long = e.text.length > 220, ex = dMore.has(e.id), isNew = ctx === "feed" && dSeenBase != null && num(e.at) > dSeenBase;
+  let h = '<article class="dent' + (e.open ? "" : " priv") + '" id="de-' + san(e.player + "-" + e.id) + '"><div class="deh"><span class="dem" title="Настроение: ' + D_MOODS[e.mood][1] + '">' + D_MOODS[e.mood][0] + "</span>" +
+    '<div style="min-width:0"><div class="det">' + esc(e.title) + '</div><div class="demeta">' +
+    (ctx === "feed" ? '<button type="button" class="dwho" data-act="view" data-p="' + esc(e.player) + '">' + avaHtml(e.player, "xs") + esc(pname(e.player)) + "</button><span>·</span>" : "") +
+    "<span>" + (ctx === "feed" ? dAgo(e.d).toLowerCase() + ", " : "") + dTm(e.at) + "</span>" + (e.edited ? "<span>· изменено</span>" : "") + (isNew ? '<span class="dnew">НОВОЕ</span>' : "") +
+    (mine && !canEdit ? '<span title="Править можно только в день записи">· 🔒</span>' : "") + "</div></div>" +
+    (mine ? '<div class="detools"><button type="button" class="deye' + (e.open ? " open" : "") + '" data-act="deye" ' + A + ' aria-pressed="' + !!e.open + '" title="' + (e.open ? "Видно друзьям. Нажми, чтобы скрыть" : "Видно только тебе. Нажми, чтобы показать друзьям") + '">' + (e.open ? "👁 друзьям" : "🔒 только мне") + "</button>" +
+      (canEdit ? '<button type="button" class="x" data-act="dedit" ' + A + ' aria-label="Изменить" title="Изменить (только сегодня)">✎</button>' : "") +
+      '<button type="button" class="x" data-act="ddelask" ' + A + ' aria-label="Удалить" title="Удалить">🗑</button></div>' : "<span></span>") + "</div>" +
+    (e.text ? '<div class="detx' + (long && !ex ? " clip" : "") + '">' + esc(e.text) + "</div>" + (long ? '<button type="button" class="dmore" data-act="dmore" ' + A + ">" + (ex ? "свернуть" : "читать дальше") + "</button>" : "") : "");
+  if (dDel === e.id && mine) h += '<div class="acts" style="margin-top:10px"><span class="hint">Удалить запись навсегда?</span><button type="button" class="btn sm no" data-act="ddel" ' + A + '>Удалить</button><button type="button" class="btn sm ghost" data-act="ddelno">Нет</button></div>';
+  if (e.open) {
+    const rx = dReacts(e.player, e.id), mineRx = e.player === me && !dAsFriend, cmts = (threadIndex().get("diary:" + e.player + ":" + e.id) || []).length, open = dOpenC.has(e.player + ":" + e.id);
+    h += '<div class="drx">' + D_REACTS.filter((r) => (rx[r] || []).length).map((r) => {
+      const who = rx[r], my = who.includes(me);
+      return '<button type="button" class="drc' + (my ? " mine" : "") + '" data-act="dreact" data-r="' + r + '" ' + A + ' title="' + esc(who.map((w) => (w === me ? "Ты" : pname(w))).join(", ")) + '"' + (mineRx || !canWrite ? " disabled" : "") + ">" + r + "<b>" + who.length + "</b></button>";
+    }).join("") +
+      (!mineRx && canWrite && meActive() ? (dPick === e.player + ":" + e.id ? '<span class="dpick" role="group" aria-label="Реакция">' + D_REACTS.map((r) => '<button type="button" data-act="dreact" data-r="' + r + '" ' + A + ' aria-label="' + r + '">' + r + "</button>").join("") + "</span>"
+        : '<button type="button" class="drc add" data-act="dpick" ' + A + ' aria-label="Поставить реакцию">+ 🙂</button>') : "") +
+      (dAsFriend ? "" : '<button type="button" class="dcbtn" data-act="dcmts" ' + A + ' aria-expanded="' + open + '">💬 ' + (cmts ? plDn(cmts, "комментарий", "комментария", "комментариев") : e.player === me ? "комментариев нет" : "написать") + "</button>") + "</div>";
+    if (open && !dAsFriend) h += threadHtml("diary", e.player, e.id, true, "d") || '<div class="hint" style="margin-top:6px">Комментариев пока нет. Ответить можно, когда друг напишет.</div>';
+  } else if (mine) h += '<div class="hint" style="margin-top:8px">🔒 Эту запись видишь только ты. Реакции и комментарии появятся, если открыть её друзьям.</div>';
+  return h + "</article>";
+}
+function dByDay(list, ctx) {
+  const days = [...new Set(list.map((e) => e.d))].sort().reverse();
+  return days.map((d) => '<div class="dday"><div class="ddayh">' + dAgo(d) + (dAgo(d) !== nice(d) ? " · " + nice(d) : "") + "</div>" +
+    list.filter((e) => e.d === d).sort((a, b) => num(b.at) - num(a.at)).map((e) => dEntryHtml(e, ctx)).join("") + "</div>").join("");
+}
+function dFormHtml() {
+  const f = dForm;
+  return '<div class="dform" id="dForm"><div class="dfh"><span class="lbl">' + (f.id ? "Изменить запись" : "Новая запись") + '</span><span class="ddate">' + nice(today()) + " · сегодня</span></div>" +
+    '<div><div class="lbl" style="margin-bottom:6px">Настроение</div><div class="dmoods" role="group" aria-label="Настроение">' + D_MOODS.map(([e, t], i) => '<button type="button" data-act="dmood" data-m="' + i + '" aria-pressed="' + (f.mood === i) + '" aria-label="' + t + '"><span class="e">' + e + '</span><span class="t">' + t + "</span></button>").join("") + "</div></div>" +
+    '<input type="text" id="dTitle" maxlength="' + D_TITLE + '" placeholder="Что случилось? Коротко, например «Сдал лабу»" value="' + esc(f.title) + '" aria-label="Заголовок">' +
+    '<textarea id="dText" maxlength="' + D_TEXT + '" placeholder="Подробнее: как прошло, что почувствовал, что понял…" aria-label="Текст">' + esc(f.text) + "</textarea>" +
+    '<button type="button" class="dvis" data-act="dvis" aria-pressed="' + f.open + '"><span class="ic">' + (f.open ? "👁" : "🔒") + "</span><span><b>" + (f.open ? "Видно друзьям" : "Только мне") + '</b><span class="s">' + (f.open ? "Друзья смогут читать, ставить реакции и писать комментарии. Нажми, чтобы скрыть." : "Никто, кроме тебя, не увидит. Нажми, чтобы показать друзьям.") + "</span></span></button>" +
+    '<div class="acts"><button type="button" class="btn" data-act="dsave" style="--sys:var(--diary)">' + (f.id ? "Сохранить" : "Добавить в дневник") + '</button><button type="button" class="btn ghost" data-act="dcancel">Отмена</button><span class="hint bad" id="dErr"></span></div>' +
+    '<div class="hint">Запись можно править только сегодня. Удалить можно всегда. Опыта за дневник нет: он для тебя, не для очков.</div></div>';
+}
+function dWeekHtml() {
+  let h = '<div class="dweek" aria-label="Настроение за неделю">';
+  for (let k = 6; k >= 0; k--) {
+    const d = addDays(today(), -k), es = myEntries().filter((e) => e.d === d);
+    const m = es.length ? Math.round(es.reduce((a, e) => a + e.mood, 0) / es.length) : null;
+    h += '<div class="dwd' + (d === today() ? " td" : "") + '" title="' + nice(d) + (m != null ? ": " + D_MOODS[m][1] : ": нет записей") + '"><span class="e">' + (m != null ? D_MOODS[m][0] : "·") + '</span><span class="n">' + WD[wdOf(d) - 1] + "</span></div>";
+  }
+  return h + "</div>";
+}
+function renderDiary() {
+  const nc = dNewCount();
+  const b = $("diaryBadge"); if (b) { b.hidden = !nc; b.textContent = nc; }
+  const fb = $("dFrBadge"); if (fb) { fb.hidden = !nc; fb.textContent = nc; }
+  document.querySelectorAll("[data-act=dview]").forEach((x) => x.setAttribute("aria-pressed", x.dataset.v === dView));
+  if (tab !== "diary") return;
+  let h = "";
+  if (!me) h = '<div class="empty">Войди в систему, чтобы вести дневник.</div>';
+  else if (dView === "mine") {
+    const all = myEntries(), list = all.filter((e) => !dAsFriend || e.open);
+    h += '<details class="dhow"' + (all.length ? "" : " open") + '><summary>Как это работает?</summary><ul>' +
+      "<li><b>Каждая запись это событие дня</b>: настроение, заголовок и текст. Записать можно только за <b>сегодня</b>.</li>" +
+      "<li><b>🔒 Только мне</b> по умолчанию: запись видишь только ты, друзья её не получат даже технически. Нажми на замок, чтобы стало <b>👁 друзьям</b>, и обратно.</li>" +
+      "<li>Открытые записи друзья читают во вкладке «Дневник → Друзья» и в твоём окне в «Пати», ставят реакции и пишут комментарии.</li>" +
+      "<li>Править можно только в день записи (потом 🔒), удалить можно всегда. Опыта за дневник нет.</li></ul></details>";
+    if (dAsFriend) h += '<div class="dasf"><span>👀 Так твой дневник видят друзья: скрытых записей тут нет.</span><button type="button" class="btn sm ghost" data-act="dasfriend">Выйти</button></div>';
+    else h += dWeekHtml() + (!canWrite ? "" : dForm ? dFormHtml() : '<button type="button" class="dadd" data-act="dadd">+ Запись за сегодня</button>') +
+      (all.some((e) => e.open) || all.length ? '<div class="acts" style="justify-content:flex-end;margin:-4px 0 10px"><button type="button" class="dcbtn" data-act="dasfriend">👀 Как видят друзья</button></div>' : "");
+    h += (!privLoaded && !dAsFriend) ? '<div class="empty">Загрузка…</div>' : list.length ? dByDay(list, "mine") : '<div class="empty">' + (dAsFriend ? "Открытых записей нет: друзья ничего не увидят." : "Пока пусто. Нажми «+ Запись за сегодня».") + "</div>";
+  } else {
+    const fr = PLAYERS.filter((p) => p.id !== me).flatMap((p) => diaryBy[p.id] || []);
+    h += '<div class="hint" style="margin-bottom:10px">Открытые записи друзей, новые сверху. Скрытые записи друзей не видны никому, кроме них.</div>' + (fr.length ? dByDay(fr, "feed") : '<div class="empty">Друзья пока ничего не открыли.</div>');
+    if (nc && !document.hidden) writePrefs({ diarySeen: now() });
+  }
+  setHtml("diaryBody", h);
+}
+function dFriendHtml(pid) {
+  const list = diaryBy[pid] || [];
+  return list.length ? dByDay(list, "friend") : '<div class="empty">' + esc(pname(pid)) + " пока не открыл ни одной записи.</div>";
+}
+// интерфейс (без записи в базу)
+function dUi(b, act) {
+  if (!/^d(view|add|mood|vis|cancel|edit|delask|delno|more|pick|cmts|asfriend)$/.test(act)) return false;
+  const ds = b.dataset, keep = () => { if (dForm) { const t = $("dTitle"), x = $("dText"); if (t) dForm.title = t.value; if (x) dForm.text = x.value; } };
+  const e = ds.id ? dEntryOf(ds.p, ds.id) : null;
+  if (act === "dview") { dView = ds.v === "friends" ? "friends" : "mine"; dAsFriend = false; dSeenBase = dView === "friends" ? num(prefs.diarySeen) : null; renderDiary(); return true; }
+  if (act === "dadd") { if (!canWrite) return true; dForm = { id: null, mood: null, title: "", text: "", open: false }; renderDiary(); plFocus("#dTitle"); return true; }
+  if (act === "dmood") { keep(); dForm.mood = num(ds.m); renderDiary(); plFocus('[data-act="dmood"][data-m="' + ds.m + '"]'); return true; }
+  if (act === "dvis") { keep(); dForm.open = !dForm.open; renderDiary(); plFocus('[data-act="dvis"]'); return true; }
+  if (act === "dcancel") { dForm = null; renderDiary(); return true; }
+  if (act === "dedit" && e) { if (e.d !== today()) return true; dForm = { id: e.id, mood: e.mood, title: e.title, text: e.text, open: !!e.open, was: !!e.open }; renderDiary(); plFocus("#dTitle"); setTimeout(() => { const f = $("dForm"); if (f) f.scrollIntoView({ block: "start", behavior: RM() ? "auto" : "smooth" }); }, 30); return true; }
+  if (act === "ddelask" && e) { dDel = e.id; renderDiary(); plFocus('[data-act="ddel"]'); return true; }
+  if (act === "ddelno") { dDel = null; renderDiary(); return true; }
+  if (act === "dmore" && e) { if (dMore.has(e.id)) dMore.delete(e.id); else dMore.add(e.id); renderDiary(); if (friendId) renderFriend(); return true; }
+  if (act === "dpick" && e) { dPick = e.player + ":" + e.id; renderDiary(); if (friendId) renderFriend(); plFocus('.dpick button'); return true; }
+  if (act === "dcmts" && e) { const k = e.player + ":" + e.id; if (dOpenC.has(k)) dOpenC.delete(k); else dOpenC.add(k); renderDiary(); if (friendId) renderFriend(); return true; }
+  if (act === "dasfriend") { dAsFriend = !dAsFriend; dForm = null; renderDiary(); return true; }
+  return false;
+}
+const dNewId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const dColl = (open) => (open ? "q/" : "p/") + uid + "/diary";
+// запись в базу (внутри общего try/catch)
+async function dAct(b, act) {
+  if (!/^d(save|eye|del|react)$/.test(act)) return false;
+  const ds = b.dataset;
+  if (act === "dsave") {
+    const f = dForm; if (!f) return true;
+    const t = ($("dTitle").value || "").trim().replace(/\s+/g, " ").slice(0, D_TITLE), x = ($("dText").value || "").trim().slice(0, D_TEXT), err = $("dErr");
+    f.title = t; f.text = x;
+    if (f.mood == null) { err.textContent = "Выбери настроение."; return true; }
+    if (!t) { err.textContent = "Напиши заголовок."; $("dTitle").focus(); return true; }
+    b.disabled = true;
+    if (f.id) {
+      const o = dEntryOf(me, f.id); if (!o || o.d !== today()) { toast("Править можно только запись за сегодня."); dForm = null; renderDiary(); return true; }
+      const doc = { d: o.d, at: num(o.at), mood: f.mood, title: t, text: x, edited: now() };
+      await db.doc(dColl(f.open) + "/" + o.id).set(doc);
+      if (!!o.open !== f.open) await db.doc(dColl(!!o.open) + "/" + o.id).delete();
+      toast("Запись изменена");
+    } else {
+      await db.doc(dColl(f.open) + "/" + dNewId()).set({ d: today(), at: now(), mood: f.mood, title: t, text: x });
+      toast(f.open ? "Записано. Друзья увидят запись." : "Записано. Видишь только ты 🔒");
+    }
+    dForm = null; renderDiary(); return true;
+  }
+  const e = ds.id ? dEntryOf(ds.p, ds.id) : null;
+  if (!e) return true;
+  if (act === "deye" && e.player === me) {
+    const doc = { d: e.d, at: num(e.at), mood: e.mood, title: e.title, text: e.text, ...(e.edited ? { edited: e.edited } : {}) };
+    b.disabled = true;
+    await db.doc(dColl(!e.open) + "/" + e.id).set(doc);
+    await db.doc(dColl(!!e.open) + "/" + e.id).delete();
+    toast(e.open ? "🔒 Запись скрыта: видишь только ты. Реакции и комментарии вернутся, если откроешь снова." : "👁 Теперь друзья видят эту запись");
+    return true;
+  }
+  if (act === "ddel" && e.player === me) { dDel = null; b.disabled = true; await db.doc(dColl(!!e.open) + "/" + e.id).delete(); toast("Запись удалена"); return true; }
+  if (act === "dreact" && e.player !== me && e.open && meActive()) {
+    const ref = db.doc("v/" + uid + "/votes/" + e.player + "__r-" + e.id);
+    const cur = (votesBy[me] || []).find((v) => v && v.kind === "react" && v.owner === e.player && v.task === e.id);
+    const rs = new Set(cur && Array.isArray(cur.rs) ? cur.rs : []);
+    if (rs.has(ds.r)) rs.delete(ds.r); else rs.add(ds.r);
+    dPick = null;
+    await ref.set({ kind: "react", ik: "diary", owner: e.player, task: e.id, rs: [...rs].filter((r) => D_REACTS.includes(r)), at: now() });
+    return true;
+  }
+  return true;
+}
+document.addEventListener("click", (ev) => { if (dPick && !ev.target.closest(".dpick") && !ev.target.closest('[data-act="dpick"]')) { dPick = null; renderDiary(); if (friendId) renderFriend(); } });
+
 function renderLinkSelect() {
   const sel = $("qLink"), prev = sel.value;
   const repeat = $("qRepeat").value !== "";
@@ -3311,6 +3579,7 @@ const GUIDE = [
   // ---------- 2 · Основы ----------
   { id: "b-repeat", l: 2, t: "Повторяющиеся квесты", b: "<p>В плашке «повтор» выбери: <b>каждый день</b>, <b>каждые N дней</b> (2–30) или <b>по дням недели</b>. Квест сам появляется в нужные дни, когда открываешь сайт. Повторять можно только E, D, C.</p><p>Список повторов — внизу «Сегодня» в строке «Повторяющиеся квесты». Там ✎ — изменить, × — больше не повторять.</p><p>У каждого повтора видно, как он идёт: «18 из 25 · 72%», то есть в скольких днях по расписанию он выполнен. Ниже 40% подсвечивается красным с подсказкой: может, делать реже или меньше. Друзья видят твои повторы в твоём профиле.</p>", v: 13 },
   { id: "b-story", l: 2, t: "Сюжетные квесты", b: "<p>Сюжетный квест это большая цель, разбитая на <b>шаги</b>. Вкладка «Сюжет» → «+ Новый квест»: 1) цель, 2) срок (неделя, 2 недели, месяц… или своя дата, не позже 31 декабря), 3) характеристика, 4) шаги: пиши шаг и жми Enter.</p><p>Шаг это задача, как квест дня: <b>время × сложность × «нравится»</b>, опыт по той же формуле. У шага две кнопки: <b>дата</b> (мини-календарь, «Без даты», «повторять до срока» каждый день, через день или раз в неделю) и <b>время · сложность</b> (ползунки). Дата необязательна.</p><p>Шаги с датой «сегодня» видны на вкладке «Сегодня» в блоке <b>«Сюжет сегодня»</b>. Отметить можно <b>любой</b> несделанный шаг до срока: он засчитается сегодняшним днём. Когда все шаги сделаны, квест <b>сам уходит друзьям</b> на проверку. Одобрили: <b>бонус +50%</b> от опыта шагов.</p>", v: 22 },
+  { id: "b-diary", l: 2, t: "Дневник", b: "<p>Вкладка «Дневник»: записи о том, что происходит. Кнопка <b>«+ Запись за сегодня»</b>: настроение, заголовок, текст. Записать можно только за сегодня, править только в тот же день, удалить в любой момент. Опыта за дневник нет.</p><p>Новая запись по умолчанию <b>🔒 только мне</b>: её видишь только ты, сервер не отдаёт её друзьям. Замок у записи переключает <b>👁 друзьям</b> и обратно. «👀 Как видят друзья» показывает твой дневник их глазами.</p><p>Открытые записи друзей во вкладке «Дневник → Друзья» (новые с меткой НОВОЕ) и в окне друга. Под ними реакции и комментарии. Если запись скрыть, реакции и комментарии спрячутся вместе с ней и вернутся, когда откроешь снова.</p>", v: 23 },
   { id: "b-link", l: 2, t: "Шаги на ходу и лимит дня", b: "<p>Пока срок не вышел, шаги можно менять: дату и время у несделанных, добавлять новые, убирать лишние (×). Убранный шаг уходит в «Убрано»: опыта за него нет, бонус меньше, друзья видят «убрано N». Его можно вернуть. Последний шаг убрать нельзя. Сделанный шаг под замком 🔒.</p><p>Лимит дня общий: <b>16 часов и 5 привычек</b> на квесты дня, повторы и шаги сюжетов вместе. Шаг без даты день не занимает, пока не отметишь его или не поставишь дату. Честные часы действуют и для шагов.</p><p>Привязка квеста дня к сюжету (плашка «сюжет») осталась только у старых квестов: новым она не нужна.</p>", v: 22 },
   { id: "b-verify", l: 2, t: "Проверка друзьями", b: "<p>Ежедневные квесты друзья не проверяют, их можно только <b>оспорить</b> в течение суток. На проверку уходит <b>сюжетный квест</b>: сам, когда сделаны все шаги (и старые крупные B, A, S, отправленные до v18). Фото или пояснение для друзей добавь в обсуждении под квестом. У друзей появляется запрос во вкладке «Пати» и цифра на вкладке.</p><p>Засчитано, если <b>большинство</b> друзей сказали «да» (при 2 друзьях оба, при 3 двое, при 4 трое), или если есть хотя бы одно «да», ни одного «нет» и прошло <b>48 часов</b>. Зеркально: одно или больше «нет», ни одного «да» и 48 часов, и квест отклонён. Если «нет» сказали столько, что большинства уже не набрать, квест отклонён, его можно отправить снова.</p>", v: 22 },
   { id: "b-talk", l: 2, t: "Комментарии и обсуждения", b: "<p>Под квестом на проверке или в споре есть <b>обсуждение</b>: друзья спрашивают, ты отвечаешь, можно с фото. Когда итог подведён, переписка остаётся, но писать туда уже нельзя.</p><p>Голосуя, можно оставить комментарий. К «Не засчитывать» он обязателен, к «Подтверждаю» по желанию. «Спросить» отправляет вопрос без голоса. «Оспорить» тоже требует причину.</p><p>Все твои обсуждения собраны во вкладке «Пати» в разделе «Обсуждения». Новые комментарии видны цифрой на вкладке и в плашке на «Сегодня».</p>", v: 11 },
@@ -3643,13 +3912,14 @@ function newAnswers() {
   return (reportsBy[me] || []).filter((r) => { const st = bugStatus[roster[me] + "__" + r.id]; return st && num(st.at) > seen; }).length;
 }
 function setTab(t) {
-  if (!["today", "story", "status", "party", "more"].includes(t)) t = "today";
+  if (!["today", "story", "diary", "status", "party", "more"].includes(t)) t = "today";
   tab = t; store.set("sys.tab", t);
   if (t === "status") { const hw = document.querySelector("#heat .hmwrap"); if (hw) hw.dataset.tr = ""; setTimeout(() => hmScroll("heat"), 30); }
   if (t === "more") markSeen(); else { newsHi = false; renderNewsHi(); }
   cmtBase = t === "party" ? num(prefs.cmtSeen) : null;
   renderTabs();
   if (t === "party") { lastHtml.talk = null; renderTalk(); renderBadges(); }
+  if (t === "diary") { if (dView === "friends") dSeenBase = num(prefs.diarySeen); renderDiary(); }
   renderRecap();
   try { window.scrollTo(0, 0); } catch {}
 }
@@ -3689,6 +3959,7 @@ function renderFriend() {
   setHtml("fNudge", nudgeHtml(friendId));
   setHtml("fQuests", questsListHtml(friendId).html);
   setHtml("fStories", storiesHtml(friendId));
+  setHtml("fDiary", dFriendHtml(friendId));
   setHtml("fRep", repListHtml(friendId));
   setHtml("fStatus", statsOnlyHtml(friendId));
   setHtml("fHeat", heatHtml(friendId, "f").html); requestAnimationFrame(() => hmScroll("fHeat"));
@@ -3717,6 +3988,7 @@ function renderAll() {
   fxWatch();
   renderMigr();
   renderSmig();
+  renderDiary();
   bgUpdate();
   bootCheck();
 }
@@ -3889,7 +4161,7 @@ function fxWatch() {
   fresh.forEach((f, i) => setTimeout(() => fxBanner(f.rank === "S" ? "S-РАНГ" : "СИСТЕМА", (f.story ? "Сюжет пройден" : "Квест " + f.rank + " подтверждён") + " · +" + f.xp + " XP", "«" + f.title + "»", RCOL[f.rank] || RCOL.B, f.rank === "S" ? 70 : 40), 300 + i * 2800));
 }
 // вкладки: подсветка переезжает, содержимое въезжает с нужной стороны
-const TAB_ORDER = ["today", "story", "status", "party", "more"];
+const TAB_ORDER = ["today", "story", "diary", "status", "party", "more"];
 let tabShown = null;
 function fxTabs() {
   const nav = $("tabs"); if (!nav) return;
@@ -3914,7 +4186,7 @@ window.addEventListener("error", (e) => { if (!e || !e.message || /ResizeObserve
 window.addEventListener("unhandledrejection", (e) => { const r = e && e.reason; const m = r && (r.message || r.code) ? String(r.message || r.code) : String(r); if (/Failed to fetch|NetworkError|Load failed|fetch failed/i.test(m)) return; logErr(m, r && r.stack, "promise"); });
 
 // ---------- экран загрузки с советами (v17) ----------
-const TIPS = [["Система", "Квест друга можно оспорить в течение суток, если он выглядит нечестно. Спор сам считается голосом «нет»."], ["Система", "Сюжетный квест сам уходит друзьям, когда все шаги сделаны. Фото для них добавь в обсуждении."], ["Система", "Честные часы: выполнить можно не больше часов, чем прошло с 6:00. Отмечай задачи по мере выполнения."], ["Система", "Чем больше опыта за квест, тем больше искр при выполнении."], ["Система", "Квест «без времени» это привычка. Их можно до 5 в день."], ["Система", "У дня 16 часов. Ползунок времени не даст запланировать больше."], ["Система", "Повторы создаются сами каждое утро. Процент рядом покажет, какая привычка проседает."], ["Система", "Нажми на друга во вкладке «Пати», чтобы увидеть его квесты, сюжет и характеристики."], ["Система", "Сюжетный квест это цель и шаги. Каждый шаг даёт опыт, как квест дня, а за закрытие бонус +50%."], ["Система", "Не знаешь, когда сделаешь шаг сюжета? Оставь его без даты и отметь, когда сделаешь."], ["Система", "Выходной можно взять 2 раза в месяц, но только заранее. Задним числом нельзя."], ["Система", "Если друг сегодня не заходил, его можно «пнуть»: ему придёт уведомление."], ["Система", "Карта активности в «Статусе» показывает весь сезон. Чем ярче квадратик, тем сильнее был день."], ["Система", "Итоги недели появляются в понедельник: опыт, место в пати и лучший день."], ["Система", "Опыт квеста уходит в его характеристику. Хочешь прокачать ИНТ, бери квесты на разум."], ["Система", "Каждые 25 XP в характеристике дают к ней +1 очко."], ["Система", "Уровень растёт от общего опыта, и каждый следующий дороже на 25 XP."], ["Система", "Закрой все квесты дня, от трёх, и Система покажет «Все квесты дня выполнены»."], ["Система", "Серия считает дни подряд, когда у тебя был хотя бы один засчитанный квест."], ["Система", "Включи уведомления в «Ещё», чтобы не пропустить голоса друзей и вечернее напоминание."], ["Система", "Нашёл баг? Внизу страницы есть «Нашёл баг? Сообщи», можно приложить скриншот."], ["Система", "За нелюбимое дело (👎) опыта на 30% больше. Дисциплина ценится."], ["Система", "Сайт можно установить на телефон как приложение: «Добавить на главный экран»."], ["Система", "Поставь ⏰ на квест, и в нужное время придёт напоминание."], ["Система", "Аватарку можно поставить во вкладке «Статус», нажав на кружок с буквой."], ["Система", "Гайд в «Ещё» отмечает синими точками разделы, которые изменились."], ["Система", "Живой фон меняет цвет по твоему рангу охотника: от синего на E до красного на S."], ["Тайм-менеджмент", "Правило двух минут: если дело занимает меньше двух минут, сделай его сразу."], ["Тайм-менеджмент", "Самое трудное делай первым, пока силы свежие. Остальной день покажется легче."], ["Тайм-менеджмент", "Разбивай большое на шаги по 25–30 минут. Маленький шаг легче начать."], ["Тайм-менеджмент", "Планируй вечером на завтра. Утром не придётся решать, с чего начать."], ["Тайм-менеджмент", "Помодоро: 25 минут работы, 5 минут отдыха. После четырёх кругов перерыв подольше."], ["Тайм-менеджмент", "На время важного дела убери телефон в другую комнату. Внимание вернётся."], ["Тайм-менеджмент", "Ставь 3–5 главных задач на день. Слишком длинный список чаще разочаровывает."], ["Тайм-менеджмент", "Время в дороге и в очередях можно занять чтением или карточками для учёбы."], ["Тайм-менеджмент", "Группируй похожие дела: звонки подряд, сообщения подряд, покупки за один выход."], ["Тайм-менеджмент", "Если задача пугает, спроси себя: какой первый физический шаг? Сделай только его."], ["Тайм-менеджмент", "Прикидывай, сколько займёт дело, и сравнивай с тем, сколько ушло на самом деле. Прогнозы станут точнее."], ["Тайм-менеджмент", "Матрица Эйзенхауэра: важное и срочное сразу, важное несрочное в план, остальное сократи или отдай."], ["Тайм-менеджмент", "Закон Паркинсона: работа занимает всё отведённое время. Ставь себе сроки чуть короче."], ["Тайм-менеджмент", "Отдых тоже планируется. Без пауз силы к вечеру заканчиваются."], ["Тайм-менеджмент", "Первые часы после пробуждения у многих самые ясные. Не трать их на ленту."], ["Тайм-менеджмент", "Раз в неделю пересматривай цели: что сработало, что убрать, что добавить."], ["Тайм-менеджмент", "Делай одно дело за раз. Каждое переключение съедает время и внимание."], ["Тайм-менеджмент", "В конце дня запиши, на чём остановился. Завтра начнёшь быстрее."], ["Тайм-менеджмент", "Сложную учёбу лучше делить на короткие подходы в разные дни, чем зубрить всё за ночь."], ["Дисциплина", "Не пропускай дважды подряд. Один пропуск случайность, два начало новой привычки."], ["Дисциплина", "Серия важнее идеального дня. Понемногу каждый день лучше, чем рывками."], ["Дисциплина", "Мотивация приходит после начала, а не до. Начни с пяти минут."], ["Дисциплина", "Привязывай новую привычку к старой: после чистки зубов 10 страниц книги."], ["Дисциплина", "Сделай хорошую привычку заметной: книга на подушке, форма у двери."], ["Дисциплина", "Сделай плохую привычку неудобной: убери приложение с главного экрана."], ["Дисциплина", "На 1% лучше каждый день это примерно в 37 раз лучше за год."], ["Дисциплина", "Не жди настроения. Дисциплина это делать, когда не хочется."], ["Дисциплина", "Сравнивай себя с собой вчерашним, а не с другими."], ["Дисциплина", "Сон держит всё остальное. Режим сна это тоже квест."], ["Дисциплина", "Когда тянет бросить, вспомни, зачем начинал."], ["Дисциплина", "Пати это не только соревнование, но и поддержка. Подтверди сегодня чей-нибудь квест."], ["Дисциплина", "Честность с собой важнее XP. Опыт за несделанное ничего не прокачивает."], ["Дисциплина", "Сорвался? Не наказывай себя. Просто вернись завтра."], ["Дисциплина", "Привычка в среднем закрепляется около двух месяцев, а не за 21 день. Дай себе время."], ["Дисциплина", "Окружение решает. Проводи время с теми, кто тоже растёт."], ["Дисциплина", "Отмечай квест сразу после выполнения. Это маленькая награда для мозга."], ["Дисциплина", "Не получается? Уменьши цель: 10 минут каждый день лучше, чем час раз в неделю."], ["Дисциплина", "Запиши, кем хочешь стать к концу сезона. Каждый квест это голос за этого человека."], ["Дисциплина", "Короткая прогулка прочищает голову и помогает думать."], ["Дисциплина", "Вода и нормальный завтрак тоже влияют на концентрацию."], ["Дисциплина", "Скучная работа идёт легче под музыку без слов."], ["Дисциплина", "Хвали себя за сделанное, а не только ругай за упущенное."], ["Дисциплина", "Цель без срока это мечта. Поставь дату."], ["Дисциплина", "День не задался? Сделай хотя бы один мелкий квест, и серия не прервётся."]];
+const TIPS = [["Система", "Квест друга можно оспорить в течение суток, если он выглядит нечестно. Спор сам считается голосом «нет»."], ["Система", "Сюжетный квест сам уходит друзьям, когда все шаги сделаны. Фото для них добавь в обсуждении."], ["Система", "Честные часы: выполнить можно не больше часов, чем прошло с 6:00. Отмечай задачи по мере выполнения."], ["Система", "Чем больше опыта за квест, тем больше искр при выполнении."], ["Система", "Квест «без времени» это привычка. Их можно до 5 в день."], ["Система", "У дня 16 часов. Ползунок времени не даст запланировать больше."], ["Система", "Повторы создаются сами каждое утро. Процент рядом покажет, какая привычка проседает."], ["Система", "Нажми на друга во вкладке «Пати», чтобы увидеть его квесты, сюжет и характеристики."], ["Система", "Сюжетный квест это цель и шаги. Каждый шаг даёт опыт, как квест дня, а за закрытие бонус +50%."], ["Система", "Не знаешь, когда сделаешь шаг сюжета? Оставь его без даты и отметь, когда сделаешь."], ["Система", "Дневник: запиши, что сегодня случилось. По умолчанию запись видишь только ты."], ["Система", "Выходной можно взять 2 раза в месяц, но только заранее. Задним числом нельзя."], ["Система", "Если друг сегодня не заходил, его можно «пнуть»: ему придёт уведомление."], ["Система", "Карта активности в «Статусе» показывает весь сезон. Чем ярче квадратик, тем сильнее был день."], ["Система", "Итоги недели появляются в понедельник: опыт, место в пати и лучший день."], ["Система", "Опыт квеста уходит в его характеристику. Хочешь прокачать ИНТ, бери квесты на разум."], ["Система", "Каждые 25 XP в характеристике дают к ней +1 очко."], ["Система", "Уровень растёт от общего опыта, и каждый следующий дороже на 25 XP."], ["Система", "Закрой все квесты дня, от трёх, и Система покажет «Все квесты дня выполнены»."], ["Система", "Серия считает дни подряд, когда у тебя был хотя бы один засчитанный квест."], ["Система", "Включи уведомления в «Ещё», чтобы не пропустить голоса друзей и вечернее напоминание."], ["Система", "Нашёл баг? Внизу страницы есть «Нашёл баг? Сообщи», можно приложить скриншот."], ["Система", "За нелюбимое дело (👎) опыта на 30% больше. Дисциплина ценится."], ["Система", "Сайт можно установить на телефон как приложение: «Добавить на главный экран»."], ["Система", "Поставь ⏰ на квест, и в нужное время придёт напоминание."], ["Система", "Аватарку можно поставить во вкладке «Статус», нажав на кружок с буквой."], ["Система", "Гайд в «Ещё» отмечает синими точками разделы, которые изменились."], ["Система", "Живой фон меняет цвет по твоему рангу охотника: от синего на E до красного на S."], ["Тайм-менеджмент", "Правило двух минут: если дело занимает меньше двух минут, сделай его сразу."], ["Тайм-менеджмент", "Самое трудное делай первым, пока силы свежие. Остальной день покажется легче."], ["Тайм-менеджмент", "Разбивай большое на шаги по 25–30 минут. Маленький шаг легче начать."], ["Тайм-менеджмент", "Планируй вечером на завтра. Утром не придётся решать, с чего начать."], ["Тайм-менеджмент", "Помодоро: 25 минут работы, 5 минут отдыха. После четырёх кругов перерыв подольше."], ["Тайм-менеджмент", "На время важного дела убери телефон в другую комнату. Внимание вернётся."], ["Тайм-менеджмент", "Ставь 3–5 главных задач на день. Слишком длинный список чаще разочаровывает."], ["Тайм-менеджмент", "Время в дороге и в очередях можно занять чтением или карточками для учёбы."], ["Тайм-менеджмент", "Группируй похожие дела: звонки подряд, сообщения подряд, покупки за один выход."], ["Тайм-менеджмент", "Если задача пугает, спроси себя: какой первый физический шаг? Сделай только его."], ["Тайм-менеджмент", "Прикидывай, сколько займёт дело, и сравнивай с тем, сколько ушло на самом деле. Прогнозы станут точнее."], ["Тайм-менеджмент", "Матрица Эйзенхауэра: важное и срочное сразу, важное несрочное в план, остальное сократи или отдай."], ["Тайм-менеджмент", "Закон Паркинсона: работа занимает всё отведённое время. Ставь себе сроки чуть короче."], ["Тайм-менеджмент", "Отдых тоже планируется. Без пауз силы к вечеру заканчиваются."], ["Тайм-менеджмент", "Первые часы после пробуждения у многих самые ясные. Не трать их на ленту."], ["Тайм-менеджмент", "Раз в неделю пересматривай цели: что сработало, что убрать, что добавить."], ["Тайм-менеджмент", "Делай одно дело за раз. Каждое переключение съедает время и внимание."], ["Тайм-менеджмент", "В конце дня запиши, на чём остановился. Завтра начнёшь быстрее."], ["Тайм-менеджмент", "Сложную учёбу лучше делить на короткие подходы в разные дни, чем зубрить всё за ночь."], ["Дисциплина", "Не пропускай дважды подряд. Один пропуск случайность, два начало новой привычки."], ["Дисциплина", "Серия важнее идеального дня. Понемногу каждый день лучше, чем рывками."], ["Дисциплина", "Мотивация приходит после начала, а не до. Начни с пяти минут."], ["Дисциплина", "Привязывай новую привычку к старой: после чистки зубов 10 страниц книги."], ["Дисциплина", "Сделай хорошую привычку заметной: книга на подушке, форма у двери."], ["Дисциплина", "Сделай плохую привычку неудобной: убери приложение с главного экрана."], ["Дисциплина", "На 1% лучше каждый день это примерно в 37 раз лучше за год."], ["Дисциплина", "Не жди настроения. Дисциплина это делать, когда не хочется."], ["Дисциплина", "Сравнивай себя с собой вчерашним, а не с другими."], ["Дисциплина", "Сон держит всё остальное. Режим сна это тоже квест."], ["Дисциплина", "Когда тянет бросить, вспомни, зачем начинал."], ["Дисциплина", "Пати это не только соревнование, но и поддержка. Подтверди сегодня чей-нибудь квест."], ["Дисциплина", "Честность с собой важнее XP. Опыт за несделанное ничего не прокачивает."], ["Дисциплина", "Сорвался? Не наказывай себя. Просто вернись завтра."], ["Дисциплина", "Привычка в среднем закрепляется около двух месяцев, а не за 21 день. Дай себе время."], ["Дисциплина", "Окружение решает. Проводи время с теми, кто тоже растёт."], ["Дисциплина", "Отмечай квест сразу после выполнения. Это маленькая награда для мозга."], ["Дисциплина", "Не получается? Уменьши цель: 10 минут каждый день лучше, чем час раз в неделю."], ["Дисциплина", "Запиши, кем хочешь стать к концу сезона. Каждый квест это голос за этого человека."], ["Дисциплина", "Короткая прогулка прочищает голову и помогает думать."], ["Дисциплина", "Вода и нормальный завтрак тоже влияют на концентрацию."], ["Дисциплина", "Скучная работа идёт легче под музыку без слов."], ["Дисциплина", "Хвали себя за сделанное, а не только ругай за упущенное."], ["Дисциплина", "Цель без срока это мечта. Поставь дату."], ["Дисциплина", "День не задался? Сделай хотя бы один мелкий квест, и серия не прервётся."]];
 let tipIdx = -1;
 function showTip() {
   let last = -1; try { last = +localStorage.getItem("sys.tip"); } catch {}
@@ -4206,6 +4478,7 @@ document.addEventListener("click", async (e) => {
   if (act === "tshift" && TEST_MODE) { const v = b.dataset.v; testShift = v === "0" ? 0 : testShift + num(v); renderTestBar(); renderAll(); ensureDailies(); writeSeals(); return; }
   if (act === "tab") { setTab(b.dataset.t); return; }
   if (plUi(b, act)) return;
+  if (dUi(b, act)) return;
   if (act === "guideopen") { setTab("more"); setTimeout(() => { const g = $("guidePanel"); if (g) g.scrollIntoView({ block: "start" }); }, 30); return; }
   if (act === "bugsold") { bugsOld = !bugsOld; openKeys.add("bugsClosed"); renderAdmin(); return; }
   if (act === "bugopen") { setTab("more"); setTimeout(() => { const g = $("bugPanel"); if (g) g.scrollIntoView({ block: "start" }); const t = $("bugText"); if (t) t.focus(); }, 30); return; }
@@ -4508,6 +4781,7 @@ document.addEventListener("click", async (e) => {
       return;
     }
     if (await plAct(b, act)) return;
+    if (await dAct(b, act)) return;
     // story quests
     const s = b.dataset.id ? myStory(b.dataset.id) : null;
     if (act === "sstep" && s && s.kind === "steps" && !s.done && today() <= s.deadline) {
@@ -4619,7 +4893,7 @@ document.addEventListener("click", async (e) => {
     }
     if (act === "cpost") {
       const k = b.dataset.k || "", [ik, owner, ...rest] = k.split(":"), id = rest.join(":"), dk = "c:" + k;
-      if (!["task", "story", "step"].includes(ik) || !owner || !id) return;
+      if (!["task", "story", "step", "diary"].includes(ik) || !owner || !id) return;
       if (upBusy[dk]) { toast("Подожди, фото ещё загружаются."); return; }
       const inp = $(b.dataset.inp || ""), text = ((inp && inp.value) || "").trim().replace(/\s+/g, " ").slice(0, CMT_MAX), imgs = imgIds(pendImgs[dk]);
       if (!text && !imgs.length) { toast("Напиши комментарий."); if (inp) inp.focus(); return; }
@@ -4895,7 +5169,7 @@ function syncSubs() {
     const u = (isActive(p) || p.id === me) ? roster[p.id] || null : null, s = subs[p.id];
     if (s && s.uid === u) continue;
     if (s) { s.un.forEach((f) => f()); delete subs[p.id]; }
-    tasksBy[p.id] = []; storiesBy[p.id] = []; votesBy[p.id] = []; votesVer++; droppedBy[p.id] = []; prefsBy[p.id] = {}; reportsBy[p.id] = []; sealsBy[p.id] = {}; sealsLoaded[p.id] = false; defBy[p.id] = {}; loadedBy[p.id] = !u; storyLoadedBy[p.id] = !u;
+    tasksBy[p.id] = []; storiesBy[p.id] = []; diaryBy[p.id] = []; votesBy[p.id] = []; votesVer++; droppedBy[p.id] = []; prefsBy[p.id] = {}; reportsBy[p.id] = []; sealsBy[p.id] = {}; sealsLoaded[p.id] = false; defBy[p.id] = {}; loadedBy[p.id] = !u; storyLoadedBy[p.id] = !u;
     if (!u) continue;
     const parts = {}, defParts = {};
     const un = TASK_RANGES.map(([a, z]) => {
@@ -4921,6 +5195,10 @@ function syncSubs() {
         storyLoadedBy[p.id] = true; if (!snap.metadata.fromCache) (defBy[p.id] = defBy[p.id] || {}).s = true;
         renderAll(); if (p.id === me) setTimeout(ensureDailies, 0); else setTimeout(writeSeals, 0);
       }, onErr),
+      db.collection("q/" + u + "/diary").limit(500).onSnapshot((snap) => {
+        diaryBy[p.id] = snap.docs.map((x) => ({ ...x.data(), id: x.id, player: p.id, open: true })).filter(validEntry);
+        renderDiary(); if (friendId === p.id) renderFriend();
+      }, onErr),
       db.collection("v/" + u + "/votes").limit(1000).onSnapshot((snap) => {
         votesBy[p.id] = snap.docs.map((x) => x.data()); votesVer++; votesLoaded[p.id] = true; renderAll();
       }, onErr),
@@ -4942,12 +5220,21 @@ function syncSubs() {
       templatesLoaded = true; renderAll(); setTimeout(ensureDailies, 0);
     }, onErr);
   } else if (!me && subDaily) { subDaily(); subDaily = null; templates = []; templatesLoaded = false; }
+  // скрытые записи дневника: сервер отдаёт их только автору
+  if (me && uid && privUid !== uid) {
+    if (subPriv) subPriv();
+    privUid = uid; privLoaded = false;
+    subPriv = db.collection("p/" + uid + "/diary").limit(500).onSnapshot((snap) => {
+      myPriv = snap.docs.map((x) => ({ ...x.data(), id: x.id, player: me, open: false })).filter(validEntry);
+      privLoaded = true; renderDiary();
+    }, onErr);
+  } else if (!me && subPriv) { subPriv(); subPriv = null; privUid = null; myPriv = []; privLoaded = false; }
   if (me && !subPrefs) {
     subPrefs = db.doc("q/" + uid + "/meta/prefs").onSnapshot((snap) => {
       prefs = snap.exists ? { ...snap.data() } : {}; prefsLoaded = true;
       renderTabs(); renderGuide(); renderMyBugs(); if (tab === "more") markSeen(); touchSeen();
       if (tab === "party" && cmtBase == null) cmtBase = num(prefs.cmtSeen);
-      lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderStatus(); renderMigr(); renderSmig();
+      lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderStatus(); renderMigr(); renderSmig(); renderDiary();
       if (!prefs.tourDone && !tourAuto && me) { tourAuto = true; setTimeout(startTour, 900); }
     }, onErr);
   }
@@ -4984,8 +5271,8 @@ function renderTestBar() {
 
 // ---------- boot ----------
 window.SISTEMA_NAV = (url) => { const m = /#(today|story|status|party|more)\b/.exec(String(url || "")); if (m) setTab(m[1]); };
-{ const h0 = /^#(today|story|status|party|more)$/.exec(location.hash || ""); if (h0) { try { localStorage.setItem("sys.tab", h0[1]); history.replaceState(null, "", location.pathname + location.search); } catch {} } }
-{ const s0 = store.get("sys.stat"); if (statOf(s0)) selStat = s0; const x0 = String(store.get("sys.mel") || "").split(".").map(Number); if (x0.length === 2 && [0, 1, 2].includes(x0[0]) && [0, 1, 2].includes(x0[1])) { selE = x0[0]; selL = x0[1]; } const t0 = store.get("sys.tab"); if (["today", "story", "status", "party", "more"].includes(t0)) tab = t0; }
+{ const h0 = /^#(today|story|diary|status|party|more)$/.exec(location.hash || ""); if (h0) { try { localStorage.setItem("sys.tab", h0[1]); history.replaceState(null, "", location.pathname + location.search); } catch {} } }
+{ const s0 = store.get("sys.stat"); if (statOf(s0)) selStat = s0; const x0 = String(store.get("sys.mel") || "").split(".").map(Number); if (x0.length === 2 && [0, 1, 2].includes(x0[0]) && [0, 1, 2].includes(x0[1])) { selE = x0[0]; selL = x0[1]; } const t0 = store.get("sys.tab"); if (["today", "story", "diary", "status", "party", "more"].includes(t0)) tab = t0; }
 document.addEventListener("toggle", (e) => {
   const d = e.target;
   if (d && d.dataset && d.dataset.key) {
