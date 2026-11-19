@@ -833,7 +833,7 @@ details.pldn summary::-webkit-details-marker{display:none}
 .dmoods button[aria-pressed=true]{border-color:var(--diary);background:rgba(255,158,207,.14);box-shadow:inset 0 0 0 1px var(--diary)}
 .dmoods button[aria-pressed=true] .t{color:var(--fg)}
 .dform input[type=text],.dform textarea{width:100%}
-.dform textarea{min-height:110px;resize:vertical;line-height:1.5}
+.dform textarea{min-height:120px;resize:vertical;line-height:1.5}
 .dvis{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line-soft);background:rgba(6,12,24,.5);cursor:pointer;text-align:left;width:100%;color:var(--fg)}
 .dvis .ic{font-size:20px}
 .dvis b{display:block;font-size:14px}
@@ -1471,10 +1471,10 @@ const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' 
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
   { v: 23, date: "2026-11-19", title: "Дневник", items: [
-    "Новая вкладка «Дневник». Каждая запись это событие дня: настроение (5 смайлов), заголовок и текст. Записать можно только за сегодня.",
+    "Новая вкладка «Дневник». Каждая запись это событие дня: настроение (5 смайлов) и текст. Записать можно только за сегодня.",
     "Новая запись по умолчанию 🔒 «только мне»: её видишь только ты, сервер не отдаёт её друзьям. Нажми на замок, чтобы стало 👁 «друзьям», и обратно.",
     "Открытые записи друзей во вкладке «Дневник → Друзья» и в окне друга в «Пати». Можно ставить реакции 🔥 ❤️ 😂 😮 💪 и писать комментарии.",
-    "Править запись можно только в её день, удалить в любой момент. Сверху полоска настроения за неделю и кнопка «👀 Как видят друзья».",
+    "Править запись можно только в её день, удалить в любой момент. Кнопка «👀 Как видят друзья» покажет твой дневник их глазами.",
     "Опыта за дневник нет: он для тебя, не для очков.",
   ] },
   { v: 22, date: "2026-11-18", title: "Сюжетные квесты заново", items: [
@@ -3214,7 +3214,7 @@ function dEntryHtml(e, ctx) {
   const mine = e.player === me && !dAsFriend && canWrite, A = 'data-p="' + esc(e.player) + '" data-id="' + esc(e.id) + '"', canEdit = mine && e.d === today();
   const long = e.text.length > 220, ex = dMore.has(e.id), isNew = ctx === "feed" && dSeenBase != null && num(e.at) > dSeenBase;
   let h = '<article class="dent' + (e.open ? "" : " priv") + '" id="de-' + san(e.player + "-" + e.id) + '"><div class="deh"><span class="dem" title="Настроение: ' + D_MOODS[e.mood][1] + '">' + D_MOODS[e.mood][0] + "</span>" +
-    '<div style="min-width:0"><div class="det">' + esc(e.title) + '</div><div class="demeta">' +
+    '<div style="min-width:0">' + (e.title ? '<div class="det">' + esc(e.title) + "</div>" : "") + '<div class="demeta">' +
     (ctx === "feed" ? '<button type="button" class="dwho" data-act="view" data-p="' + esc(e.player) + '">' + avaHtml(e.player, "xs") + esc(pname(e.player)) + "</button><span>·</span>" : "") +
     "<span>" + (ctx === "feed" ? dAgo(e.d).toLowerCase() + ", " : "") + dTm(e.at) + "</span>" + (e.edited ? "<span>· изменено</span>" : "") + (isNew ? '<span class="dnew">НОВОЕ</span>' : "") +
     (mine && !canEdit ? '<span title="Править можно только в день записи">· 🔒</span>' : "") + "</div></div>" +
@@ -3245,11 +3245,9 @@ function dFormHtml() {
   const f = dForm;
   return '<div class="dform" id="dForm"><div class="dfh"><span class="lbl">' + (f.id ? "Изменить запись" : "Новая запись") + '</span><span class="ddate">' + nice(today()) + " · сегодня</span></div>" +
     '<div><div class="lbl" style="margin-bottom:6px">Настроение</div><div class="dmoods" role="group" aria-label="Настроение">' + D_MOODS.map(([e, t], i) => '<button type="button" data-act="dmood" data-m="' + i + '" aria-pressed="' + (f.mood === i) + '" aria-label="' + t + '"><span class="e">' + e + '</span><span class="t">' + t + "</span></button>").join("") + "</div></div>" +
-    '<input type="text" id="dTitle" maxlength="' + D_TITLE + '" placeholder="Что случилось? Коротко, например «Сдал лабу»" value="' + esc(f.title) + '" aria-label="Заголовок">' +
-    '<textarea id="dText" maxlength="' + D_TEXT + '" placeholder="Подробнее: как прошло, что почувствовал, что понял…" aria-label="Текст">' + esc(f.text) + "</textarea>" +
+    '<textarea id="dText" maxlength="' + D_TEXT + '" placeholder="Что сегодня случилось?" aria-label="Запись">' + esc((f.title ? f.title + (f.text ? "\n" : "") : "") + f.text) + "</textarea>" +
     '<button type="button" class="dvis" data-act="dvis" aria-pressed="' + f.open + '"><span class="ic">' + (f.open ? "👁" : "🔒") + "</span><span><b>" + (f.open ? "Видно друзьям" : "Только мне") + '</b><span class="s">' + (f.open ? "Друзья смогут читать, ставить реакции и писать комментарии. Нажми, чтобы скрыть." : "Никто, кроме тебя, не увидит. Нажми, чтобы показать друзьям.") + "</span></span></button>" +
-    '<div class="acts"><button type="button" class="btn" data-act="dsave" style="--sys:var(--diary)">' + (f.id ? "Сохранить" : "Добавить в дневник") + '</button><button type="button" class="btn ghost" data-act="dcancel">Отмена</button><span class="hint bad" id="dErr"></span></div>' +
-    '<div class="hint">Запись можно править только сегодня. Удалить можно всегда. Опыта за дневник нет: он для тебя, не для очков.</div></div>';
+    '<div class="acts"><button type="button" class="btn" data-act="dsave" style="--sys:var(--diary)">' + (f.id ? "Сохранить" : "Добавить в дневник") + '</button><button type="button" class="btn ghost" data-act="dcancel">Отмена</button><span class="hint bad" id="dErr"></span></div></div>';
 }
 function dWeekHtml() {
   let h = '<div class="dweek" aria-label="Настроение за неделю">';
@@ -3271,12 +3269,12 @@ function renderDiary() {
   else if (dView === "mine") {
     const all = myEntries(), list = all.filter((e) => !dAsFriend || e.open);
     h += '<details class="dhow"' + (all.length ? "" : " open") + '><summary>Как это работает?</summary><ul>' +
-      "<li><b>Каждая запись это событие дня</b>: настроение, заголовок и текст. Записать можно только за <b>сегодня</b>.</li>" +
+      "<li><b>Каждая запись это событие дня</b>: настроение и пара слов о том, что случилось. Записать можно только за <b>сегодня</b>.</li>" +
       "<li><b>🔒 Только мне</b> по умолчанию: запись видишь только ты, друзья её не получат даже технически. Нажми на замок, чтобы стало <b>👁 друзьям</b>, и обратно.</li>" +
       "<li>Открытые записи друзья читают во вкладке «Дневник → Друзья» и в твоём окне в «Пати», ставят реакции и пишут комментарии.</li>" +
       "<li>Править можно только в день записи (потом 🔒), удалить можно всегда. Опыта за дневник нет.</li></ul></details>";
     if (dAsFriend) h += '<div class="dasf"><span>👀 Так твой дневник видят друзья: скрытых записей тут нет.</span><button type="button" class="btn sm ghost" data-act="dasfriend">Выйти</button></div>';
-    else h += dWeekHtml() + (!canWrite ? "" : dForm ? dFormHtml() : '<button type="button" class="dadd" data-act="dadd">+ Запись за сегодня</button>') +
+    else h += (!canWrite ? "" : dForm ? dFormHtml() : '<button type="button" class="dadd" data-act="dadd">+ Запись за сегодня</button>') +
       (all.some((e) => e.open) || all.length ? '<div class="acts" style="justify-content:flex-end;margin:-4px 0 10px"><button type="button" class="dcbtn" data-act="dasfriend">👀 Как видят друзья</button></div>' : "");
     h += (!privLoaded && !dAsFriend) ? '<div class="empty">Загрузка…</div>' : list.length ? dByDay(list, "mine") : '<div class="empty">' + (dAsFriend ? "Открытых записей нет: друзья ничего не увидят." : "Пока пусто. Нажми «+ Запись за сегодня».") + "</div>";
   } else {
@@ -3293,14 +3291,14 @@ function dFriendHtml(pid) {
 // интерфейс (без записи в базу)
 function dUi(b, act) {
   if (!/^d(view|add|mood|vis|cancel|edit|delask|delno|more|pick|cmts|asfriend)$/.test(act)) return false;
-  const ds = b.dataset, keep = () => { if (dForm) { const t = $("dTitle"), x = $("dText"); if (t) dForm.title = t.value; if (x) dForm.text = x.value; } };
+  const ds = b.dataset, keep = () => { if (dForm) { const x = $("dText"); if (x) { dForm.title = ""; dForm.text = x.value; } } };
   const e = ds.id ? dEntryOf(ds.p, ds.id) : null;
   if (act === "dview") { dView = ds.v === "friends" ? "friends" : "mine"; dAsFriend = false; dSeenBase = dView === "friends" ? num(prefs.diarySeen) : null; renderDiary(); return true; }
-  if (act === "dadd") { if (!canWrite) return true; dForm = { id: null, mood: null, title: "", text: "", open: false }; renderDiary(); plFocus("#dTitle"); return true; }
+  if (act === "dadd") { if (!canWrite) return true; dForm = { id: null, mood: null, title: "", text: "", open: false }; renderDiary(); plFocus("#dText"); return true; }
   if (act === "dmood") { keep(); dForm.mood = num(ds.m); renderDiary(); plFocus('[data-act="dmood"][data-m="' + ds.m + '"]'); return true; }
   if (act === "dvis") { keep(); dForm.open = !dForm.open; renderDiary(); plFocus('[data-act="dvis"]'); return true; }
   if (act === "dcancel") { dForm = null; renderDiary(); return true; }
-  if (act === "dedit" && e) { if (e.d !== today()) return true; dForm = { id: e.id, mood: e.mood, title: e.title, text: e.text, open: !!e.open, was: !!e.open }; renderDiary(); plFocus("#dTitle"); setTimeout(() => { const f = $("dForm"); if (f) f.scrollIntoView({ block: "start", behavior: RM() ? "auto" : "smooth" }); }, 30); return true; }
+  if (act === "dedit" && e) { if (e.d !== today()) return true; dForm = { id: e.id, mood: e.mood, title: e.title, text: e.text, open: !!e.open, was: !!e.open }; renderDiary(); plFocus("#dText"); setTimeout(() => { const f = $("dForm"); if (f) f.scrollIntoView({ block: "start", behavior: RM() ? "auto" : "smooth" }); }, 30); return true; }
   if (act === "ddelask" && e) { dDel = e.id; renderDiary(); plFocus('[data-act="ddel"]'); return true; }
   if (act === "ddelno") { dDel = null; renderDiary(); return true; }
   if (act === "dmore" && e) { if (dMore.has(e.id)) dMore.delete(e.id); else dMore.add(e.id); renderDiary(); if (friendId) renderFriend(); return true; }
@@ -3317,10 +3315,10 @@ async function dAct(b, act) {
   const ds = b.dataset;
   if (act === "dsave") {
     const f = dForm; if (!f) return true;
-    const t = ($("dTitle").value || "").trim().replace(/\s+/g, " ").slice(0, D_TITLE), x = ($("dText").value || "").trim().slice(0, D_TEXT), err = $("dErr");
+    const t = "", x = ($("dText").value || "").trim().slice(0, D_TEXT), err = $("dErr");
     f.title = t; f.text = x;
     if (f.mood == null) { err.textContent = "Выбери настроение."; return true; }
-    if (!t) { err.textContent = "Напиши заголовок."; $("dTitle").focus(); return true; }
+    if (!x) { err.textContent = "Напиши, что случилось."; $("dText").focus(); return true; }
     b.disabled = true;
     if (f.id) {
       const o = dEntryOf(me, f.id); if (!o || o.d !== today()) { toast("Править можно только запись за сегодня."); dForm = null; renderDiary(); return true; }
@@ -3579,7 +3577,7 @@ const GUIDE = [
   // ---------- 2 · Основы ----------
   { id: "b-repeat", l: 2, t: "Повторяющиеся квесты", b: "<p>В плашке «повтор» выбери: <b>каждый день</b>, <b>каждые N дней</b> (2–30) или <b>по дням недели</b>. Квест сам появляется в нужные дни, когда открываешь сайт. Повторять можно только E, D, C.</p><p>Список повторов — внизу «Сегодня» в строке «Повторяющиеся квесты». Там ✎ — изменить, × — больше не повторять.</p><p>У каждого повтора видно, как он идёт: «18 из 25 · 72%», то есть в скольких днях по расписанию он выполнен. Ниже 40% подсвечивается красным с подсказкой: может, делать реже или меньше. Друзья видят твои повторы в твоём профиле.</p>", v: 13 },
   { id: "b-story", l: 2, t: "Сюжетные квесты", b: "<p>Сюжетный квест это большая цель, разбитая на <b>шаги</b>. Вкладка «Сюжет» → «+ Новый квест»: 1) цель, 2) срок (неделя, 2 недели, месяц… или своя дата, не позже 31 декабря), 3) характеристика, 4) шаги: пиши шаг и жми Enter.</p><p>Шаг это задача, как квест дня: <b>время × сложность × «нравится»</b>, опыт по той же формуле. У шага две кнопки: <b>дата</b> (мини-календарь, «Без даты», «повторять до срока» каждый день, через день или раз в неделю) и <b>время · сложность</b> (ползунки). Дата необязательна.</p><p>Шаги с датой «сегодня» видны на вкладке «Сегодня» в блоке <b>«Сюжет сегодня»</b>. Отметить можно <b>любой</b> несделанный шаг до срока: он засчитается сегодняшним днём. Когда все шаги сделаны, квест <b>сам уходит друзьям</b> на проверку. Одобрили: <b>бонус +50%</b> от опыта шагов.</p>", v: 22 },
-  { id: "b-diary", l: 2, t: "Дневник", b: "<p>Вкладка «Дневник»: записи о том, что происходит. Кнопка <b>«+ Запись за сегодня»</b>: настроение, заголовок, текст. Записать можно только за сегодня, править только в тот же день, удалить в любой момент. Опыта за дневник нет.</p><p>Новая запись по умолчанию <b>🔒 только мне</b>: её видишь только ты, сервер не отдаёт её друзьям. Замок у записи переключает <b>👁 друзьям</b> и обратно. «👀 Как видят друзья» показывает твой дневник их глазами.</p><p>Открытые записи друзей во вкладке «Дневник → Друзья» (новые с меткой НОВОЕ) и в окне друга. Под ними реакции и комментарии. Если запись скрыть, реакции и комментарии спрячутся вместе с ней и вернутся, когда откроешь снова.</p>", v: 23 },
+  { id: "b-diary", l: 2, t: "Дневник", b: "<p>Вкладка «Дневник»: записи о том, что происходит. Кнопка <b>«+ Запись за сегодня»</b>: настроение и текст. Записать можно только за сегодня, править только в тот же день, удалить в любой момент. Опыта за дневник нет.</p><p>Новая запись по умолчанию <b>🔒 только мне</b>: её видишь только ты, сервер не отдаёт её друзьям. Замок у записи переключает <b>👁 друзьям</b> и обратно. «👀 Как видят друзья» показывает твой дневник их глазами.</p><p>Открытые записи друзей во вкладке «Дневник → Друзья» (новые с меткой НОВОЕ) и в окне друга. Под ними реакции и комментарии. Если запись скрыть, реакции и комментарии спрячутся вместе с ней и вернутся, когда откроешь снова.</p>", v: 23 },
   { id: "b-link", l: 2, t: "Шаги на ходу и лимит дня", b: "<p>Пока срок не вышел, шаги можно менять: дату и время у несделанных, добавлять новые, убирать лишние (×). Убранный шаг уходит в «Убрано»: опыта за него нет, бонус меньше, друзья видят «убрано N». Его можно вернуть. Последний шаг убрать нельзя. Сделанный шаг под замком 🔒.</p><p>Лимит дня общий: <b>16 часов и 5 привычек</b> на квесты дня, повторы и шаги сюжетов вместе. Шаг без даты день не занимает, пока не отметишь его или не поставишь дату. Честные часы действуют и для шагов.</p><p>Привязка квеста дня к сюжету (плашка «сюжет») осталась только у старых квестов: новым она не нужна.</p>", v: 22 },
   { id: "b-verify", l: 2, t: "Проверка друзьями", b: "<p>Ежедневные квесты друзья не проверяют, их можно только <b>оспорить</b> в течение суток. На проверку уходит <b>сюжетный квест</b>: сам, когда сделаны все шаги (и старые крупные B, A, S, отправленные до v18). Фото или пояснение для друзей добавь в обсуждении под квестом. У друзей появляется запрос во вкладке «Пати» и цифра на вкладке.</p><p>Засчитано, если <b>большинство</b> друзей сказали «да» (при 2 друзьях оба, при 3 двое, при 4 трое), или если есть хотя бы одно «да», ни одного «нет» и прошло <b>48 часов</b>. Зеркально: одно или больше «нет», ни одного «да» и 48 часов, и квест отклонён. Если «нет» сказали столько, что большинства уже не набрать, квест отклонён, его можно отправить снова.</p>", v: 22 },
   { id: "b-talk", l: 2, t: "Комментарии и обсуждения", b: "<p>Под квестом на проверке или в споре есть <b>обсуждение</b>: друзья спрашивают, ты отвечаешь, можно с фото. Когда итог подведён, переписка остаётся, но писать туда уже нельзя.</p><p>Голосуя, можно оставить комментарий. К «Не засчитывать» он обязателен, к «Подтверждаю» по желанию. «Спросить» отправляет вопрос без голоса. «Оспорить» тоже требует причину.</p><p>Все твои обсуждения собраны во вкладке «Пати» в разделе «Обсуждения». Новые комментарии видны цифрой на вкладке и в плашке на «Сегодня».</p>", v: 11 },
