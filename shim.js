@@ -331,6 +331,7 @@
     let wasMember = null;
     isMemberNow().then((m) => (wasMember = m)).catch(() => {});
     const t = setInterval(async () => {
+      if (document.hidden) return; // вкладка в фоне: не дёргаем базу зря
       try {
         const { data } = await sb.from("accounts").select("uid,admin").eq("auth_id", account.auth_id).maybeSingle();
         if (data && (data.uid !== account.uid || data.admin !== account.admin)) { location.reload(); return; }
