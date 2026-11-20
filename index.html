@@ -984,6 +984,141 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 #yrOv .y-tb td.lead{color:var(--gold);font-weight:700}
 .vnote.yrn{color:#fff;border-color:rgba(180,140,255,.7);background:linear-gradient(100deg,rgba(94,200,255,.14),rgba(180,140,255,.16))}
 @media(prefers-reduced-motion:reduce){#yrOv .y-slide>*{animation:none;opacity:1;transform:none}#yrOv .y-bars i.cur b{animation:none;width:100%}#yrOv .y-col .b,#yrOv .y-st .now,#yrOv .y-ring .fgc{transition:none}}
+/* v25: нижние вкладки с иконками, профиль, магазин */
+.tab svg{width:18px;height:18px;flex:none}
+.tabs .tab .tl{display:inline}
+@media (max-width:760px){
+  .tabs{grid-template-columns:repeat(5,minmax(0,1fr)) !important}
+  .tab{flex-direction:column;gap:4px;padding:9px 2px 8px;font-size:10.5px;letter-spacing:.04em}
+  .tab svg{width:22px;height:22px}
+  .tab .badge,.tab .dot{top:4px;right:calc(50% - 22px)}
+}
+.setbar{display:flex;align-items:center;gap:12px}
+.setbar h2{margin:0;font:800 22px var(--f-display);letter-spacing:.04em}
+/* шапка профиля */
+.pfhero{padding:0;overflow:hidden}
+.pfbg{height:130px;position:relative;overflow:hidden;border-bottom:1px solid var(--line-soft)}
+.pftools{position:absolute;top:10px;right:10px;display:flex;gap:8px;z-index:2}
+.pfpts{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(124,243,255,.55);background:rgba(6,10,20,.7);padding:6px 11px;font:700 13px var(--f-display);color:#7cf3ff;cursor:pointer;font-variant-numeric:tabular-nums}
+.ph .pfpts{margin-left:auto;cursor:default}
+.pfgear{position:relative;width:36px;height:36px;border:1px solid var(--line);background:rgba(6,10,20,.7);color:var(--fg);font-size:18px;cursor:pointer;display:grid;place-items:center}
+.pfgear .dot{position:absolute;top:-3px;right:-3px}
+.pfid{display:flex;align-items:flex-end;gap:14px;padding:0 18px;margin-top:-44px;position:relative;z-index:1}
+.pfavw{position:relative;width:92px;height:92px;flex:none;display:grid;place-items:center}
+.pfavw.sm{transform:scale(.62)}
+.pfav{width:80px;height:80px;border-radius:50%;overflow:hidden;display:grid;place-items:center;position:relative;z-index:1;background:radial-gradient(circle at 30% 30%,rgba(94,200,255,.35),transparent 70%),var(--bg2);border:3px solid var(--panel-solid);font:800 34px var(--f-display);color:var(--fg)}
+.pfav img{width:100%;height:100%;object-fit:cover;display:block}
+.pfav.zoom{cursor:zoom-in}
+.pfav .avacam{right:10px;bottom:6px}
+.pfr{position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:2}
+.pfnm{padding-bottom:6px;min-width:0;flex:1}
+.pfname{font:800 24px/1.1 var(--f-display);display:flex;align-items:center;gap:10px;flex-wrap:wrap;overflow-wrap:anywhere}
+.pfon{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ok);margin-top:4px}
+.pfon i{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.pfon.away{color:var(--gold)}.pfon.off{color:var(--muted)}.pfon.off i{box-shadow:none;background:var(--dim)}
+.pfbody{padding:12px 18px 18px;display:flex;flex-direction:column;gap:10px}
+.pfbody .lvlrow{margin:4px 0 0}
+.pfst{font-style:italic;background:rgba(255,255,255,.04);border:0;border-left:3px solid var(--sys);padding:7px 10px;text-align:left;color:var(--fg);overflow-wrap:anywhere}
+.pfst.empty{font-style:normal;color:var(--muted);cursor:pointer;border-left-style:dashed}
+.pfcls{font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.pfcls b{color:var(--fg)}
+.pfcls .rank{height:20px;min-width:22px;font-size:12px}
+.pfavl{display:flex;gap:12px;margin-top:4px}.pfavl .linkbtn{font-size:12px}
+.pfab{font-size:14px;color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere}
+/* значок уровня как в Steam */
+.slv{display:inline-grid;place-items:center;width:32px;height:32px;font:800 14px var(--f-display);color:#fff;position:relative;flex:none;letter-spacing:0}
+.slv.big{width:46px;height:46px;font-size:18px}
+.slv::before{content:"";position:absolute;inset:0;border:3px solid var(--lc);box-shadow:0 0 10px var(--lc),inset 0 0 8px var(--lc);background:rgba(6,10,20,.65)}
+.slv>span{position:relative;z-index:1}
+.slv.circle::before{border-radius:50%}
+.slv.shield::before{border-radius:6px 6px 50% 50%}
+.slv.diamond::before{transform:rotate(45deg) scale(.8);border-radius:4px}
+.slv.hex::before{clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%);border:0;background:var(--lc);box-shadow:none}
+.slv.hex::after{content:"";position:absolute;inset:3px;clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%);background:#0b1830}
+.slv.star::before{clip-path:polygon(50% 0,61% 33%,97% 35%,68% 57%,79% 92%,50% 72%,21% 92%,32% 57%,3% 35%,39% 33%);border:0;background:var(--lc);box-shadow:none}
+.slv.star>span{font-size:.8em;color:#06101f;margin-top:3px}
+/* витрины */
+.pfsc .ph{margin-bottom:10px}
+.pfachs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pfach{border:1px solid var(--gold);background:rgba(255,207,92,.07);padding:9px 6px;text-align:center;min-height:70px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.pfach b{font:700 12.5px/1.15 var(--f-display)}
+.pfach span{font-size:10.5px;color:var(--gold)}
+.pfach.empty{border:1px dashed var(--line-soft);background:none;color:var(--dim);font-size:12px}
+.pffav{display:flex;gap:14px;align-items:center}
+.pffav .ic,.pfrec .ic{display:grid;place-items:center;color:var(--sys);border:1px solid var(--line);background:radial-gradient(circle at 30% 30%,rgba(94,200,255,.25),rgba(94,200,255,.04));flex:none}
+.pffav .ic{width:56px;height:56px;font-size:28px}
+.pffav b{font:800 19px/1.15 var(--f-display);display:block;overflow-wrap:anywhere}
+.pffav span{font-size:13px;color:var(--muted)}
+.pfstory{display:flex;flex-direction:column;gap:6px}
+.pfstory>b{font:800 17px var(--f-display);overflow-wrap:anywhere}
+.pfsteps{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:3px;font-size:13.5px;color:var(--muted)}
+.pfsteps li.d{color:var(--fg)}.pfsteps li.more{color:var(--dim)}
+.pfgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pfgrid div{background:rgba(255,255,255,.03);border:1px solid var(--line-soft);padding:9px 10px}
+.pfgrid b{display:block;font:800 20px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.pfgrid span{font-size:11.5px;color:var(--muted)}
+.pfrec{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line-soft)}
+.pfrec:last-child{border:0}
+.pfrec .ic{width:34px;height:34px;font-size:17px}
+.pfrec .t{flex:1;min-width:0}.pfrec .t b{display:block;font-weight:600;overflow-wrap:anywhere}.pfrec .t span{font-size:12px;color:var(--muted)}
+.pfrec .h{font:700 13px var(--f-mono);white-space:nowrap}
+.pfdi{padding:7px 0;border-bottom:1px solid var(--line-soft)}
+.pfdi:last-child{border:0}
+.pfdi p{margin:2px 0 0;font-size:14px;overflow-wrap:anywhere;white-space:pre-wrap}
+.pfaws{display:flex;flex-wrap:wrap;gap:8px}
+.pfaw{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-soft);background:rgba(255,255,255,.03);padding:5px 11px;font-size:15px}
+.pfaw b{font:700 13px var(--f-mono)}
+/* шторки профиля */
+#pfOv{z-index:55}
+#pfBox{max-width:620px}
+#pfBox input[type=text],#pfBox textarea{width:100%}
+.pfcats{display:flex}
+.pfcats button{flex:1}
+.pflad{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 12px}
+.pflad div{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;color:var(--muted)}
+.pfitems{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
+.pfit{border:1px solid var(--line-soft);background:rgba(255,255,255,.02);display:flex;flex-direction:column}
+.pfit.on{border-color:var(--sys);box-shadow:inset 0 0 0 1px var(--sys)}
+.pfit .pv{height:84px;position:relative;overflow:hidden;display:grid;place-items:center;border-bottom:1px solid var(--line-soft)}
+.pfit .inf{padding:9px 10px;display:flex;flex-direction:column;gap:6px;flex:1}
+.pfit .inf b{font:700 14px var(--f-display)}
+.pfit .pr{font:700 12.5px var(--f-mono);color:#7cf3ff}
+.pfit .tr{font-size:11.5px;color:var(--gold)}
+.pfit .btn{margin-top:auto;width:100%}
+.pfpick{flex-wrap:wrap}
+.pfpick .chip[aria-pressed=true]{background:var(--gold);border-color:var(--gold);box-shadow:0 0 12px rgba(255,207,92,.5)}
+.pftog{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line-soft)}
+.pftog input{width:20px;height:20px;accent-color:var(--sys)}
+.pfawp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pfawp button{border:1px solid var(--line-soft);background:rgba(255,255,255,.03);padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--fg)}
+.pfawp button:hover:not(:disabled){border-color:var(--gold)}
+.pfawp button:disabled{opacity:.4;cursor:not-allowed}
+.pfawp b{font-size:26px}.pfawp span{font-size:12px}
+/* фоны профиля */
+.pbg-base{background:radial-gradient(80% 120% at 20% 0%,rgba(94,200,255,.22),transparent 60%),linear-gradient(160deg,#0b1830,#060a14)}
+.pbg-neon{background:linear-gradient(transparent 0 calc(100% - 1px),rgba(94,200,255,.25) 0) 0 0/24px 24px,linear-gradient(90deg,transparent 0 calc(100% - 1px),rgba(180,140,255,.22) 0) 0 0/24px 24px,linear-gradient(160deg,#1a0f3a,#071a33)}
+.pbg-sunset{background:radial-gradient(60% 80% at 50% 110%,#ffcf5c,transparent 60%),linear-gradient(180deg,#2a1033,#ff5d73 70%,#ff9d4d)}
+.pbg-aurora{background:linear-gradient(180deg,#041222,#06101f)}
+.pbg-aurora::before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 90deg at 50% 50%,transparent,rgba(73,227,160,.55),transparent 30%,rgba(180,140,255,.55),transparent 60%);filter:blur(28px);animation:pfspin 14s linear infinite}
+.pbg-sakura{background:radial-gradient(3px 3px at 20% 30%,#fff 50%,transparent 51%),radial-gradient(4px 3px at 70% 60%,#ffd6ea 50%,transparent 51%),radial-gradient(3px 4px at 40% 80%,#ffd6ea 50%,transparent 51%),radial-gradient(3px 3px at 85% 20%,#fff 50%,transparent 51%),linear-gradient(160deg,#ff9ecf,#7a3b6b)}
+.pbg-matrix{background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(73,227,160,.35) 14px 15px),repeating-linear-gradient(0deg,rgba(0,0,0,.35) 0 3px,transparent 3px 6px),linear-gradient(180deg,#031a10,#020a06)}
+.pbg-storm{background:linear-gradient(180deg,#0d1424,#1a2340)}
+.pbg-storm::before{content:"";position:absolute;inset:0;background:radial-gradient(40% 60% at 70% 20%,rgba(200,230,255,.9),transparent 60%);opacity:0;animation:pfflash 5s infinite}
+.pbg-storm::after{content:"⚡";position:absolute;right:18%;top:12%;font-size:40px;filter:drop-shadow(0 0 12px #9fd8ff);animation:pfflash 5s infinite}
+.pbg-cosmos{background:radial-gradient(1px 1px at 10% 20%,#fff 60%,transparent 61%),radial-gradient(1px 1px at 30% 70%,#fff 60%,transparent 61%),radial-gradient(2px 2px at 60% 30%,#fff 60%,transparent 61%),radial-gradient(1px 1px at 80% 60%,#fff 60%,transparent 61%),radial-gradient(1px 1px at 90% 15%,#fff 60%,transparent 61%),radial-gradient(60% 80% at 70% 50%,rgba(180,140,255,.5),transparent 70%),radial-gradient(50% 60% at 20% 80%,rgba(94,200,255,.35),transparent 70%),#03040c}
+@keyframes pfspin{to{transform:rotate(360deg)}}
+@keyframes pfflash{0%,86%,100%{opacity:0}88%{opacity:1}90%{opacity:.2}92%{opacity:.9}}
+/* рамки */
+.pfr-neon{box-shadow:0 0 0 3px var(--sys),0 0 16px 3px var(--sys-glow)}
+.pfr-emerald{box-shadow:0 0 0 4px #1fae7a,0 0 0 6px #b6ffe0,0 0 18px rgba(73,227,160,.6)}
+.pfr-pixel{border:4px dashed var(--gold);border-radius:14px}
+.pfr-rainbow{background:conic-gradient(#ff5d73,#ffcf5c,#49e3a0,#5ec8ff,#b48cff,#ff5d73);animation:pfspin 4s linear infinite;-webkit-mask:radial-gradient(circle,transparent 41px,#000 42px);mask:radial-gradient(circle,transparent 41px,#000 42px)}
+.pfr-fire{background:conic-gradient(#ff5d73,#ff9d4d,#ffcf5c,#ff9d4d,#ff5d73);-webkit-mask:radial-gradient(circle,transparent 41px,#000 42px);mask:radial-gradient(circle,transparent 41px,#000 42px);filter:drop-shadow(0 0 10px #ff9d4d);animation:pfspin 2.5s linear infinite}
+.pfr-crown{box-shadow:0 0 0 3px var(--gold),0 0 18px 4px rgba(255,207,92,.55)}
+.pfr-crown::after{content:"👑";position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(-8deg);font-size:24px}
+@media (prefers-reduced-motion:reduce){.pbg-aurora::before,.pbg-storm::before,.pbg-storm::after,.pfr-rainbow,.pfr-fire{animation:none}}
+#profShow{display:flex;flex-direction:column;gap:18px}
+#profShow:empty{display:none}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
@@ -1011,12 +1146,11 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
   </header>
 
   <nav class="tabs" id="tabs" aria-label="Разделы">
-    <button type="button" class="tab" data-act="tab" data-t="today" id="tab-today">Сегодня</button>
-    <button type="button" class="tab" data-act="tab" data-t="story" id="tab-story">Сюжет</button>
-    <button type="button" class="tab" data-act="tab" data-t="diary" id="tab-diary">Дневник<span class="badge dbadge" id="diaryBadge" hidden></span></button>
-    <button type="button" class="tab" data-act="tab" data-t="status" id="tab-status">Статус</button>
-    <button type="button" class="tab" data-act="tab" data-t="party" id="tab-party">Пати<span class="badge" id="partyBadge" hidden></span></button>
-    <button type="button" class="tab" data-act="tab" data-t="more" id="tab-more">Ещё<span class="dot" id="moreDot" hidden></span></button>
+    <button type="button" class="tab" data-act="tab" data-t="today" id="tab-today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.5l2.7 2.5L16 9.5"/></svg><span class="tl">Сегодня</span></button>
+    <button type="button" class="tab" data-act="tab" data-t="story" id="tab-story"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg><span class="tl">Сюжет</span></button>
+    <button type="button" class="tab" data-act="tab" data-t="diary" id="tab-diary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h11a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M8 3v18"/><path d="M11 8h4"/></svg><span class="tl">Дневник</span><span class="badge dbadge" id="diaryBadge" hidden></span></button>
+    <button type="button" class="tab" data-act="tab" data-t="party" id="tab-party"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.6 2.7-6.2 6-6.2s6 2.6 6 6.2"/><circle cx="16.8" cy="9" r="2.6"/><path d="M15.6 14.1c.4-.1.8-.1 1.2-.1 2.6 0 4.6 2.2 4.6 5.2"/></svg><span class="tl">Пати</span><span class="badge" id="partyBadge" hidden></span></button>
+    <button type="button" class="tab" data-act="tab" data-t="status" id="tab-status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/></svg><span class="tl">Профиль</span><span class="dot" id="moreDot" hidden></span></button>
   </nav>
 
   <div id="dbNotice" class="notice" hidden></div>
@@ -1133,6 +1267,8 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
     </section>
   </div>
   <div class="tabp" data-tab="status" hidden>
+    <div id="profHero"></div>
+    <div id="profShow"></div>
     <section class="panel" id="recapPanel" hidden aria-labelledby="rcT">
       <div class="ph"><h2 class="ptitle" id="rcT">Итоги недели</h2><span class="sub" id="recapSub"></span></div>
       <div id="recap"></div>
@@ -1181,6 +1317,11 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 
   <!-- ===== ЕЩЁ ===== -->
   <div class="tabp" data-tab="more" hidden>
+    <div class="setbar"><button type="button" class="btn sm ghost" data-act="tab" data-t="status">← Профиль</button><h2>⚙ Настройки</h2></div>
+    <section class="panel" aria-labelledby="pfsT">
+      <div class="ph"><h2 class="ptitle" id="pfsT">Профиль</h2><span class="sub">статус, витрины, оформление</span></div>
+      <div class="acts"><button type="button" class="btn sm" data-act="pfedit">✎ Изменить профиль</button><button type="button" class="btn sm ghost" data-act="pfshop">🛒 Магазин</button></div>
+    </section>
     <section class="panel alert" id="yrPanel" hidden aria-labelledby="yrT">
       <div class="ph"><h2 class="ptitle" id="yrT">🏆 Итоги сезона</h2></div>
       <div id="yrBox"></div>
@@ -1229,6 +1370,10 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
       <h3 class="fh">Мои сообщения</h3>
       <div id="myBugs" class="bugs"></div>
     </section>
+    <section class="panel" aria-labelledby="accT">
+      <div class="ph"><h2 class="ptitle" id="accT">Аккаунт</h2></div>
+      <div id="accBox"></div>
+    </section>
   </div>
   <div class="foot"><button type="button" class="linkbtn" data-act="guideopen">Гайд</button><span aria-hidden="true">·</span><button type="button" class="linkbtn" data-act="bugopen">Нашёл баг или есть пожелания?</button></div>
 </div>
@@ -1254,10 +1399,11 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
       <div class="acts"><button type="button" class="btn ghost" data-act="smiglater">Позже</button><button type="button" class="btn" data-act="smigsave" id="smigSave" style="--sys:var(--story)">Перевести все</button></div></div>
   </div>
 </div>
+<div id="pfOv" class="ov sheet" hidden><div class="panel sheetp" role="dialog" aria-modal="true" aria-label="Профиль" id="pfBox"></div></div>
 <div id="friendOv" class="ov sheet" hidden>
   <div class="panel sheetp" role="dialog" aria-modal="true" aria-labelledby="fName">
     <div class="ph"><h2 class="ptitle" id="fName">Профиль</h2><button type="button" class="btn sm ghost" data-act="fclose" aria-label="Закрыть">Закрыть ×</button></div>
-    <div class="strip" id="fStrip"></div>
+    <div id="fProf" class="fprof"></div>
     <div id="fNudge"></div>
     <h3 class="fh">Квесты дня</h3>
     <ul class="qlist" id="fQuests"></ul>
@@ -1552,7 +1698,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 24;
+const APP_VERSION = 25;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -1593,6 +1739,13 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 25, date: "2026-11-20", title: "Профиль как в Steam", items: [
+    "Внизу теперь 5 вкладок с иконками: Сегодня, Сюжет, Дневник, Пати, Профиль. «Статус» стал «Профилем», а вкладка «Ещё» превратилась в ⚙ Настройки (шестерёнка в профиле).",
+    "Профиль: фон, рамка аватарки, значок уровня как в Steam (цвет меняется каждые 10 уровней), статус и «О себе».",
+    "Витрины: ачивки (выбери до 6), любимый квест, текущий сюжет, статистика, недавняя активность за 2 недели, дневник, награды и стена. В «✎ Изменить профиль» можно выключить любую и поменять порядок.",
+    "Очки 💠: 1 XP = 1 очко. В магазине фоны, рамки и форма значка. Покупка не отнимает опыт и уровень. Пять вещей с 🏆 не продаются, они открываются ачивками.",
+    "Профиль друга (нажми на него в «Пати»): стена, на которой можно писать, и награды 🔥 💪 🧠 🎯 🌙 🤝 за 100 очков, одному другу одна в день.",
+  ] },
   { v: 24, date: "2026-11-20", title: "Итоги сезона", items: [
     "31 декабря в 18:00 на «Сегодня» появится плашка «Итоги сезона 1 готовы». Внутри сторис о твоём сезоне, листаются нажатием справа.",
     "В сторис: опыт по месяцам, процент выполнения, лучшая серия и самый мощный день, главный квест и тот, что так и не дался, твой ритм по дням и часам, рост характеристик, сюжеты, ачивки и роль в пати.",
@@ -2167,26 +2320,26 @@ async function setAvatar(file) {
   avaBusy = false; renderAll();
 }
 
-function statusHtml(pid) {
+function statusHtml(pid, compact) {
   const p = profile(pid);
   const hr = hunter(p.li.L);
   const bound = !!roster[pid];
   return (
-    '<div class="who">' + (pid === me && assetsApi && canWrite
+    (compact ? "" :     '<div class="who">' + (pid === me && assetsApi && canWrite
       ? '<label class="ava avaed" title="Сменить аватарку">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="Аватарка">' : esc(pname(pid)[0])) + '<input type="file" accept="image/*" id="avaFile"><span class="avacam">' + (avaBusy ? "…" : "📷") + "</span></label>"
       : '<div class="ava">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="Аватарка">' : esc(pname(pid)[0])) + "</div>") + '<div style="min-width:0">' +
       '<div class="nm">' + esc(pname(pid)) + "</div>" +
       (pid === me && avaOf(pid) ? '<div style="display:flex;gap:12px">' + '<button type="button" class="linkbtn" data-act="imgview" data-kind="ava" data-src="' + esc(blobUrl(avaOf(pid))) + '" style="font-size:12px">открыть</button>' + (canWrite ? '<button type="button" class="linkbtn" data-act="avadel" style="font-size:12px">убрать аватарку</button>' : "") + "</div>" : "") +
       '<div class="cls">' + (bound ? 'Класс: <span style="color:var(--fg)">' + esc(p.cls) + '</span> · Ранг охотника <span class="rank r-' + hr + '">' + hr + "</span>" : "Игрок ещё не вошёл в систему") + "</div></div></div>" +
     '<div class="lvlrow"><div class="lvl">УРОВЕНЬ<b>' + p.li.L + '</b></div><div class="xpn">' + p.li.into + " / " + p.li.need + " XP</div></div>" +
-    '<div class="bar"><i style="width:' + ((p.li.into / p.li.need) * 100).toFixed(1) + '%"></i></div>' +
+    '<div class="bar"><i style="width:' + ((p.li.into / p.li.need) * 100).toFixed(1) + '%"></i></div>') +
     '<div class="mini m4"><div><b>' + p.xp + '</b><span>всего XP</span></div><div><b>' + p.streak + '</b><span>серия, дн</span></div><div><b>' + p.tdDone + "/" + p.td.length + '</b><span>сегодня</span></div><div><b>+' + p.todayXp + "</b><span>XP сегодня</span></div></div>" +
     fold("st:stats", "Характеристики",
       '<div class="statsbox">' + radarSVG(p) + '<ul class="stats">' +
       STATS.map((s) => '<li title="' + esc(s.hint) + '"><span class="k">' + statIco(s.k) + s.s + '</span><span class="n">' + s.n + '</span><span class="v">' + p.stats[s.k] + "</span></li>").join("") +
       "</ul></div>"));
 }
-function renderStatus() { setHtml("status", statusHtml(mainPid())); renderRecap(); }
+function renderStatus() { setHtml("status", statusHtml(mainPid(), true)); renderRecap(); }
 // ---------- итоги недели (пн–вс) ----------
 const WDS = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
 const monOf = (d) => addDays(d, -(wdOf(d) - 1));
@@ -2319,7 +2472,7 @@ function threadIndex() {
   for (const p of PLAYERS) for (const x of votesBy[p.id] || []) {
     if (!x || typeof x.owner !== "string" || typeof x.task !== "string") continue;
     const at = num(x.at), text = (typeof x.text === "string" ? x.text : typeof x.note === "string" ? x.note : "").slice(0, CMT_MAX);
-    if (x.kind === "comment" && ["task", "story", "step", "diary"].includes(x.ik)) { if (text || imgIds(x.imgs).length) push(x.ik + ":" + x.owner + ":" + x.task, { by: p.id, at, text, imgs: x.imgs, tag: "" }); }
+    if (x.kind === "comment" && ["task", "story", "step", "diary", "wall"].includes(x.ik)) { if (text || imgIds(x.imgs).length) push(x.ik + ":" + x.owner + ":" + x.task, { by: p.id, at, text, imgs: x.imgs, tag: "" }); }
     else if (x.kind === "dispute" && text) push("task:" + x.owner + ":" + x.task, { by: p.id, at, text, tag: "оспорил", cls: "no" });
     else if (x.kind === "sdispute" && text) push("step:" + x.owner + ":" + x.task, { by: p.id, at, text, tag: "оспорил", cls: "no" });
     else if ((x.kind === "task" || x.kind === "story" || x.kind === "step") && text && (x.vote === "yes" || x.vote === "no")) push(x.kind + ":" + x.owner + ":" + x.task, { by: p.id, at, text, tag: x.vote === "yes" ? "да" : "нет", cls: x.vote });
@@ -2328,6 +2481,7 @@ function threadIndex() {
   tiCache = m; tiVer = votesVer; return m;
 }
 function threadItem(ik, owner, id) {
+  if (ik === "wall") return id === "wall" && PLAYERS.some((p) => p.id === owner) ? { title: "стена", open: true } : null;
   if (ik === "diary") { const e = (diaryBy[owner] || []).find((x) => x.id === id); return e ? { title: e.title, open: true } : null; }
   if (ik === "task") { const t = (tasksBy[owner] || []).find((x) => x.id === id); if (!t) return null; const st = taskState(t); return { title: t.title, open: taskBig(t) ? st === "pending" : st === "disputed" }; }
   if (ik === "story") { const s = storyOf(owner, id); return s ? { title: s.title, open: storyState(s) === "pending" } : null; }
@@ -2372,7 +2526,7 @@ function renderTalk() {
   panel.hidden = !out.length;
   const un = unreadCmts();
   $("talkSub").textContent = un ? un + " " + plCmt(un) : "твои квесты и споры, где ты участвуешь";
-  setHtml("talk", out.slice(0, 12).map((o) => '<div class="vi"><p class="sub">' + (o.owner === me ? "Твой" : "<b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b> ·") + " " + (o.ik === "step" ? "этап" : o.ik === "story" ? "сюжетный квест" : o.ik === "diary" ? "запись в дневнике" : "квест") + " «" + esc(o.ti.title) + "»</p>" + threadHtml(o.ik, o.owner, o.id, o.ti.open, "t") + "</div>").join(""));
+  setHtml("talk", out.slice(0, 12).map((o) => '<div class="vi"><p class="sub">' + (o.ik === "wall" ? (o.owner === me ? "Твоя стена" : "Стена · <b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b>") + "</p>" : (o.owner === me ? "Твой" : "<b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b> ·") + " " + (o.ik === "step" ? "этап" : o.ik === "story" ? "сюжетный квест" : o.ik === "diary" ? "запись в дневнике" : "квест") + " «" + esc(o.ti.title) + "»</p>") + threadHtml(o.ik, o.owner, o.id, o.ti.open, "t") + "</div>").join(""));
   if (tab === "party" && un > 0 && !document.hidden) writePrefs({ cmtSeen: now() });
 }
 function droppedHtml(pid) {
@@ -3708,7 +3862,7 @@ document.addEventListener("keydown", (e) => {
   else if (e.key === " " && !(e.target.closest && e.target.closest("button"))) { e.preventDefault(); yr.paused = !yr.paused; yrShow(); }
 }, true);
 document.addEventListener("visibilitychange", () => { if (yr && yr.view === "story" && document.hidden && !yr.paused) { yr.paused = true; yrShow(); } });
-// вход: плашка на «Сегодня» (пока не смотрел) и панель в «Ещё»
+// вход: плашка на «Сегодня» (пока не смотрел) и панель в ⚙ Настройках
 function renderYrEntry() {
   const note = $("yrNote"), panel = $("yrPanel");
   if (!note || !panel) return;
@@ -3717,6 +3871,264 @@ function renderYrEntry() {
   note.hidden = !(yrReady() && me && isActive(PLAYERS.find((x) => x.id === me)) && !prefs.yrSeen);
   if (can) setHtml("yrBox", '<p class="hint" style="margin:0 0 10px">' + (yrReady() ? "Сезон 1 позади. Опыт, серии, любимые квесты, рост характеристик и номинации пати в формате сторис." : "Предпросмотр, видно только тебе. Для всех итоги откроются 31 декабря в 18:00, на «Сегодня» появится плашка.") + "</p>" +
     '<div class="acts">' + (me && isActive(PLAYERS.find((x) => x.id === me)) ? '<button type="button" class="btn" data-act="yropen" data-p="' + esc(me) + '">🎬 Мои итоги</button>' : "") + '<button type="button" class="btn ghost" data-act="yropen">Итоги друзей</button></div>');
+}
+
+// ---------- v25: профиль как в Steam, магазин очков, награды, стена ----------
+// Профиль хранится в prefs.prof (свои prefs друзья уже читают). Очки = весь опыт (profile.xp) минус цены купленного и 100 за каждую подаренную награду.
+// Потраченное не хранится числом, а считается из списка покупок: подделать «очки» правкой одного поля нельзя.
+const PF_SHOP = {
+  bg: [
+    { id: "base", n: "Базовый", p: 0 }, { id: "neon", n: "Неоновая сетка", p: 300 }, { id: "sunset", n: "Закат", p: 450 },
+    { id: "sakura", n: "Сакура", p: 600 }, { id: "aurora", n: "Северное сияние", p: 800 }, { id: "matrix", n: "Матрица", p: 900 },
+    { id: "storm", n: "Гроза", tr: "s14" }, { id: "cosmos", n: "Космос", tr: "q100" }],
+  fr: [
+    { id: "none", n: "Без рамки", p: 0 }, { id: "neon", n: "Неоновая", p: 200 }, { id: "emerald", n: "Изумрудная", p: 350 },
+    { id: "pixel", n: "Пиксельная", p: 500 }, { id: "rainbow", n: "Радужная", p: 1000 },
+    { id: "fire", n: "Огненная", tr: "s30" }, { id: "crown", n: "Корона", tr: "bigS" }],
+  bd: [
+    { id: "circle", n: "Круг", p: 0 }, { id: "shield", n: "Щит", p: 250 }, { id: "diamond", n: "Ромб", p: 250 },
+    { id: "hex", n: "Гексагон", p: 500 }, { id: "star", n: "Звезда", tr: "story" }],
+};
+const PF_CATS = [["bg", "Фоны"], ["fr", "Рамки"], ["bd", "Значок"]];
+const PF_ITEM = {}; for (const c in PF_SHOP) for (const it of PF_SHOP[c]) PF_ITEM[c + ":" + it.id] = { ...it, cat: c };
+const PF_DEF = { bg: "base", fr: "none", bd: "circle" };
+const PF_SC = [["ach", "Витрина ачивок"], ["fav", "Любимый квест"], ["story", "Текущий сюжет"], ["stats", "Статистика"], ["recent", "Недавняя активность"], ["diary", "Дневник"], ["awards", "Награды"], ["wall", "Стена"]];
+const PF_SC_KEYS = PF_SC.map((x) => x[0]);
+const PF_AWARDS = [["🔥", "Огонь"], ["💪", "Респект"], ["🧠", "Мозг"], ["🎯", "Снайпер"], ["🌙", "Сова"], ["🤝", "Поддержка"]];
+const PF_AWARD_COST = 100, PF_ST = 60, PF_AB = 300;
+// цвет значка уровня = уровень (меняется каждые 10), его не купить
+const PF_TIERS = ["#9aa6b8", "#ff5d73", "#ff9d4d", "#ffcf5c", "#49e3a0", "#5ec8ff", "#b48cff", "#ff9ecf", "#c49a6c", "#7cf3ff"];
+const pfTier = (L) => PF_TIERS[Math.min(PF_TIERS.length - 1, Math.floor(L / 10))];
+let pf = null; // открытая шторка: { kind: "shop"|"edit"|"award", cat, pid, draft }
+function profOf(pid) {
+  const raw = ((pid === me ? prefs : prefsBy[pid]) || {}).prof || {};
+  const str = (v, n) => (typeof v === "string" ? v.replace(/\s+/g, " ").trim().slice(0, n) : "");
+  const own = Array.isArray(raw.own) ? [...new Set(raw.own.filter((k) => typeof k === "string" && PF_ITEM[k] && PF_ITEM[k].p > 0))] : [];
+  const show = Array.isArray(raw.show) ? [...new Set(raw.show.filter((k) => PF_SC_KEYS.includes(k)))] : PF_SC_KEYS.slice();
+  const ach = Array.isArray(raw.ach) ? [...new Set(raw.ach.filter((k) => ACH.some((a) => a.k === k)))].slice(0, 6) : null;
+  const eq = { ...PF_DEF };
+  if (raw.eq && typeof raw.eq === "object") for (const c of ["bg", "fr", "bd"]) if (typeof raw.eq[c] === "string" && PF_ITEM[c + ":" + raw.eq[c]]) eq[c] = raw.eq[c];
+  return { status: str(raw.status, PF_ST), about: typeof raw.about === "string" ? raw.about.trim().slice(0, PF_AB) : "", own, show, ach, eq };
+}
+const pfAwardsBy = (pid) => (votesBy[pid] || []).filter((x) => x && x.kind === "award" && typeof x.owner === "string" && x.owner !== pid && PF_AWARDS.some((a) => a[0] === x.e));
+const pfSpent = (pid) => profOf(pid).own.reduce((a, k) => a + PF_ITEM[k].p, 0) + pfAwardsBy(pid).length * PF_AWARD_COST;
+const pfPoints = (pid) => profile(pid).xp - pfSpent(pid);
+// вещь открыта: бесплатная, купленная или трофей за ачивку
+function pfHas(pid, key) {
+  const it = PF_ITEM[key]; if (!it) return false;
+  if (it.tr) return !!profile(pid).ach[it.tr];
+  return !it.p || profOf(pid).own.includes(key);
+}
+// что надето на самом деле: трофей без ачивки или некупленное не показываем
+function pfEq(pid) { const e = profOf(pid).eq, o = {}; for (const c in e) o[c] = pfHas(pid, c + ":" + e[c]) ? e[c] : PF_DEF[c]; return o; }
+function pfAwardsTo(pid) {
+  const m = {};
+  for (const p of PLAYERS) for (const x of pfAwardsBy(p.id)) if (x.owner === pid) (m[x.e] = m[x.e] || []).push(p.id);
+  return m;
+}
+const pfGaveToday = (to) => pfAwardsBy(me).some((x) => x.owner === to && x.day === today());
+function pfLvl(L, shape, big) { return '<span class="slv ' + esc(shape) + (big ? " big" : "") + '" style="--lc:' + pfTier(L) + '" title="Уровень ' + L + '"><span>' + L + "</span></span>"; }
+function pfAva(pid, own) {
+  const a = avaOf(pid), img = a ? '<img src="' + esc(blobUrl(a)) + '" alt="">' : esc((pname(pid) || "?")[0]);
+  if (own && assetsApi && canWrite) return '<label class="pfav avaed" title="Сменить аватарку">' + img + '<input type="file" accept="image/*" id="avaFile" aria-label="Сменить аватарку"><span class="avacam">' + (avaBusy ? "…" : "📷") + "</span></label>";
+  if (a) return '<span class="pfav zoom" role="button" tabindex="0" data-act="imgview" data-kind="ava" data-src="' + esc(blobUrl(a)) + '" aria-label="Открыть аватарку">' + img + "</span>";
+  return '<span class="pfav">' + img + "</span>";
+}
+function pfOnline(pid) {
+  if (pid === me) return '<span class="pfon"><i></i>в сети</span>';
+  if (isHere(pid)) return '<span class="pfon"><i></i>в сети</span>';
+  if (isAway(pid)) return '<span class="pfon away"><i></i>' + esc(awayTxt(pid)) + "</span>";
+  return '<span class="pfon off"><i></i>' + esc(lastSeenTxt(pid)) + "</span>";
+}
+function pfHeroHtml(pid, ctx) {
+  const p = profile(pid), pr = profOf(pid), eq = pfEq(pid), own = pid === me && canWrite && ctx === "me";
+  const fr = pid !== me && ctx === "friend" && me && canWrite && meActive() && isActive(PLAYERS.find((x) => x.id === pid));
+  return '<section class="panel pfhero"><div class="pfbg pbg-' + eq.bg + '" aria-hidden="true"></div>' +
+    (own ? '<div class="pftools"><button type="button" class="pfpts" data-act="pfshop" aria-label="Очки и магазин">💠 ' + pfPoints(pid) + '</button><button type="button" class="pfgear" data-act="tab" data-t="more" aria-label="Настройки">⚙' + '<span class="dot" id="gearDot" hidden></span></button></div>' : "") +
+    '<div class="pfid"><div class="pfavw">' + pfAva(pid, own) + '<span class="pfr pfr-' + eq.fr + '" aria-hidden="true"></span></div><div class="pfnm"><div class="pfname">' + esc(pname(pid)) + pfLvl(p.li.L, eq.bd) + "</div>" + pfOnline(pid) + (own && avaOf(pid) ? '<div class="pfavl"><button type="button" class="linkbtn" data-act="imgview" data-kind="ava" data-src="' + esc(blobUrl(avaOf(pid))) + '">открыть аватарку</button><button type="button" class="linkbtn" data-act="avadel">убрать</button></div>' : "") + "</div></div>" +
+    '<div class="pfbody">' + (pr.status ? '<div class="pfst">' + esc(pr.status) + "</div>" : own ? '<button type="button" class="pfst empty" data-act="pfedit">+ Добавить статус</button>' : "") +
+    '<div class="pfcls">Класс <b>' + esc(p.cls) + '</b> · Ранг охотника <span class="rank r-' + hunter(p.li.L) + '">' + hunter(p.li.L) + "</span> · в Системе с " + nice(joinedOf(pid)) + "</div>" +
+    (pr.about ? '<div class="pfab">' + esc(pr.about) + "</div>" : "") +
+    '<div class="lvlrow"><div class="lvl">УРОВЕНЬ<b>' + p.li.L + '</b></div><div class="xpn">' + p.li.into + " / " + p.li.need + ' XP</div></div><div class="bar"><i style="width:' + ((p.li.into / p.li.need) * 100).toFixed(1) + '%"></i></div>' +
+    (own ? '<div class="acts"><button type="button" class="btn sm" data-act="pfedit">✎ Изменить профиль</button><button type="button" class="btn sm ghost" data-act="pfshop">🛒 Магазин</button></div>' : "") +
+    (fr ? '<div class="acts"><button type="button" class="btn sm" data-act="pfaward" data-p="' + esc(pid) + '">🏅 Наградить</button><button type="button" class="btn sm ghost" data-act="pfwall" data-p="' + esc(pid) + '">💬 Написать на стене</button></div>' : "") +
+    "</div></section>";
+}
+const pfCard = (k, title, extra, body) => '<section class="panel pfsc" data-sc="' + k + '"><div class="ph"><h2 class="ptitle">' + title + "</h2>" + (extra || "") + "</div>" + body + "</section>";
+function pfDone(pid) { return (tasksBy[pid] || []).filter((t) => t && !t.moved && countsTask(t)); }
+function pfScHtml(pid, k, ctx) {
+  const p = profile(pid), pr = profOf(pid), own = pid === me && ctx === "me";
+  const norm = (s) => String(s || "").trim().toLowerCase().replace(/ё/g, "е").replace(/\s+/g, " ");
+  if (k === "ach") {
+    const got = ACH.filter((a) => p.ach[a.k]), list = (pr.ach || got.map((a) => a.k)).filter((x) => p.ach[x]).slice(0, 6);
+    return pfCard(k, "Витрина ачивок", '<button type="button" class="sub linkbtn" data-act="pfallach" data-p="' + esc(pid) + '">' + got.length + " из " + ACH.length + " →</button>",
+      '<div class="pfachs">' + Array.from({ length: 6 }, (_, i) => { const x = list[i], a = x && ACH.find((y) => y.k === x); return a ? '<div class="pfach" title="' + esc(a.d) + '"><b>🏅 ' + esc(a.n) + "</b><span>" + nice(p.ach[x]) + "</span></div>" : '<div class="pfach empty">' + (own && !i && !got.length ? "ачивок пока нет" : "") + "</div>"; }).join("") + "</div>");
+  }
+  if (k === "fav") {
+    const m = {}; for (const t of pfDone(pid)) { const key = norm(t.title); if (!key) continue; const o = (m[key] = m[key] || { t: t.title, n: 0, min: 0, stat: t.stat }); o.n++; if (isNewQ(t)) o.min += t.m; }
+    const f = Object.values(m).sort((a, b) => b.n - a.n || b.min - a.min)[0];
+    if (!f) return own ? pfCard(k, "Любимый квест", "", '<p class="hint" style="margin:0">Появится, когда выполнишь первые квесты.</p>') : "";
+    return pfCard(k, "Любимый квест", "", '<div class="pffav"><span class="ic">' + statIco(f.stat || "int") + "</span><div><b>" + esc(f.t) + "</b><span>выполнен " + plDn(f.n, "раз", "раза", "раз") + (f.min ? " · " + fmtMin(f.min) : "") + "</span></div></div>");
+  }
+  if (k === "story") {
+    const s = (storiesBy[pid] || []).find((x) => storyState(x) === "active");
+    if (!s) return own ? pfCard(k, "Текущий сюжет", "", '<p class="hint" style="margin:0">Активного сюжетного квеста нет.</p>') : "";
+    const pg = progress(s), steps = (s.steps || []).map((x, i) => ({ x, i })).filter((o) => !o.x.removed);
+    return pfCard(k, "Текущий сюжет", '<span class="sub">до ' + nice(s.deadline) + "</span>", '<div class="pfstory"><b>' + esc(s.title) + '</b><div class="bar"><i style="width:' + (pg.total ? Math.round((pg.done / pg.total) * 100) : 0) + '%;background:var(--story)"></i></div><span class="hint">' + pg.done + " из " + pg.total + "</span>" +
+      (steps.length ? '<ul class="pfsteps">' + steps.slice(0, 5).map((o) => { const d = stepInfo(s, o.i).done; return '<li class="' + (d ? "d" : "") + '">' + (d ? "✓" : "○") + " " + esc(o.x.t) + "</li>"; }).join("") + (steps.length > 5 ? '<li class="more">и ещё ' + (steps.length - 5) + "</li>" : "") + "</ul>" : "") + "</div>");
+  }
+  if (k === "stats") {
+    const done = pfDone(pid), past = (tasksBy[pid] || []).filter((t) => t && !t.moved && t.date < today()), failed = past.filter((t) => !t.done && !isOff(pid, t.date)).length;
+    const mins = done.filter(isNewQ).reduce((a, t) => a + t.m, 0), pc = done.length + failed ? Math.round((done.length / (done.length + failed)) * 100) : 0;
+    const days = Math.max(1, Math.round((toUTC(today()) - toUTC(joinedOf(pid))) / 864e5) + 1);
+    return pfCard(k, "Статистика", "", '<div class="pfgrid"><div><b>' + done.length + "</b><span>квестов</span></div><div><b>" + (Math.round(mins / 6) / 10).toString().replace(".", ",") + "</b><span>часов</span></div><div><b>" + pc + "%</b><span>выполнено</span></div><div><b>" + p.best + "</b><span>лучшая серия</span></div><div><b>" + p.streak + "</b><span>серия сейчас</span></div><div><b>" + days + "</b><span>дней в Системе</span></div></div>");
+  }
+  if (k === "recent") {
+    const from = addDays(today(), -13), m = {};
+    for (const t of pfDone(pid)) if (t.date >= from) { const key = norm(t.title); const o = (m[key] = m[key] || { t: t.title, n: 0, min: 0, last: t.date, stat: t.stat }); o.n++; if (isNewQ(t)) o.min += t.m; if (t.date > o.last) o.last = t.date; }
+    const list = Object.values(m).sort((a, b) => b.min - a.min || b.n - a.n).slice(0, 4), tot = Object.values(m).reduce((a, o) => a + o.min, 0);
+    if (!list.length) return own ? pfCard(k, "Недавняя активность", "", '<p class="hint" style="margin:0">За 2 недели пусто.</p>') : "";
+    return pfCard(k, "Недавняя активность", '<span class="sub">' + (tot ? fmtMin(tot) + " за 2 недели" : "за 2 недели") + "</span>", list.map((o) => '<div class="pfrec"><span class="ic">' + statIco(o.stat || "int") + '</span><span class="t"><b>' + esc(o.t) + "</b><span>" + plDn(o.n, "раз", "раза", "раз") + " · последний " + nice(o.last) + '</span></span><span class="h">' + (o.min ? fmtMin(o.min) : "привычка") + "</span></div>").join(""));
+  }
+  if (k === "diary") {
+    const list = (diaryBy[pid] || []).filter((e) => e.open).sort((a, b) => num(b.at) - num(a.at)).slice(0, 3);
+    if (!list.length) return own ? pfCard(k, "Дневник", "", '<p class="hint" style="margin:0">Здесь будут последние записи, открытые друзьям.</p>') : "";
+    return pfCard(k, "Дневник", own ? '<button type="button" class="sub linkbtn" data-act="tab" data-t="diary">все →</button>' : "", list.map((e) => { const t = ((e.title ? e.title + " " : "") + (e.text || "")).trim(); return '<div class="pfdi"><div class="hint">' + (D_MOODS[e.mood] ? D_MOODS[e.mood][0] + " " : "") + nice(e.d) + "</div><p>" + esc(t.length > 180 ? t.slice(0, 180) + "…" : t) + "</p></div>"; }).join(""));
+  }
+  if (k === "awards") {
+    const m = pfAwardsTo(pid), list = PF_AWARDS.filter((a) => (m[a[0]] || []).length);
+    if (!list.length && !own && !(pid !== me && me)) return "";
+    return pfCard(k, "Награды", "", list.length ? '<div class="pfaws">' + list.map((a) => '<span class="pfaw" title="' + esc(a[1] + ": " + m[a[0]].map((w) => (w === me ? "ты" : pname(w))).join(", ")) + '">' + a[0] + "<b>" + m[a[0]].length + "</b></span>").join("") + "</div>" : '<p class="hint" style="margin:0">' + (own ? "Наград пока нет. Друзья могут наградить тебя в твоём профиле." : "Наград пока нет. Будь первым!") + "</p>");
+  }
+  if (k === "wall") {
+    const th = threadHtml("wall", pid, "wall", true, ctx === "friend" ? "wf" : "wm");
+    if (!th && !own) return "";
+    return pfCard(k, "Стена", "", th || '<p class="hint" style="margin:0">Здесь друзья оставляют сообщения тебе.</p>');
+  }
+  return "";
+}
+function pfShowHtml(pid, ctx) {
+  // в окне друга сюжет и дневник уже есть ниже целиком, поэтому витрины с ними пропускаем
+  return profOf(pid).show.filter((k) => ctx !== "friend" || (k !== "story" && k !== "diary")).map((k) => pfScHtml(pid, k, ctx)).join("");
+}
+function renderProfile() {
+  const pid = mainPid();
+  if (!pid) return;
+  setHtml("profHero", pfHeroHtml(pid, "me"));
+  setHtml("profShow", pfShowHtml(pid, "me"));
+  const gd = $("gearDot"); if (gd) gd.hidden = $("moreDot").hidden;
+  if (pf) renderPf();
+}
+// ---------- шторки профиля ----------
+function pfItemPv(it, pid) {
+  if (it.cat === "bg") return '<div class="pv pbg-' + it.id + '"></div>';
+  if (it.cat === "fr") return '<div class="pv"><div class="pfavw sm"><span class="pfav">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="">' : esc(pname(pid)[0])) + '</span><span class="pfr pfr-' + it.id + '"></span></div></div>';
+  return '<div class="pv">' + pfLvl(profile(pid).li.L, it.id, true) + "</div>";
+}
+function renderPf() {
+  const ov = $("pfOv");
+  if (!pf) { hideOv(ov); return; }
+  showOv(ov);
+  const pid = me, pr = profOf(pid), pts = pfPoints(pid);
+  let h = "";
+  if (pf.kind === "shop") {
+    const eq = pfEq(pid);
+    h = '<div class="ph"><h2 class="ptitle">Магазин</h2><span class="pfpts">💠 ' + pts + '</span><button type="button" class="btn sm ghost" data-act="pfclose" aria-label="Закрыть">×</button></div>' +
+      '<p class="hint" style="margin:0 0 12px">Очки копятся вместе с опытом: <b>1 XP = 1 очко</b>. Покупка тратит только очки, опыт и уровень не меняются. Вещи с 🏆 не продаются, они открываются ачивкой.</p>' +
+      '<div class="dseg pfcats" role="group" aria-label="Раздел">' + PF_CATS.map(([c, n]) => '<button type="button" data-act="pfcat" data-c="' + c + '" aria-pressed="' + (pf.cat === c) + '">' + n + "</button>").join("") + "</div>" +
+      (pf.cat === "bd" ? '<p class="hint" style="margin:12px 0 6px">Цвет значка показывает уровень и меняется каждые 10 уровней, его не купить. В магазине только форма.</p><div class="pflad">' + [1, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((L) => "<div>" + pfLvl(L, eq.bd) + "<span>" + L + "+</span></div>").join("") + "</div>" : "") +
+      '<div class="pfitems">' + PF_SHOP[pf.cat].map((it0) => {
+        const it = PF_ITEM[pf.cat + ":" + it0.id], key = pf.cat + ":" + it.id, has = pfHas(pid, key), on = eq[pf.cat] === it.id;
+        const btn = on ? '<button type="button" class="btn sm ghost" disabled>Надето</button>'
+          : has ? '<button type="button" class="btn sm" data-act="pfequip" data-k="' + key + '">Надеть</button>'
+          : it.tr ? '<button type="button" class="btn sm ghost" disabled>🔒 Закрыто</button>'
+          : '<button type="button" class="btn sm" data-act="pfbuy" data-k="' + key + '"' + (pts < it.p || !canWrite ? " disabled" : "") + ">Купить за " + it.p + "</button>";
+        return '<div class="pfit' + (on ? " on" : "") + '">' + pfItemPv(it, pid) + '<div class="inf"><b>' + esc(it.n) + "</b>" +
+          (it.tr ? '<span class="tr">🏆 за ачивку «' + esc((ACH.find((a) => a.k === it.tr) || {}).n || "") + "»</span>" : '<span class="pr">' + (it.p ? "💠 " + it.p + (has ? " · куплено" : "") : "бесплатно") + "</span>") + btn + "</div></div>";
+      }).join("") + "</div>";
+  } else if (pf.kind === "edit") {
+    const d = pf.draft, got = ACH.filter((a) => profile(pid).ach[a.k]);
+    h = '<div class="ph"><h2 class="ptitle">Изменить профиль</h2><button type="button" class="btn sm ghost" data-act="pfclose" aria-label="Закрыть">×</button></div>' +
+      '<label class="lbl" for="pfSt">Статус</label><input type="text" id="pfSt" maxlength="' + PF_ST + '" value="' + esc(d.status) + '" placeholder="Например: готовлюсь к сессии">' +
+      '<label class="lbl" for="pfAb" style="margin-top:12px">О себе</label><textarea id="pfAb" rows="3" maxlength="' + PF_AB + '" placeholder="Пара слов о себе и своих целях">' + esc(d.about) + "</textarea>" +
+      '<div class="lbl" style="margin-top:14px">Ачивки на витрине · до 6</div>' + (got.length ? '<div class="chips pfpick">' + got.map((a) => '<button type="button" class="chip" data-act="pfpach" data-k="' + a.k + '" aria-pressed="' + d.ach.includes(a.k) + '">' + esc(a.n) + "</button>").join("") + "</div>" : '<p class="hint">Ачивок пока нет.</p>') +
+      '<div class="lbl" style="margin-top:14px">Витрины: что показывать и в каком порядке</div>' +
+      d.show.concat(PF_SC_KEYS.filter((k) => !d.show.includes(k))).map((k) => { const on = d.show.includes(k), n = PF_SC.find((x) => x[0] === k)[1]; return '<div class="pftog"><label class="setrow" style="flex:1;padding:0;border:0"><span>' + n + '</span><input type="checkbox" data-act="pftsc" data-k="' + k + '"' + (on ? " checked" : "") + "></label>" + (on ? '<button type="button" class="btn sm ghost" data-act="pfmv" data-d="-1" data-k="' + k + '" aria-label="Выше: ' + n + '">↑</button><button type="button" class="btn sm ghost" data-act="pfmv" data-d="1" data-k="' + k + '" aria-label="Ниже: ' + n + '">↓</button>' : "") + "</div>"; }).join("") +
+      '<div class="acts" style="margin-top:14px"><button type="button" class="btn" data-act="pfsave">Сохранить</button><button type="button" class="btn ghost" data-act="pfclose">Отмена</button></div>';
+  } else if (pf.kind === "award") {
+    const to = pf.pid, gave = pfGaveToday(to);
+    h = '<div class="ph"><h2 class="ptitle">Наградить ' + esc(pname(to)) + '</h2><button type="button" class="btn sm ghost" data-act="pfclose" aria-label="Закрыть">×</button></div>' +
+      '<p class="hint" style="margin:0 0 12px">Награда стоит <b>💠 ' + PF_AWARD_COST + "</b> из твоих очков и навсегда остаётся на профиле друга. Одному другу одна награда в день. У тебя 💠 " + pts + ".</p>" +
+      (gave ? '<p class="hint" style="margin:0 0 12px;color:var(--gold)">Сегодня ты уже наградил ' + esc(pname(to)) + ". Завтра можно снова.</p>" : "") +
+      '<div class="pfawp">' + PF_AWARDS.map(([e, n]) => '<button type="button" data-act="pfgive" data-e="' + e + '"' + (gave || pts < PF_AWARD_COST ? " disabled" : "") + "><b>" + e + "</b><span>" + n + "</span></button>").join("") + "</div>";
+  }
+  const box = $("pfBox"), fa = document.activeElement && box.contains(document.activeElement) ? document.activeElement.dataset.act + "|" + (document.activeElement.dataset.k || document.activeElement.dataset.c || "") : null;
+  if (box.innerHTML !== h) {
+    const keepSt = $("pfSt") ? $("pfSt").value : null, keepAb = $("pfAb") ? $("pfAb").value : null;
+    box.innerHTML = h;
+    if (pf.kind === "edit" && keepSt != null) { $("pfSt").value = keepSt; $("pfAb").value = keepAb; }
+    if (fa) { const [a, k] = fa.split("|"); const el = box.querySelector('[data-act="' + a + '"]' + (k ? '[data-k="' + k + '"],[data-act="' + a + '"][data-c="' + k + '"]' : "")); if (el) try { el.focus({ preventScroll: true }); } catch {} }
+  }
+}
+function pfOpen(kind, extra) {
+  if (kind !== "award" && !(me && canWrite)) return;
+  const pr = profOf(me || "");
+  pf = { kind, cat: "bg", ...extra };
+  if (kind === "edit") pf.draft = { status: pr.status, about: pr.about, show: pr.show.slice(), ach: (pr.ach || ACH.filter((a) => profile(me).ach[a.k]).map((a) => a.k)).slice(0, 6) };
+  renderPf();
+  setTimeout(() => { const f = $("pfBox").querySelector("input,textarea,button:not([disabled])"); if (f) try { f.focus({ preventScroll: true }); } catch {} }, 30);
+}
+function pfSaveProf(patch) { const cur = (prefs.prof && typeof prefs.prof === "object") ? prefs.prof : {}; writePrefs({ prof: { ...cur, ...patch } }); renderProfile(); }
+async function pfAct(b, act) {
+  if (act === "logout") { const o = $("authOut"); if (o) o.click(); return true; }
+  if (!/^pf(shop|edit|close|cat|buy|equip|pach|tsc|mv|save|award|give|wall|allach)$/.test(act)) return false;
+  if (act === "pfshop" || act === "pfedit") { pfOpen(act === "pfshop" ? "shop" : "edit"); return true; }
+  if (act === "pfaward") { if (!me || !canWrite || !meActive()) return true; pfOpen("award", { pid: b.dataset.p }); return true; }
+  if (act === "pfclose") { pf = null; renderPf(); return true; }
+  if (act === "pfallach") { const p = b.dataset.p; if (p !== me) { const el = $("fStatus"); if (el) el.scrollIntoView({ block: "start", behavior: RM() ? "auto" : "smooth" }); return true; } const d = document.querySelector('details[data-key="st:ach"]'); if (d) { d.open = true; openKeys.add("st:ach"); d.scrollIntoView({ block: "start", behavior: RM() ? "auto" : "smooth" }); } return true; }
+  if (act === "pfwall") { const inp = document.querySelector('#friendOv [data-sc="wall"] input[type="text"]'); if (inp) { inp.scrollIntoView({ block: "center", behavior: RM() ? "auto" : "smooth" }); inp.focus({ preventScroll: true }); } return true; }
+  if (!pf) return true;
+  if (act === "pfcat") { pf.cat = b.dataset.c; renderPf(); return true; }
+  if (act === "pfbuy") {
+    const k = b.dataset.k, it = PF_ITEM[k];
+    if (!it || it.tr || !it.p || !canWrite || pfHas(me, k)) return true;
+    if (pfPoints(me) < it.p) { toast("Не хватает очков: нужно " + it.p + ", у тебя " + pfPoints(me) + "."); return true; }
+    const pr = profOf(me);
+    pfSaveProf({ own: [...pr.own, k], eq: { ...pr.eq, [it.cat]: it.id } });
+    toast("Куплено: " + it.n + ". Опыт и уровень не изменились.");
+    renderPf(); return true;
+  }
+  if (act === "pfequip") { const k = b.dataset.k, it = PF_ITEM[k]; if (!it || !pfHas(me, k)) return true; const pr = profOf(me); pfSaveProf({ eq: { ...pr.eq, [it.cat]: it.id } }); renderPf(); return true; }
+  if (act === "pfpach") { const d = pf.draft, k = b.dataset.k, i = d.ach.indexOf(k); if (i >= 0) d.ach.splice(i, 1); else if (d.ach.length < 6) d.ach.push(k); else toast("На витрине максимум 6 ачивок."); renderPf(); return true; }
+  if (act === "pftsc") { const d = pf.draft, k = b.dataset.k, i = d.show.indexOf(k); if (b.checked && i < 0) d.show.push(k); if (!b.checked && i >= 0) d.show.splice(i, 1); renderPf(); return true; }
+  if (act === "pfmv") { const d = pf.draft, k = b.dataset.k, i = d.show.indexOf(k), j = i + num(b.dataset.d); if (i < 0 || j < 0 || j >= d.show.length) return true; [d.show[i], d.show[j]] = [d.show[j], d.show[i]]; renderPf(); return true; }
+  if (act === "pfsave") {
+    const st = ($("pfSt").value || "").replace(/\s+/g, " ").trim().slice(0, PF_ST), ab = ($("pfAb").value || "").trim().slice(0, PF_AB);
+    pfSaveProf({ status: st, about: ab, show: pf.draft.show, ach: pf.draft.ach });
+    pf = null; renderPf(); toast("Профиль сохранён."); return true;
+  }
+  if (act === "pfgive") {
+    const to = pf.pid, e = b.dataset.e;
+    if (!db || !uid || !canWrite || !meActive() || to === me || !PF_AWARDS.some((a) => a[0] === e)) return true;
+    if (pfGaveToday(to)) { toast("Сегодня ты уже наградил " + pname(to) + "."); return true; }
+    if (pfPoints(me) < PF_AWARD_COST) { toast("Не хватает очков: награда стоит " + PF_AWARD_COST + "."); return true; }
+    b.disabled = true;
+    try {
+      await db.doc("v/" + uid + "/votes/" + to + "__aw-" + today()).set({ kind: "award", owner: to, task: "aw-" + today(), e, day: today(), at: now() });
+      toast("Награда " + e + " ушла " + pname(to) + ". −" + PF_AWARD_COST + " очков.");
+      pf = null; renderPf();
+    } catch (err) { fail(err); }
+    return true;
+  }
+  return true;
+}
+$("pfOv").addEventListener("click", (e) => { if (e.target === e.currentTarget) { pf = null; renderPf(); } });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && pf) { e.preventDefault(); e.stopImmediatePropagation(); pf = null; renderPf(); } }, true);
+// аккаунт в настройках: почта и «Выйти» берём у входа (shim)
+function renderAccount() {
+  const sp = document.querySelector(".authfoot span"), btn = $("authOut");
+  const h = btn ? '<div class="setrow" style="border:0;padding:0"><span><b>Почта</b><span class="hint" style="display:block">' + esc(sp ? sp.textContent : "") + '</span></span><button type="button" class="btn sm no" data-act="logout">Выйти</button></div>' : '<p class="hint" style="margin:0">Вход не выполнен.</p>';
+  setHtml("accBox", h);
 }
 
 function renderLinkSelect() {
@@ -3934,20 +4346,21 @@ const GUIDE = [
   { id: "s-what", l: 1, t: "Что это за сайт", b: "<p>«Система» превращает твой день в RPG. Ты записываешь <b>квесты</b> — дела на сегодня, выполняешь их и получаешь <b>опыт (XP)</b>. Опыт поднимает уровень и характеристики. Друзья по пати видят твой прогресс и проверяют крупные достижения.</p><p>Цель сезона — стать лучшей версией себя к 31 декабря.</p>" },
   { id: "s-quest", l: 1, t: "Добавить и выполнить квест", b: "<p>На вкладке <b>«Сегодня»</b> напиши квест в поле «Новый квест…». Под полем откроются три ползунка: <b>время</b>, <b>сложность</b> и <b>«нравится»</b>. Опыт видно сразу крупной цифрой. Нажми <b>«Принять»</b>.</p><p>Плашки под полем: <b>характеристика</b> (что качаешь), <b>опыт</b> (ползунки), <b>повтор</b> и ⏰.</p><p>Характеристики: <b>СИЛ</b> (тело: спорт, сон, питание), <b>ИНТ</b> (разум: учёба, книги), <b>ВОЛ</b> (воля: режим, привычки), <b>ХАР</b> (харизма: люди, общение), <b>ТВР</b> (творчество: музыка, проекты), <b>ФИН</b> (достаток: работа, деньги).</p><p>Сделал — поставь галочку слева от квеста. Опыт начислится сразу, «+XP» улетит в полоску опыта.</p><p><b>Порядок</b>: зажми точки ⠿ слева от квеста и перетащи вверх или вниз (с клавиатуры: стрелки). Порядок повторов запоминается на все дни.</p>", v: 20 },
   { id: "s-ranks", l: 1, t: "Как считается опыт", b: "<p><b>Время</b>: 20 XP за час средней задачи. После 3 часов каждый следующий час идёт за половину (8 часов = 5,5 «часа»).</p><p><b>Сложность</b>: лёгкий ×0,5, средний ×1, сложный ×1,5.</p><p><b>«Нравится»</b>: 👎 +30% (за дисциплину, делать нелюбимое труднее), — +15%, 👍 без бонуса.</p><p>Примеры: час английского, средний, — = <b>23 XP</b>. Тренировка 2 часа, сложный, 👍 = <b>60 XP</b>. Уборка 30 минут, лёгкий, 👎 = <b>7 XP</b>.</p><p><b>ПРИВЫЧКА</b> (ползунок времени на «без времени», зелёная метка): лёгкий 3, средний 5, сложный 10 XP, с тем же бонусом за 👎 или —. Не больше 5 привычек в день. С временем квест становится <b>ЗАДАЧЕЙ</b> (голубая метка).</p><p>У дня <b>16 часов</b>: сумма времени сегодняшних квестов не больше 16 ч, ползунок упирается в остаток. Букв у квестов нет, буква осталась только у ранга охотника.</p><p><b>Старые квесты с буквой</b> переводятся в окне «Новая система опыта»: оно всплывает при первом входе после обновления, а потом открывается с плашки на «Сегодня». Выполненные квесты не меняются.</p>", v: 19 },
-  { id: "s-login", l: 1, t: "Вход, выход и телефон", b: "<p>Сайт: <b>aitbatyr.github.io/rpg-irl</b>. Первый раз нажми «Создать аккаунт» (почта и пароль от 6 символов), дальше просто «Войти». Внизу страницы твоя почта и кнопка «Выйти». Забыл пароль: «Забыл пароль» на экране входа, ссылка придёт на почту.</p><p>На телефоне открой сайт в Chrome → меню ⋮ → <b>«Добавить на главный экран»</b>. Появится иконка, сайт будет открываться как приложение.</p>", v: 12 },
-  { id: "s-tabs", l: 1, t: "Вкладки", b: "<p><b>Сегодня</b>: квесты дня и полоска статуса. <b>Сюжет</b>: цели на недели. <b>Дневник</b>: записи о дне, скрытые или открытые друзьям, и лента друзей. <b>Статус</b>: уровень и сводка сверху, а характеристики и ачивки раскрываются по нажатию; ниже карта активности (сайт запоминает, что ты держишь открытым). <b>Пати</b>: друзья, неделя, проверка квестов. <b>Ещё</b>: что нового, гайд, сообщения о багах. После обновления у «Что нового» горит метка «НОВОЕ», а в гайде синей точкой отмечены непрочитанные и изменённые разделы.</p>", v: 23 },
+  { id: "s-login", l: 1, t: "Вход, выход и телефон", b: "<p>Сайт: <b>aitbatyr.github.io/rpg-irl</b>. Первый раз нажми «Создать аккаунт» (почта и пароль от 6 символов), дальше просто «Войти». Почта и кнопка «Выйти» в ⚙ Настройках → «Аккаунт» и внизу страницы. Забыл пароль: «Забыл пароль» на экране входа, ссылка придёт на почту.</p><p>На телефоне открой сайт в Chrome → меню ⋮ → <b>«Добавить на главный экран»</b>. Появится иконка, сайт будет открываться как приложение.</p>", v: 12 },
+  { id: "s-tabs", l: 1, t: "Вкладки", b: "<p>Внизу 5 вкладок. <b>Сегодня</b>: квесты дня и полоска статуса. <b>Сюжет</b>: цели на недели. <b>Дневник</b>: записи о дне, скрытые или открытые друзьям, и лента друзей. <b>Пати</b>: друзья, неделя, проверка квестов. <b>Профиль</b>: твоя шапка с фоном и рамкой, витрины, итоги недели, характеристики, ачивки и карта активности.</p><p>Шестерёнка ⚙ в профиле открывает <b>Настройки</b>: изменить профиль и магазин, итоги сезона, уведомления, оформление, что нового, гайд, баги и аккаунт. После обновления на «Профиле» и шестерёнке горит точка, а в гайде синей точкой отмечены непрочитанные и изменённые разделы.</p>", v: 25 },
   { id: "s-midnight", l: 1, t: "Полночь и провалы", b: "<p>В 00:00 по времени сервера (UTC+5) день закрывается. Невыполненные квесты становятся <b>проваленными</b> и видны внизу вкладки «Сегодня» и на карте активности.</p><p>Обычный проваленный квест можно перенести на сегодня кнопкой «На сегодня».</p>", v: 17 },
   // ---------- 2 · Основы ----------
   { id: "b-repeat", l: 2, t: "Повторяющиеся квесты", b: "<p>В плашке «повтор» выбери: <b>каждый день</b>, <b>каждые N дней</b> (2–30) или <b>по дням недели</b>. Квест сам появляется в нужные дни, когда открываешь сайт. Повторять можно только E, D, C.</p><p>Список повторов — внизу «Сегодня» в строке «Повторяющиеся квесты». Там ✎ — изменить, × — больше не повторять.</p><p>У каждого повтора видно, как он идёт: «18 из 25 · 72%», то есть в скольких днях по расписанию он выполнен. Ниже 40% подсвечивается красным с подсказкой: может, делать реже или меньше. Друзья видят твои повторы в твоём профиле.</p>", v: 13 },
   { id: "b-story", l: 2, t: "Сюжетные квесты", b: "<p>Сюжетный квест это большая цель, разбитая на <b>шаги</b>. Вкладка «Сюжет» → «+ Новый квест»: 1) цель, 2) срок (неделя, 2 недели, месяц… или своя дата, не позже 31 декабря), 3) характеристика, 4) шаги: пиши шаг и жми Enter.</p><p>Шаг это задача, как квест дня: <b>время × сложность × «нравится»</b>, опыт по той же формуле. У шага две кнопки: <b>дата</b> (мини-календарь, «Без даты», «повторять до срока» каждый день, через день или раз в неделю) и <b>время · сложность</b> (ползунки). Дата необязательна.</p><p>Шаги с датой «сегодня» видны на вкладке «Сегодня» в блоке <b>«Сюжет сегодня»</b>. Отметить можно <b>любой</b> несделанный шаг до срока: он засчитается сегодняшним днём. Когда все шаги сделаны, квест <b>сам уходит друзьям</b> на проверку. Одобрили: <b>бонус +50%</b> от опыта шагов.</p>", v: 22 },
   { id: "b-diary", l: 2, t: "Дневник", b: "<p>Вкладка «Дневник»: записи о том, что происходит. Кнопка <b>«+ Запись за сегодня»</b>: настроение и текст. Записать можно только за сегодня, править только в тот же день, удалить в любой момент. Опыта за дневник нет.</p><p>Новая запись по умолчанию <b>🔒 только мне</b>: её видишь только ты, сервер не отдаёт её друзьям. Замок у записи переключает <b>👁 друзьям</b> и обратно. «👀 Как видят друзья» показывает твой дневник их глазами.</p><p>Открытые записи друзей во вкладке «Дневник → Друзья» (новые с меткой НОВОЕ) и в окне друга. Под ними реакции и комментарии. Если запись скрыть, реакции и комментарии спрячутся вместе с ней и вернутся, когда откроешь снова.</p>", v: 23 },
-  { id: "b-yr", l: 2, t: "Итоги сезона", b: "<p>31 декабря в 18:00 открываются <b>итоги сезона 1</b>: на «Сегодня» плашка, в «Ещё» раздел «Итоги сезона». Это сторис: нажми справа, чтобы листать, слева, чтобы вернуться, ❚❚ ставит на паузу.</p><p>Что внутри: опыт по месяцам, процент выполнения, лучшая серия, главный квест, ритм по дням недели, рост характеристик, сюжеты, ачивки, голоса в пати и номинации. В конце карточка-итог и таблица пати. Можно открыть итоги любого друга.</p><p>Всё считается из квестов с 15 октября по 31 декабря, ничего заполнять не нужно.</p>", v: 24 },
+  { id: "b-yr", l: 2, t: "Итоги сезона", b: "<p>31 декабря в 18:00 открываются <b>итоги сезона 1</b>: на «Сегодня» плашка, в ⚙ Настройках раздел «Итоги сезона». Это сторис: нажми справа, чтобы листать, слева, чтобы вернуться, ❚❚ ставит на паузу.</p><p>Что внутри: опыт по месяцам, процент выполнения, лучшая серия, главный квест, ритм по дням недели, рост характеристик, сюжеты, ачивки, голоса в пати и номинации. В конце карточка-итог и таблица пати. Можно открыть итоги любого друга.</p><p>Всё считается из квестов с 15 октября по 31 декабря, ничего заполнять не нужно.</p>", v: 24 },
+  { id: "b-prof", l: 2, t: "Профиль, магазин и награды", b: "<p><b>Профиль</b> как в Steam: фон, рамка аватарки, значок уровня, статус и «О себе». Ниже витрины: ачивки (выбираешь до 6), любимый квест, текущий сюжет, статистика, недавняя активность за 2 недели, дневник (только открытые записи), награды и стена. «✎ Изменить профиль»: статус, о себе, какие витрины показывать и в каком порядке.</p><p><b>Очки 💠</b> копятся вместе с опытом: 1 XP = 1 очко. В <b>магазине</b> на них покупаются фоны, рамки и форма значка уровня. Покупка тратит только очки, опыт и уровень не меняются. Цвет значка показывает уровень (меняется каждые 10 уровней) и не продаётся. Вещи с 🏆 открываются только ачивкой: Гроза (Две недели), Космос (Сотня), Огненная рамка (Железная воля), Корона (Легенда), Звезда (Сюжет пройден).</p><p><b>Профиль друга</b> открывается в «Пати» по нажатию на него. Там можно написать на <b>стене</b> и <b>наградить</b> 🔥 💪 🧠 🎯 🌙 🤝: награда стоит 100 очков, одному другу одна в день, и навсегда остаётся у него на профиле.</p>", v: 25 },
   { id: "b-link", l: 2, t: "Шаги на ходу и лимит дня", b: "<p>Пока срок не вышел, шаги можно менять: дату и время у несделанных, добавлять новые, убирать лишние (×). Убранный шаг уходит в «Убрано»: опыта за него нет, бонус меньше, друзья видят «убрано N». Его можно вернуть. Последний шаг убрать нельзя. Сделанный шаг под замком 🔒.</p><p>Лимит дня общий: <b>16 часов и 5 привычек</b> на квесты дня, повторы и шаги сюжетов вместе. Шаг без даты день не занимает, пока не отметишь его или не поставишь дату. Честные часы действуют и для шагов.</p><p>Привязка квеста дня к сюжету (плашка «сюжет») осталась только у старых квестов: новым она не нужна.</p>", v: 22 },
   { id: "b-verify", l: 2, t: "Проверка друзьями", b: "<p>Ежедневные квесты друзья не проверяют, их можно только <b>оспорить</b> в течение суток. На проверку уходит <b>сюжетный квест</b>: сам, когда сделаны все шаги (и старые крупные B, A, S, отправленные до v18). Фото или пояснение для друзей добавь в обсуждении под квестом. У друзей появляется запрос во вкладке «Пати» и цифра на вкладке.</p><p>Засчитано, если <b>большинство</b> друзей сказали «да» (при 2 друзьях оба, при 3 двое, при 4 трое), или если есть хотя бы одно «да», ни одного «нет» и прошло <b>48 часов</b>. Зеркально: одно или больше «нет», ни одного «да» и 48 часов, и квест отклонён. Если «нет» сказали столько, что большинства уже не набрать, квест отклонён, его можно отправить снова.</p>", v: 22 },
   { id: "b-talk", l: 2, t: "Комментарии и обсуждения", b: "<p>Под квестом на проверке или в споре есть <b>обсуждение</b>: друзья спрашивают, ты отвечаешь, можно с фото. Когда итог подведён, переписка остаётся, но писать туда уже нельзя.</p><p>Голосуя, можно оставить комментарий. К «Не засчитывать» он обязателен, к «Подтверждаю» по желанию. «Спросить» отправляет вопрос без голоса. «Оспорить» тоже требует причину.</p><p>Все твои обсуждения собраны во вкладке «Пати» в разделе «Обсуждения». Новые комментарии видны цифрой на вкладке и в плашке на «Сегодня».</p>", v: 11 },
   { id: "b-cap", l: 2, t: "Защита от накрутки", b: "<p><b>Честные часы</b>: выполненного времени за сегодня не больше, чем прошло с 6:00. В 10 утра можно отметить максимум 4 часа задач. Планировать можно на все 16 часов, отмечай по мере выполнения. Привычки «без времени» можно отмечать когда угодно.</p><p><b>Замок 🔒</b>: у выполненного квеста нельзя поменять время, сложность и «нравится». Сними галочку, поправь и отметь заново.</p><p><b>Прозрачность</b>: друзья видят у каждого квеста время, сложность и 👎. Если за день больше 10 часов задач или опыт вдвое выше обычного (среднего за 14 дней), на карточке появится <b>«⚠ необычно много»</b>. Это не запрет, а повод присмотреться и, если что, оспорить.</p><p><b>Сервер</b> сам отклоняет невозможное: больше 16 часов или 5 привычек за день, неизвестные значения, отметку раньше честных часов.</p><p>Всё это действует и для <b>шагов сюжетных квестов</b>: лимит дня общий, сделанный шаг под замком, отметить можно только сегодняшним днём.</p><p>Лимита мелочи (150 XP в день) больше нет. До 14 ноября он действовал, прошлый опыт не менялся.</p>", v: 22 },
   { id: "b-level", l: 2, t: "Уровень, характеристики, класс", b: "<p>Уровень растёт от общего опыта, каждый следующий дороже на 25 XP. <b>Ранг охотника</b>: E (1–4), D (5–9), C (10–14), B (15–19), A (20–29), S (30+).</p><p>Опыт квеста идёт в его характеристику: СИЛ, ИНТ, ВОЛ, ХАР, ТВР, ФИН. <b>Класс</b> — две самые прокачанные, например «Мудрец-Воин».</p>" },
-  { id: "b-streak", l: 2, t: "Серия, неделя и ачивки", b: "<p><b>Серия</b> — дни подряд хотя бы с одним засчитанным квестом. <b>Неделя</b> в «Пати» — опыт каждого за 7 дней и места. <b>Ачивки</b> во вкладке «Статус» выдаются сами за серии, идеальные дни, крупные квесты и сотню выполненных; дают немного опыта.</p>" },
+  { id: "b-streak", l: 2, t: "Серия, неделя и ачивки", b: "<p><b>Серия</b> — дни подряд хотя бы с одним засчитанным квестом. <b>Неделя</b> в «Пати» — опыт каждого за 7 дней и места. <b>Ачивки</b> во вкладке «Профиль» выдаются сами за серии, идеальные дни, крупные квесты и сотню выполненных; дают немного опыта.</p>" },
   { id: "b-edit", l: 2, t: "Правка, перенос, удаление", b: "<p>Нажми на название невыполненного сегодняшнего квеста — можно поменять название, характеристику, время, сложность и «нравится». Выполненный сначала разотметь. Удалить (×) можно только квест, созданный сегодня.</p><p>«На сегодня» у проваленного создаёт копию на сегодня (если хватает свободного времени), а провал остаётся в своём дне.</p>", v: 18 },
   // ---------- 3 · Всё до мелочей ----------
   { id: "d-formula", l: 3, t: "Формулы", b: "<p>Опыт до следующего уровня: <b>50 + 25 × (уровень − 1)</b>. Уровень 2 — 50 XP, уровень 10 — 1350 XP всего.</p><p>Характеристика = <b>10 + 1 за каждые 25 XP</b> в ней. Опыт ачивок идёт только в уровень.</p>" },
@@ -3963,10 +4376,10 @@ const GUIDE = [
   { id: "d-join", l: 3, t: "Новые игроки и архив", b: "<p>В пати может быть до 12 активных игроков. Новичок получает ссылку на сайт, создаёт аккаунт, пишет своё имя, владелец подтверждает. Если это кто-то из старых игроков, владелец нажимает «Это … (старый профиль)», и вход привязывается к его профилю со всем опытом. Новичок начинает с нуля, поэтому для честного сравнения есть «Неделя» и средний опыт в день.</p><p>Неактивных владелец может отправить в архив: они пропадают из недели, проверок и голосований, а их данные сохраняются. Вернуть можно в любой момент.</p>", v: 13 },
   { id: "d-party", l: 3, t: "Пати и профиль друга", b: "<p>Нажми на друга во вкладке «Пати» — откроется окно с его квестами, сюжетом, характеристиками и картой активности. Там же кнопки «Оспорить». Если друг сегодня не открывал сайт, на карточке будет «сегодня не заходил», а в его окне кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление, что ты напоминаешь. Одному другу раз в день.</p><p><b>Зелёная точка</b> у имени значит, что сайт у друга открыт прямо сейчас. Закрыл вкладку, точка погасла. Если друга нет, на карточке видно последнее посещение: «был 20 мин назад», «был вчера в 22:14». Время точное примерно до 10 минут.</p><p>Состояние друга как в Steam: <b style=\"color:var(--ok)\">● онлайн</b> сайт открыт на экране, <b style=\"color:var(--gold)\">● отошёл</b> сайт открыт, но свёрнут или 5 минут без действий, без точки «был …» значит не в сети.</p>", v: 22 },
   { id: "b-v17", l: 2, t: "Выходной, напоминания, карта активности", b: "<p><b>Выходной</b>: 2 дня в месяц. На «Сегодня» под полоской дня: «взять сегодня» (только пока ничего не отмечено), «на завтра» или «выбрать день»: календарь на этот и следующий месяц, можно взять любой день вперёд. Лимит считается по месяцу самого дня. Запланированные выходные видны списком, × отменяет (пока день не начался). Задним числом нельзя. В выходной повторы не создаются, провалов нет, серия не сгорает, опыт за сделанное засчитывается. Отменить можно в тот же день.</p><p><b>Напоминание</b>: плашка «⏰» при создании квеста или ⏰ в строке квеста. Придёт уведомление в это время, если квест не отмечен (точность около 5 минут). У повтора время сохраняется на все дни. Нужны включённые уведомления.</p><p><b>Карта активности</b> в «Статусе» и в профиле друга: квадратик на день, яркость по числу выполненных квестов (1–2, 3–4, 5–6, 7+). Золотая рамка: закрыты все квесты дня (от трёх). Серый с 🌙: выходной. Красный уголок: день правили задним числом. Наведи или нажми на квадратик, чтобы увидеть подробности.</p><p><b>Живой фон</b> меняет цвет по рангу охотника, ночью звёзды, в декабре снег. Выключить: «Ещё → Оформление».</p>", v: 20 },
-  { id: "b-push", l: 2, t: "Уведомления", b: "<p>«Ещё» → <b>«Уведомления»</b> → «Включить уведомления» и разреши их в браузере. Настройка на каждом устройстве своя.</p><p>Что приходит: <b>друг ждёт твоего голоса</b>; <b>твой квест оспорили</b> или по нему проголосовали; <b>новый комментарий</b> в обсуждении, где ты участвуешь; <b>в 21:00</b> напоминание, если квесты дня не закрыты или ты сегодня не заходил; <b>друг тебя «пнул»</b>; <b>в понедельник в 9:00</b> итоги недели готовы. Любой тип можно выключить галочкой. «Прислать тестовое» проверяет, что всё работает.</p><p>На iPhone уведомления работают, только если сайт добавлен на экран «Домой» и открыт с иконки. На Android надёжнее всего через Chrome.</p>", v: 16 },
-  { id: "b-week", l: 2, t: "Итоги недели и аватарка", b: "<p><b>Итоги недели</b>: каждый понедельник наверху вкладки «Статус» карточка за прошлую неделю (пн–вс): опыт, место в пати, выполнено и провалено, процент повторов, лучший день и какие характеристики выросли. Ниже «Прошлые недели»: по строке на неделю (даты, опыт, место, полоска выполнено/провалено), нажатие раскрывает итоги целиком. Пока не посмотрел свежие итоги, на «Сегодня» висит плашка, а в понедельник в 9:00 приходит уведомление.</p><p><b>Аватарка</b>: во вкладке «Статус» нажми на кружок со своей буквой и выбери картинку. Под именем: «открыть» (посмотреть крупно) и «убрать аватарку».</p><p>Чужую аватарку можно открыть на весь экран: нажми на неё в пати, в профиле друга или в обсуждении. Закрыть: нажатие по экрану или «Закрыть ×».</p>", v: 16 },
+  { id: "b-push", l: 2, t: "Уведомления", b: "<p>⚙ Настройки (шестерёнка в «Профиле») → <b>«Уведомления»</b> → «Включить уведомления» и разреши их в браузере. Настройка на каждом устройстве своя.</p><p>Что приходит: <b>друг ждёт твоего голоса</b>; <b>твой квест оспорили</b> или по нему проголосовали; <b>новый комментарий</b> в обсуждении, где ты участвуешь; <b>в 21:00</b> напоминание, если квесты дня не закрыты или ты сегодня не заходил; <b>друг тебя «пнул»</b>; <b>в понедельник в 9:00</b> итоги недели готовы. Любой тип можно выключить галочкой. «Прислать тестовое» проверяет, что всё работает.</p><p>На iPhone уведомления работают, только если сайт добавлен на экран «Домой» и открыт с иконки. На Android надёжнее всего через Chrome.</p>", v: 16 },
+  { id: "b-week", l: 2, t: "Итоги недели и аватарка", b: "<p><b>Итоги недели</b>: каждый понедельник во вкладке «Профиль» карточка за прошлую неделю (пн–вс): опыт, место в пати, выполнено и провалено, процент повторов, лучший день и какие характеристики выросли. Ниже «Прошлые недели»: по строке на неделю (даты, опыт, место, полоска выполнено/провалено), нажатие раскрывает итоги целиком. Пока не посмотрел свежие итоги, на «Сегодня» висит плашка, а в понедельник в 9:00 приходит уведомление.</p><p><b>Аватарка</b>: во вкладке «Профиль» нажми на кружок со своей буквой (📷) и выбери картинку. Под именем: «открыть аватарку» и «убрать».</p><p>Чужую аватарку можно открыть на весь экран: нажми на неё в пати, в профиле друга или в обсуждении. Закрыть: нажатие по экрану или «Закрыть ×».</p>", v: 16 },
   { id: "d-season", l: 3, t: "Итоги сезона", b: "<p>1 января во вкладке «Пати» откроются итоги сезона 1: победитель, опыт, уровень, лучшая серия, сюжетные квесты и ачивки каждого. Сезон 2 настроим вместе.</p>" },
-  { id: "d-bugs", l: 3, t: "Сообщения о багах", b: "<p>«Ещё» → «Баг или пожелание» (или ссылка «Нашёл баг или есть пожелания?» внизу любой вкладки). Пожелания и идеи тоже сюда. Опиши, что случилось, можно приложить скриншот. Версия, вкладка, время и устройство добавятся сами.</p><p>Статусы: 🆕 Новое · 🔍 Проверяется · 🛠 В работе · ✅ Исправлено · ❎ Не баг · 🔁 Не воспроизводится · 📎 Дубликат · 💡 Идея. Ответ появится в «Мои сообщения», а на «Ещё» загорится точка. Неактуальное владелец может закрыть: оно помечается «закрыто».</p>", v: 20 },
+  { id: "d-bugs", l: 3, t: "Сообщения о багах", b: "<p>⚙ Настройки → «Баг или пожелание» (или ссылка «Нашёл баг или есть пожелания?» внизу любой вкладки). Пожелания и идеи тоже сюда. Опиши, что случилось, можно приложить скриншот. Версия, вкладка, время и устройство добавятся сами.</p><p>Статусы: 🆕 Новое · 🔍 Проверяется · 🛠 В работе · ✅ Исправлено · ❎ Не баг · 🔁 Не воспроизводится · 📎 Дубликат · 💡 Идея. Ответ появится в «Мои сообщения», а на «Профиле» загорится точка. Неактуальное владелец может закрыть: оно помечается «закрыто».</p>", v: 20 },
   { id: "d-data", l: 3, t: "Где хранятся данные и кто что видит", b: "<p>Сайт лежит на GitHub, а данные в базе Supabase. Правила доступа проверяет сама база, поэтому обойти их через браузер нельзя: каждый меняет только свои квесты, голоса и сообщения, а данные пати видят только её участники. Пока владелец не подтвердил вход, новичок видит только состав пати.</p><p>Каждую ночь в 01:30 делается резервная копия всей базы в закрытое хранилище, к ней можно вернуться на любой день. Ничего не удаляется насовсем: удалённые сюжетные квесты и старые расписания хранятся для итогов года.</p>", v: 12 },
 ];
 
@@ -4035,7 +4448,7 @@ const TOUR = [
   { sel: "#qPlaques", t: "Характеристика, опыт, повтор", x: "Опыт решают три ползунка: время, сложность и «нравится». Час средней задачи = 20 XP, за нелюбимое +30%. Повтор — чтобы квест появлялся сам." },
   { sel: "#quests", t: "Список дня", x: "Сделал — ставь галочку слева. Не успел до полуночи — квест станет проваленным. Нажми на название, чтобы поправить квест." },
   { sel: "#strip", t: "Твой статус", x: "Ранг охотника, уровень, опыт, серия дней и сколько опыта набрано сегодня." },
-  { sel: "#tabs", t: "Вкладки", x: "Сюжет: цели на недели. Дневник: записи о дне, свои и друзей. Статус: характеристики и ачивки. Пати: друзья и проверка. Ещё: гайд (там всё подробно) и сообщения о багах." },
+  { sel: "#tabs", t: "Вкладки", x: "Сюжет: цели на недели. Дневник: записи о дне, свои и друзей. Пати: друзья и проверка. Профиль: твоя шапка, витрины, характеристики и ачивки, а шестерёнка ⚙ в нём открывает настройки, гайд и баги." },
 ];
 function startTour() {
   if (!me) return;
@@ -4220,8 +4633,9 @@ async function fillNames() {
 
 function renderTabs() {
   document.querySelectorAll(".tabp").forEach((el) => (el.hidden = el.dataset.tab !== tab));
-  document.querySelectorAll(".tab").forEach((el) => el.setAttribute("aria-current", el.dataset.t === tab ? "page" : "false"));
+  document.querySelectorAll(".tab").forEach((el) => el.setAttribute("aria-current", el.dataset.t === tab || (tab === "more" && el.dataset.t === "status") ? "page" : "false"));
   $("moreDot").hidden = (seenVer() >= APP_VERSION && !newAnswers()) || tab === "more";
+  const gd = $("gearDot"); if (gd) gd.hidden = seenVer() >= APP_VERSION && !newAnswers();
   fxTabs();
 }
 const seenVer = () => Math.max(num(store.get("sys.seenVer")), num(prefs.seenVer));
@@ -4317,7 +4731,7 @@ function renderFriend() {
   showOv(ov);
   const fn = avaHtml(friendId, "md") + esc(pname(friendId)) + (isHere(friendId) ? ' <span class="ondot" aria-hidden="true"></span><span class="onl">онлайн</span>' : isAway(friendId) ? ' <span class="ondot away" aria-hidden="true"></span><span class="onl" style="color:var(--gold)">' + esc(awayTxt(friendId)) + "</span>" : roster[friendId] ? '<span class="onl" style="color:var(--muted)">' + esc(lastSeenTxt(friendId)) + "</span>" : "");
   if ($("fName").innerHTML !== fn) $("fName").innerHTML = fn;
-  setHtml("fStrip", stripHtml(friendId));
+  setHtml("fProf", pfHeroHtml(friendId, "friend") + pfShowHtml(friendId, "friend"));
   setHtml("fNudge", nudgeHtml(friendId));
   setHtml("fQuests", questsListHtml(friendId).html);
   setHtml("fStories", storiesHtml(friendId));
@@ -4352,6 +4766,8 @@ function renderAll() {
   renderSmig();
   renderDiary();
   renderYrEntry();
+  renderProfile();
+  renderAccount();
   bgUpdate();
   bootCheck();
 }
@@ -4524,7 +4940,7 @@ function fxWatch() {
   fresh.forEach((f, i) => setTimeout(() => fxBanner(f.rank === "S" ? "S-РАНГ" : "СИСТЕМА", (f.story ? "Сюжет пройден" : "Квест " + f.rank + " подтверждён") + " · +" + f.xp + " XP", "«" + f.title + "»", RCOL[f.rank] || RCOL.B, f.rank === "S" ? 70 : 40), 300 + i * 2800));
 }
 // вкладки: подсветка переезжает, содержимое въезжает с нужной стороны
-const TAB_ORDER = ["today", "story", "diary", "status", "party", "more"];
+const TAB_ORDER = ["today", "story", "diary", "party", "status", "more"];
 let tabShown = null;
 function fxTabs() {
   const nav = $("tabs"); if (!nav) return;
@@ -4549,7 +4965,7 @@ window.addEventListener("error", (e) => { if (!e || !e.message || /ResizeObserve
 window.addEventListener("unhandledrejection", (e) => { const r = e && e.reason; const m = r && (r.message || r.code) ? String(r.message || r.code) : String(r); if (/Failed to fetch|NetworkError|Load failed|fetch failed/i.test(m)) return; logErr(m, r && r.stack, "promise"); });
 
 // ---------- экран загрузки с советами (v17) ----------
-const TIPS = [["Система", "Квест друга можно оспорить в течение суток, если он выглядит нечестно. Спор сам считается голосом «нет»."], ["Система", "Сюжетный квест сам уходит друзьям, когда все шаги сделаны. Фото для них добавь в обсуждении."], ["Система", "Честные часы: выполнить можно не больше часов, чем прошло с 6:00. Отмечай задачи по мере выполнения."], ["Система", "Чем больше опыта за квест, тем больше искр при выполнении."], ["Система", "Квест «без времени» это привычка. Их можно до 5 в день."], ["Система", "У дня 16 часов. Ползунок времени не даст запланировать больше."], ["Система", "Повторы создаются сами каждое утро. Процент рядом покажет, какая привычка проседает."], ["Система", "Нажми на друга во вкладке «Пати», чтобы увидеть его квесты, сюжет и характеристики."], ["Система", "Сюжетный квест это цель и шаги. Каждый шаг даёт опыт, как квест дня, а за закрытие бонус +50%."], ["Система", "Не знаешь, когда сделаешь шаг сюжета? Оставь его без даты и отметь, когда сделаешь."], ["Система", "Дневник: запиши, что сегодня случилось. По умолчанию запись видишь только ты."], ["Система", "Выходной можно взять 2 раза в месяц, но только заранее. Задним числом нельзя."], ["Система", "Если друг сегодня не заходил, его можно «пнуть»: ему придёт уведомление."], ["Система", "Карта активности в «Статусе» показывает весь сезон. Чем ярче квадратик, тем сильнее был день."], ["Система", "Итоги недели появляются в понедельник: опыт, место в пати и лучший день."], ["Система", "Опыт квеста уходит в его характеристику. Хочешь прокачать ИНТ, бери квесты на разум."], ["Система", "Каждые 25 XP в характеристике дают к ней +1 очко."], ["Система", "Уровень растёт от общего опыта, и каждый следующий дороже на 25 XP."], ["Система", "Закрой все квесты дня, от трёх, и Система покажет «Все квесты дня выполнены»."], ["Система", "Серия считает дни подряд, когда у тебя был хотя бы один засчитанный квест."], ["Система", "Включи уведомления в «Ещё», чтобы не пропустить голоса друзей и вечернее напоминание."], ["Система", "Нашёл баг? Внизу страницы есть «Нашёл баг? Сообщи», можно приложить скриншот."], ["Система", "За нелюбимое дело (👎) опыта на 30% больше. Дисциплина ценится."], ["Система", "Сайт можно установить на телефон как приложение: «Добавить на главный экран»."], ["Система", "Поставь ⏰ на квест, и в нужное время придёт напоминание."], ["Система", "Аватарку можно поставить во вкладке «Статус», нажав на кружок с буквой."], ["Система", "Гайд в «Ещё» отмечает синими точками разделы, которые изменились."], ["Система", "Живой фон меняет цвет по твоему рангу охотника: от синего на E до красного на S."], ["Тайм-менеджмент", "Правило двух минут: если дело занимает меньше двух минут, сделай его сразу."], ["Тайм-менеджмент", "Самое трудное делай первым, пока силы свежие. Остальной день покажется легче."], ["Тайм-менеджмент", "Разбивай большое на шаги по 25–30 минут. Маленький шаг легче начать."], ["Тайм-менеджмент", "Планируй вечером на завтра. Утром не придётся решать, с чего начать."], ["Тайм-менеджмент", "Помодоро: 25 минут работы, 5 минут отдыха. После четырёх кругов перерыв подольше."], ["Тайм-менеджмент", "На время важного дела убери телефон в другую комнату. Внимание вернётся."], ["Тайм-менеджмент", "Ставь 3–5 главных задач на день. Слишком длинный список чаще разочаровывает."], ["Тайм-менеджмент", "Время в дороге и в очередях можно занять чтением или карточками для учёбы."], ["Тайм-менеджмент", "Группируй похожие дела: звонки подряд, сообщения подряд, покупки за один выход."], ["Тайм-менеджмент", "Если задача пугает, спроси себя: какой первый физический шаг? Сделай только его."], ["Тайм-менеджмент", "Прикидывай, сколько займёт дело, и сравнивай с тем, сколько ушло на самом деле. Прогнозы станут точнее."], ["Тайм-менеджмент", "Матрица Эйзенхауэра: важное и срочное сразу, важное несрочное в план, остальное сократи или отдай."], ["Тайм-менеджмент", "Закон Паркинсона: работа занимает всё отведённое время. Ставь себе сроки чуть короче."], ["Тайм-менеджмент", "Отдых тоже планируется. Без пауз силы к вечеру заканчиваются."], ["Тайм-менеджмент", "Первые часы после пробуждения у многих самые ясные. Не трать их на ленту."], ["Тайм-менеджмент", "Раз в неделю пересматривай цели: что сработало, что убрать, что добавить."], ["Тайм-менеджмент", "Делай одно дело за раз. Каждое переключение съедает время и внимание."], ["Тайм-менеджмент", "В конце дня запиши, на чём остановился. Завтра начнёшь быстрее."], ["Тайм-менеджмент", "Сложную учёбу лучше делить на короткие подходы в разные дни, чем зубрить всё за ночь."], ["Дисциплина", "Не пропускай дважды подряд. Один пропуск случайность, два начало новой привычки."], ["Дисциплина", "Серия важнее идеального дня. Понемногу каждый день лучше, чем рывками."], ["Дисциплина", "Мотивация приходит после начала, а не до. Начни с пяти минут."], ["Дисциплина", "Привязывай новую привычку к старой: после чистки зубов 10 страниц книги."], ["Дисциплина", "Сделай хорошую привычку заметной: книга на подушке, форма у двери."], ["Дисциплина", "Сделай плохую привычку неудобной: убери приложение с главного экрана."], ["Дисциплина", "На 1% лучше каждый день это примерно в 37 раз лучше за год."], ["Дисциплина", "Не жди настроения. Дисциплина это делать, когда не хочется."], ["Дисциплина", "Сравнивай себя с собой вчерашним, а не с другими."], ["Дисциплина", "Сон держит всё остальное. Режим сна это тоже квест."], ["Дисциплина", "Когда тянет бросить, вспомни, зачем начинал."], ["Дисциплина", "Пати это не только соревнование, но и поддержка. Подтверди сегодня чей-нибудь квест."], ["Дисциплина", "Честность с собой важнее XP. Опыт за несделанное ничего не прокачивает."], ["Дисциплина", "Сорвался? Не наказывай себя. Просто вернись завтра."], ["Дисциплина", "Привычка в среднем закрепляется около двух месяцев, а не за 21 день. Дай себе время."], ["Дисциплина", "Окружение решает. Проводи время с теми, кто тоже растёт."], ["Дисциплина", "Отмечай квест сразу после выполнения. Это маленькая награда для мозга."], ["Дисциплина", "Не получается? Уменьши цель: 10 минут каждый день лучше, чем час раз в неделю."], ["Дисциплина", "Запиши, кем хочешь стать к концу сезона. Каждый квест это голос за этого человека."], ["Дисциплина", "Короткая прогулка прочищает голову и помогает думать."], ["Дисциплина", "Вода и нормальный завтрак тоже влияют на концентрацию."], ["Дисциплина", "Скучная работа идёт легче под музыку без слов."], ["Дисциплина", "Хвали себя за сделанное, а не только ругай за упущенное."], ["Дисциплина", "Цель без срока это мечта. Поставь дату."], ["Дисциплина", "День не задался? Сделай хотя бы один мелкий квест, и серия не прервётся."]];
+const TIPS = [["Система", "Квест друга можно оспорить в течение суток, если он выглядит нечестно. Спор сам считается голосом «нет»."], ["Система", "Сюжетный квест сам уходит друзьям, когда все шаги сделаны. Фото для них добавь в обсуждении."], ["Система", "Честные часы: выполнить можно не больше часов, чем прошло с 6:00. Отмечай задачи по мере выполнения."], ["Система", "Чем больше опыта за квест, тем больше искр при выполнении."], ["Система", "Квест «без времени» это привычка. Их можно до 5 в день."], ["Система", "У дня 16 часов. Ползунок времени не даст запланировать больше."], ["Система", "Повторы создаются сами каждое утро. Процент рядом покажет, какая привычка проседает."], ["Система", "Нажми на друга во вкладке «Пати», чтобы увидеть его квесты, сюжет и характеристики."], ["Система", "Сюжетный квест это цель и шаги. Каждый шаг даёт опыт, как квест дня, а за закрытие бонус +50%."], ["Система", "Не знаешь, когда сделаешь шаг сюжета? Оставь его без даты и отметь, когда сделаешь."], ["Система", "Дневник: запиши, что сегодня случилось. По умолчанию запись видишь только ты."], ["Система", "Выходной можно взять 2 раза в месяц, но только заранее. Задним числом нельзя."], ["Система", "Если друг сегодня не заходил, его можно «пнуть»: ему придёт уведомление."], ["Система", "Карта активности в «Статусе» показывает весь сезон. Чем ярче квадратик, тем сильнее был день."], ["Система", "Итоги недели появляются в понедельник: опыт, место в пати и лучший день."], ["Система", "Опыт квеста уходит в его характеристику. Хочешь прокачать ИНТ, бери квесты на разум."], ["Система", "Каждые 25 XP в характеристике дают к ней +1 очко."], ["Система", "Уровень растёт от общего опыта, и каждый следующий дороже на 25 XP."], ["Система", "Закрой все квесты дня, от трёх, и Система покажет «Все квесты дня выполнены»."], ["Система", "Серия считает дни подряд, когда у тебя был хотя бы один засчитанный квест."], ["Система", "Включи уведомления в ⚙ Настройках, чтобы не пропустить голоса друзей и вечернее напоминание."], ["Система", "Нашёл баг? Внизу страницы есть «Нашёл баг? Сообщи», можно приложить скриншот."], ["Система", "За нелюбимое дело (👎) опыта на 30% больше. Дисциплина ценится."], ["Система", "Сайт можно установить на телефон как приложение: «Добавить на главный экран»."], ["Система", "Поставь ⏰ на квест, и в нужное время придёт напоминание."], ["Система", "Аватарку можно поставить во вкладке «Статус», нажав на кружок с буквой."], ["Система", "Гайд в ⚙ Настройках отмечает синими точками разделы, которые изменились."], ["Система", "Живой фон меняет цвет по твоему рангу охотника: от синего на E до красного на S."], ["Тайм-менеджмент", "Правило двух минут: если дело занимает меньше двух минут, сделай его сразу."], ["Тайм-менеджмент", "Самое трудное делай первым, пока силы свежие. Остальной день покажется легче."], ["Тайм-менеджмент", "Разбивай большое на шаги по 25–30 минут. Маленький шаг легче начать."], ["Тайм-менеджмент", "Планируй вечером на завтра. Утром не придётся решать, с чего начать."], ["Тайм-менеджмент", "Помодоро: 25 минут работы, 5 минут отдыха. После четырёх кругов перерыв подольше."], ["Тайм-менеджмент", "На время важного дела убери телефон в другую комнату. Внимание вернётся."], ["Тайм-менеджмент", "Ставь 3–5 главных задач на день. Слишком длинный список чаще разочаровывает."], ["Тайм-менеджмент", "Время в дороге и в очередях можно занять чтением или карточками для учёбы."], ["Тайм-менеджмент", "Группируй похожие дела: звонки подряд, сообщения подряд, покупки за один выход."], ["Тайм-менеджмент", "Если задача пугает, спроси себя: какой первый физический шаг? Сделай только его."], ["Тайм-менеджмент", "Прикидывай, сколько займёт дело, и сравнивай с тем, сколько ушло на самом деле. Прогнозы станут точнее."], ["Тайм-менеджмент", "Матрица Эйзенхауэра: важное и срочное сразу, важное несрочное в план, остальное сократи или отдай."], ["Тайм-менеджмент", "Закон Паркинсона: работа занимает всё отведённое время. Ставь себе сроки чуть короче."], ["Тайм-менеджмент", "Отдых тоже планируется. Без пауз силы к вечеру заканчиваются."], ["Тайм-менеджмент", "Первые часы после пробуждения у многих самые ясные. Не трать их на ленту."], ["Тайм-менеджмент", "Раз в неделю пересматривай цели: что сработало, что убрать, что добавить."], ["Тайм-менеджмент", "Делай одно дело за раз. Каждое переключение съедает время и внимание."], ["Тайм-менеджмент", "В конце дня запиши, на чём остановился. Завтра начнёшь быстрее."], ["Тайм-менеджмент", "Сложную учёбу лучше делить на короткие подходы в разные дни, чем зубрить всё за ночь."], ["Дисциплина", "Не пропускай дважды подряд. Один пропуск случайность, два начало новой привычки."], ["Дисциплина", "Серия важнее идеального дня. Понемногу каждый день лучше, чем рывками."], ["Дисциплина", "Мотивация приходит после начала, а не до. Начни с пяти минут."], ["Дисциплина", "Привязывай новую привычку к старой: после чистки зубов 10 страниц книги."], ["Дисциплина", "Сделай хорошую привычку заметной: книга на подушке, форма у двери."], ["Дисциплина", "Сделай плохую привычку неудобной: убери приложение с главного экрана."], ["Дисциплина", "На 1% лучше каждый день это примерно в 37 раз лучше за год."], ["Дисциплина", "Не жди настроения. Дисциплина это делать, когда не хочется."], ["Дисциплина", "Сравнивай себя с собой вчерашним, а не с другими."], ["Дисциплина", "Сон держит всё остальное. Режим сна это тоже квест."], ["Дисциплина", "Когда тянет бросить, вспомни, зачем начинал."], ["Дисциплина", "Пати это не только соревнование, но и поддержка. Подтверди сегодня чей-нибудь квест."], ["Дисциплина", "Честность с собой важнее XP. Опыт за несделанное ничего не прокачивает."], ["Дисциплина", "Сорвался? Не наказывай себя. Просто вернись завтра."], ["Дисциплина", "Привычка в среднем закрепляется около двух месяцев, а не за 21 день. Дай себе время."], ["Дисциплина", "Окружение решает. Проводи время с теми, кто тоже растёт."], ["Дисциплина", "Отмечай квест сразу после выполнения. Это маленькая награда для мозга."], ["Дисциплина", "Не получается? Уменьши цель: 10 минут каждый день лучше, чем час раз в неделю."], ["Дисциплина", "Запиши, кем хочешь стать к концу сезона. Каждый квест это голос за этого человека."], ["Дисциплина", "Короткая прогулка прочищает голову и помогает думать."], ["Дисциплина", "Вода и нормальный завтрак тоже влияют на концентрацию."], ["Дисциплина", "Скучная работа идёт легче под музыку без слов."], ["Дисциплина", "Хвали себя за сделанное, а не только ругай за упущенное."], ["Дисциплина", "Цель без срока это мечта. Поставь дату."], ["Дисциплина", "День не задался? Сделай хотя бы один мелкий квест, и серия не прервётся."]];
 let tipIdx = -1;
 function showTip() {
   let last = -1; try { last = +localStorage.getItem("sys.tip"); } catch {}
@@ -4843,6 +5259,7 @@ document.addEventListener("click", async (e) => {
   if (plUi(b, act)) return;
   if (dUi(b, act)) return;
   if (yrUi(b, act)) return;
+  if (await pfAct(b, act)) return;
   if (act === "guideopen") { setTab("more"); setTimeout(() => { const g = $("guidePanel"); if (g) g.scrollIntoView({ block: "start" }); }, 30); return; }
   if (act === "bugsold") { bugsOld = !bugsOld; openKeys.add("bugsClosed"); renderAdmin(); return; }
   if (act === "bugopen") { setTab("more"); setTimeout(() => { const g = $("bugPanel"); if (g) g.scrollIntoView({ block: "start" }); const t = $("bugText"); if (t) t.focus(); }, 30); return; }
@@ -5257,7 +5674,7 @@ document.addEventListener("click", async (e) => {
     }
     if (act === "cpost") {
       const k = b.dataset.k || "", [ik, owner, ...rest] = k.split(":"), id = rest.join(":"), dk = "c:" + k;
-      if (!["task", "story", "step", "diary"].includes(ik) || !owner || !id) return;
+      if (!["task", "story", "step", "diary", "wall"].includes(ik) || !owner || !id) return;
       if (upBusy[dk]) { toast("Подожди, фото ещё загружаются."); return; }
       const inp = $(b.dataset.inp || ""), text = ((inp && inp.value) || "").trim().replace(/\s+/g, " ").slice(0, CMT_MAX), imgs = imgIds(pendImgs[dk]);
       if (!text && !imgs.length) { toast("Напиши комментарий."); if (inp) inp.focus(); return; }
@@ -5275,8 +5692,8 @@ document.addEventListener("click", async (e) => {
 // ---------- push-уведомления ----------
 const PUSH_TYPES = [
   { k: "vote", n: "Друзья ждут моего голоса" },
-  { k: "mine", n: "Мои квесты: споры и голоса" },
-  { k: "talk", n: "Комментарии в моих обсуждениях" },
+  { k: "mine", n: "Мне: споры, голоса и награды" },
+  { k: "talk", n: "Комментарии в моих обсуждениях и на стене" },
   { k: "evening", n: "Вечернее напоминание (21:00)" },
   { k: "nudge", n: "Друзья напоминают зайти («Пнуть»)" },
   { k: "week", n: "Итоги недели готовы (пн, 9:00)" },
@@ -5571,7 +5988,7 @@ function syncSubs() {
         if (!snap.metadata.fromCache) sealsLoaded[p.id] = true;
         renderAll(); if (p.id === me) setTimeout(writeSeals, 0);
       }, onErr),
-      db.doc("q/" + u + "/meta/prefs").onSnapshot((snap) => { const old = prefsBy[p.id] || {}, was = old.ava, wasOff = JSON.stringify(old.offDays || null); prefsBy[p.id] = snap.exists ? snap.data() : {}; if (prefsBy[p.id].ava !== was || JSON.stringify(prefsBy[p.id].offDays || null) !== wasOff) { lastHtml.talk = null; renderAll(); } else renderParty(); }, onErr),
+      db.doc("q/" + u + "/meta/prefs").onSnapshot((snap) => { const old = prefsBy[p.id] || {}, was = old.ava, wasOff = JSON.stringify(old.offDays || null); prefsBy[p.id] = snap.exists ? snap.data() : {}; if (prefsBy[p.id].ava !== was || JSON.stringify(prefsBy[p.id].offDays || null) !== wasOff) { lastHtml.talk = null; renderAll(); } else { renderParty(); if (friendId === p.id) renderFriend(); if (p.id === mainPid()) renderProfile(); } }, onErr),
       db.collection("r/" + u + "/items").limit(200).onSnapshot((snap) => {
         reportsBy[p.id] = snap.docs.map((x) => ({ ...x.data(), id: x.id })).sort((a, b) => num(b.at) - num(a.at));
         renderMyBugs(); renderAdmin(); renderTabs();
@@ -5598,7 +6015,7 @@ function syncSubs() {
       prefs = snap.exists ? { ...snap.data() } : {}; prefsLoaded = true;
       renderTabs(); renderGuide(); renderMyBugs(); if (tab === "more") markSeen(); touchSeen();
       if (tab === "party" && cmtBase == null) cmtBase = num(prefs.cmtSeen);
-      lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderStatus(); renderMigr(); renderSmig(); renderDiary();
+      lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderStatus(); renderMigr(); renderSmig(); renderDiary(); renderProfile();
       if (!prefs.tourDone && !tourAuto && me) { tourAuto = true; setTimeout(startTour, 900); }
     }, onErr);
   }

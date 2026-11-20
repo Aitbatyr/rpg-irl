@@ -44,8 +44,11 @@ async def run():
             check(await pg.evaluate("document.getElementById('migrOv').hidden"), 'окно закрывается кнопкой «Позже»')
             check(await pg.evaluate("!!document.querySelector('#migrNote .migrn')"), 'плашка «Перевести на новый опыт» на месте')
             n = await pg.evaluate("document.querySelectorAll('#quests .qi').length"); check(n >= 5, f'квесты дня показаны ({n})')
-            for t in ['today', 'story', 'status', 'party', 'more']:
-                await pg.click('#tab-' + t); await pg.wait_for_timeout(350)
+            for t in ['today', 'story', 'diary', 'party', 'status', 'more']:
+                if t == 'more':  # v25: «Ещё» стала «Настройками», вход через шестерёнку в «Профиле»
+                    await pg.click('#tab-status'); await pg.wait_for_timeout(200); await pg.click('#profHero .pfgear')
+                else: await pg.click('#tab-' + t)
+                await pg.wait_for_timeout(350)
                 await pg.evaluate("document.querySelectorAll('details').forEach(d=>d.open=true)"); await pg.wait_for_timeout(150)
                 txt = await pg.evaluate('document.body.innerText')
                 bad = re.findall(r'.{0,30}(?:undefined|NaN|\[object).{0,20}', txt)
