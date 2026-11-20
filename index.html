@@ -867,6 +867,123 @@ details.pldn summary::-webkit-details-marker{display:none}
 .dcbtn{background:none;border:0;color:var(--sys);cursor:pointer;font-size:13px;padding:0}
 .dasf{border:1px dashed var(--gold);background:rgba(255,207,92,.06);color:var(--gold);padding:8px 12px;font-size:13px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
 @media (max-width:560px){.dmoods button .t{display:none}.deh{grid-template-columns:auto minmax(0,1fr)}.detools{grid-column:2;justify-self:start;margin-top:2px}}
+/* v24: итоги сезона */
+html.yr-lock,html.yr-lock body{overflow:hidden}
+#yrOv{position:fixed;inset:0;z-index:60;background:#03060d;display:flex;justify-content:center;align-items:stretch}
+#yrOv[hidden]{display:none}
+#yrOv .y-home{width:100%;overflow:auto;display:flex;align-items:center;justify-content:center;padding:max(40px,env(safe-area-inset-top,0px)) 18px 30px;background:radial-gradient(70% 50% at 20% 0%,rgba(94,200,255,.12),transparent 70%),radial-gradient(60% 50% at 90% 100%,rgba(180,140,255,.12),transparent 70%)}
+#yrOv .y-homebox{max-width:440px;width:100%;text-align:center;position:relative}
+#yrOv .y-homebox>.y-x{position:absolute;top:-28px;right:-4px}
+#yrOv .y-kick{font:700 12px/1 var(--f-mono);letter-spacing:.22em;color:var(--sys);text-transform:uppercase}
+#yrOv .y-title{font:800 italic 44px/1.02 var(--f-display);margin:14px 0 6px;background:linear-gradient(100deg,#fff,var(--sys) 55%,var(--story));-webkit-background-clip:text;background-clip:text;color:transparent}
+#yrOv .y-homebox>.y-sub{margin:0 0 20px}
+#yrOv .y-prev{font-size:13px;color:var(--gold);border:1px dashed rgba(255,207,92,.5);border-radius:12px;padding:8px 12px;margin:0 0 16px}
+#yrOv .y-who{display:grid;gap:10px}
+#yrOv .y-who button{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid var(--line-soft);background:var(--panel);cursor:pointer;text-align:left;color:var(--fg);font:inherit;transition:border-color .2s,transform .2s}
+#yrOv .y-who button:hover,#yrOv .y-who button:focus-visible{border-color:var(--sys);transform:translateY(-1px);outline:none}
+#yrOv .y-who b{font:700 17px var(--f-display);flex:1}
+#yrOv .y-who .m{font:500 12px var(--f-mono);color:var(--muted)}
+#yrOv .y-ava{border-radius:50%;display:inline-grid;place-items:center;font-family:var(--f-display);font-weight:800;color:#06101f;flex:none;overflow:hidden}
+#yrOv .y-ava img{width:100%;height:100%;object-fit:cover;display:block}
+#yrOv .y-x{background:none;border:0;font-size:24px;line-height:1;cursor:pointer;padding:4px 8px;color:var(--muted)}
+#yrOv .y-x:hover{color:var(--fg)}
+#yrOv .y-frame{position:relative;width:100%;max-width:460px;height:100%;overflow:hidden;background:var(--bg)}
+@media(min-width:600px){#yrOv .y-frame{height:min(860px,calc(100% - 48px));margin-top:24px;border-radius:24px;border:1px solid var(--line-soft);box-shadow:0 30px 80px rgba(0,0,0,.6)}}
+#yrOv .y-glow{position:absolute;inset:-20%;pointer-events:none;filter:blur(10px)}
+#yrOv .y-bars{position:absolute;top:max(12px,env(safe-area-inset-top,0px));left:12px;right:12px;display:flex;gap:4px;z-index:6}
+#yrOv .y-bars i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.18);overflow:hidden}
+#yrOv .y-bars i b{display:block;height:100%;width:0;background:#fff}
+#yrOv .y-bars i.done b{width:100%}
+#yrOv .y-bars i.cur b{animation:yfill linear forwards}
+@keyframes yfill{to{width:100%}}
+#yrOv .y-top{position:absolute;top:calc(max(12px,env(safe-area-inset-top,0px)) + 12px);left:14px;right:8px;display:flex;align-items:center;gap:8px;z-index:7;font-size:13px}
+#yrOv .y-top b{font-family:var(--f-display)}
+#yrOv .y-top .y-x{margin-left:0}
+#yrOv .y-pp{margin-left:auto;background:none;border:0;cursor:pointer;color:var(--muted);font-size:14px;padding:4px 8px}
+#yrOv .y-tap{position:absolute;top:70px;bottom:0;z-index:4;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0}
+#yrOv .y-tap.l{left:0;width:32%}#yrOv .y-tap.r{right:0;width:68%}
+#yrOv .y-tap:focus-visible{outline:none}
+#yrOv .y-slide{position:absolute;inset:0;padding:calc(max(12px,env(safe-area-inset-top,0px)) + 66px) 24px max(36px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;justify-content:center;z-index:5;pointer-events:none}
+#yrOv .y-btns,#yrOv .y-btns *{pointer-events:auto}
+#yrOv .y-slide>*{opacity:0;transform:translateY(14px);animation:yup .6s cubic-bezier(.2,.8,.2,1) forwards}
+#yrOv .y-slide>*:nth-child(2){animation-delay:.12s}#yrOv .y-slide>*:nth-child(3){animation-delay:.28s}#yrOv .y-slide>*:nth-child(4){animation-delay:.44s}#yrOv .y-slide>*:nth-child(5){animation-delay:.6s}#yrOv .y-slide>*:nth-child(n+6){animation-delay:.76s}
+@keyframes yup{to{opacity:1;transform:none}}
+#yrOv .y-lab{font:700 12px/1.2 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--c,var(--sys));margin-bottom:10px}
+#yrOv .y-h{font:800 30px/1.08 var(--f-display);margin:0 0 10px;overflow-wrap:anywhere}
+#yrOv .y-big{font:800 italic 76px/.95 var(--f-display);letter-spacing:-.02em;color:var(--c,var(--sys));text-shadow:0 0 40px var(--g,var(--sys-glow));margin:6px 0 4px}
+#yrOv .y-big small{font-size:.38em;font-style:normal;letter-spacing:0;color:var(--fg);margin-left:6px}
+#yrOv .y-sub{color:var(--muted);font-size:15px}
+#yrOv .y-sub b{color:var(--fg)}
+#yrOv .y-hint{font-size:12px;color:var(--dim);margin-top:18px}
+#yrOv .y-card{background:var(--panel);border:1px solid var(--line-soft);border-radius:16px;padding:12px 16px;margin-top:16px}
+#yrOv .y-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft)}
+#yrOv .y-row:last-child{border-bottom:0}
+#yrOv .y-row span{color:var(--muted)}#yrOv .y-row b{font-family:var(--f-display);text-align:right}
+#yrOv .y-cols{display:flex;align-items:flex-end;gap:12px;height:190px;margin:22px 0 8px}
+#yrOv .y-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px}
+#yrOv .y-col .v{font:700 14px var(--f-display)}
+#yrOv .y-col .b{width:100%;border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,var(--c,var(--sys)),rgba(94,200,255,.15));height:0;transition:height 1s cubic-bezier(.2,.8,.2,1) .3s;box-shadow:0 0 24px var(--g,var(--sys-glow))}
+#yrOv .y-col .b.fut{background:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 6px,transparent 6px 12px);border:1px dashed var(--dim);box-shadow:none}
+#yrOv .y-col .n{font-size:12px;color:var(--muted);text-transform:capitalize}
+#yrOv .y-col.hi .n{color:var(--fg);font-weight:600}
+#yrOv .y-cols.sm{height:120px;gap:6px}#yrOv .y-cols.sm .v{font-size:11px}#yrOv .y-cols.sm .b{border-radius:6px 6px 2px 2px}
+#yrOv .y-ringw{display:flex;align-items:center;gap:18px;margin:10px 0}
+#yrOv .y-ring{width:132px;height:132px;flex:none;position:relative}
+#yrOv .y-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+#yrOv .y-ring circle{fill:none;stroke-width:11}
+#yrOv .y-ring .bgc{stroke:rgba(255,255,255,.08)}
+#yrOv .y-ring .fgc{stroke:var(--ok);stroke-linecap:round;transition:stroke-dashoffset 1.3s cubic-bezier(.2,.8,.2,1) .3s;filter:drop-shadow(0 0 8px rgba(73,227,160,.5))}
+#yrOv .y-ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 30px var(--f-display)}
+#yrOv .y-st{display:grid;grid-template-columns:76px 1fr 52px;align-items:center;gap:10px;margin:9px 0}
+#yrOv .y-st .k{font:700 13px var(--f-mono);display:flex;gap:6px;align-items:center}
+#yrOv .y-st .tr{height:12px;border-radius:6px;background:rgba(255,255,255,.07);position:relative;overflow:hidden}
+#yrOv .y-st .was{position:absolute;inset:0 auto 0 0;background:rgba(255,255,255,.22);border-radius:6px}
+#yrOv .y-st .now{position:absolute;inset:0 auto 0 0;width:0;border-radius:6px;background:linear-gradient(90deg,var(--sys),var(--story));transition:width 1.1s cubic-bezier(.2,.8,.2,1) .4s}
+#yrOv .y-st .num{font:700 13px var(--f-display);text-align:right}
+#yrOv .y-st .num em{font-style:normal;color:var(--ok);font-size:11px;margin-left:3px}
+#yrOv .y-qi{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line-soft)}
+#yrOv .y-qi:last-child{border:0}
+#yrOv .y-qi .r{font:800 22px var(--f-display);width:28px;color:var(--c,var(--sys))}
+#yrOv .y-qi .t{flex:1;font-weight:500;min-width:0;overflow-wrap:anywhere}
+#yrOv .y-qi .n{font:700 13px var(--f-mono);color:var(--muted);white-space:nowrap}
+#yrOv .y-chip{font:600 11px var(--f-mono);padding:3px 8px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+#yrOv .y-achs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+#yrOv .y-ach{border:1px solid var(--line-soft);border-radius:12px;padding:9px 8px;text-align:center;background:rgba(255,255,255,.02);min-height:70px;display:flex;flex-direction:column;justify-content:center;gap:3px;opacity:.38}
+#yrOv .y-ach b{font:700 12.5px/1.15 var(--f-display)}
+#yrOv .y-ach span{font-size:10.5px;color:var(--muted)}
+#yrOv .y-ach.on{opacity:1;border-color:var(--gold);background:rgba(255,207,92,.08);box-shadow:inset 0 0 18px rgba(255,207,92,.08)}
+#yrOv .y-ach.on span{color:var(--gold)}
+#yrOv .y-nom{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:10px;margin:4px 0;background:rgba(255,255,255,.03);border:1px solid var(--line-soft)}
+#yrOv .y-nom .e{font-size:18px;width:24px;text-align:center}
+#yrOv .y-nom .t{flex:1;min-width:0}#yrOv .y-nom .t b{display:block;font:700 14px/1.2 var(--f-display)}
+#yrOv .y-nom .w{font:700 13px/1.2 var(--f-display);text-align:right;white-space:nowrap}
+#yrOv .y-nom .w small{font:400 11px var(--f-body);color:var(--muted)}
+#yrOv .y-nom.me{border-color:var(--gold);background:rgba(255,207,92,.09)}
+#yrOv .y-nom.me .w{color:var(--gold)}
+#yrOv .y-4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+#yrOv .y-s4{background:var(--panel);border:1px solid var(--line-soft);border-radius:14px;padding:12px}
+#yrOv .y-s4 b{display:block;font:800 26px/1.1 var(--f-display);color:var(--c,var(--fg))}
+#yrOv .y-s4 span{font-size:12px;color:var(--muted)}
+#yrOv .y-final{border-radius:20px;padding:18px;background:linear-gradient(150deg,rgba(94,200,255,.16),rgba(180,140,255,.14) 60%,rgba(255,207,92,.1));border:1px solid var(--line)}
+#yrOv .y-final .y-fh{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+#yrOv .y-final .y-fh b{font:800 22px var(--f-display);display:block}
+#yrOv .y-final .y-fh span{font-size:12px;color:var(--muted)}
+#yrOv .y-final .y-fg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+#yrOv .y-final .y-fg div{background:rgba(6,10,20,.45);border-radius:12px;padding:9px 10px}
+#yrOv .y-final .y-fg b{display:block;font:800 19px var(--f-display)}
+#yrOv .y-final .y-fg span{font-size:11px;color:var(--muted)}
+#yrOv .y-final .y-fm{margin-top:10px;font-size:13px;color:var(--muted)}#yrOv .y-final .y-fm b{color:var(--fg)}
+#yrOv .y-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+#yrOv .y-tblov{position:absolute;inset:0;z-index:10;background:rgba(3,6,13,.92);display:flex;align-items:center;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) 12px 16px}
+#yrOv .y-tb{width:100%;max-width:640px;max-height:100%;overflow:auto;background:var(--panel-solid);border:1px solid var(--line);border-radius:18px;padding:16px}
+#yrOv .y-tbh{display:flex;align-items:center;justify-content:space-between;font:800 22px var(--f-display)}
+#yrOv .y-tb table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px}
+#yrOv .y-tb th,#yrOv .y-tb td{padding:9px 6px;text-align:right;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+#yrOv .y-tb th{font:600 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+#yrOv .y-tb th:first-child,#yrOv .y-tb td:first-child{text-align:left}
+#yrOv .y-tb td.lead{color:var(--gold);font-weight:700}
+.vnote.yrn{color:#fff;border-color:rgba(180,140,255,.7);background:linear-gradient(100deg,rgba(94,200,255,.14),rgba(180,140,255,.16))}
+@media(prefers-reduced-motion:reduce){#yrOv .y-slide>*{animation:none;opacity:1;transform:none}#yrOv .y-bars i.cur b{animation:none;width:100%}#yrOv .y-col .b,#yrOv .y-st .now,#yrOv .y-ring .fgc{transition:none}}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
@@ -909,6 +1026,7 @@ details.pldn summary::-webkit-details-marker{display:none}
     <div class="strip" id="strip"></div>
     <button type="button" class="vnote" id="vNote" data-act="tab" data-t="party" hidden></button>
     <button type="button" class="vnote wkn" id="wkNote" data-act="tab" data-t="status" hidden></button>
+    <button type="button" class="vnote yrn" id="yrNote" data-act="yropen" data-me="1" hidden>🏆 Итоги сезона 1 готовы · Смотреть →</button>
 
     <section class="panel" aria-labelledby="qT">
       <div class="ph"><h2 class="ptitle" id="qT">Квесты дня</h2><span class="sub" id="qSub"></span></div>
@@ -1044,7 +1162,7 @@ details.pldn summary::-webkit-details-marker{display:none}
       <div id="talk" style="display:flex;flex-direction:column;gap:10px"></div>
     </section>
     <section class="panel alert" id="seasonPanel" hidden aria-labelledby="seT">
-      <div class="ph"><h2 class="ptitle" id="seT">Итоги сезона 1</h2><span class="sub">15 октября — 31 декабря</span></div>
+      <div class="ph"><h2 class="ptitle" id="seT">Итоги сезона 1</h2><span class="sub">15 октября · 31 декабря</span></div>
       <div id="season"></div>
     </section>
     <section class="panel" aria-labelledby="wkT">
@@ -1063,6 +1181,10 @@ details.pldn summary::-webkit-details-marker{display:none}
 
   <!-- ===== ЕЩЁ ===== -->
   <div class="tabp" data-tab="more" hidden>
+    <section class="panel alert" id="yrPanel" hidden aria-labelledby="yrT">
+      <div class="ph"><h2 class="ptitle" id="yrT">🏆 Итоги сезона</h2></div>
+      <div id="yrBox"></div>
+    </section>
     <section class="panel" id="newsPanel" aria-labelledby="nT">
       <div class="ph"><h2 class="ptitle" id="nT">Что нового</h2><span class="newtag" id="newsTag" hidden></span><span class="sub" id="verLbl"></span></div>
       <div id="news"></div>
@@ -1164,6 +1286,7 @@ details.pldn summary::-webkit-details-marker{display:none}
     <div class="lv2" id="lvTxt"></div>
   </div>
 </div>
+<div id="yrOv" hidden></div>
 <div class="toasts" id="toasts" aria-live="polite"></div>
 <div id="tourOv" class="tour" hidden>
   <div class="tour-hole" id="tourHole"></div>
@@ -1429,7 +1552,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 23;
+const APP_VERSION = 24;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -1470,6 +1593,12 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 24, date: "2026-11-20", title: "Итоги сезона", items: [
+    "31 декабря в 18:00 на «Сегодня» появится плашка «Итоги сезона 1 готовы». Внутри сторис о твоём сезоне, листаются нажатием справа.",
+    "В сторис: опыт по месяцам, процент выполнения, лучшая серия и самый мощный день, главный квест и тот, что так и не дался, твой ритм по дням и часам, рост характеристик, сюжеты, ачивки и роль в пати.",
+    "В конце номинации пати (Чемпион сезона, Железная серия, Ночной житель, Судья, Король провалов и другие), карточка-итог для скриншота и таблица пати.",
+    "Итоги друзей тоже можно посмотреть. Всё считается из ваших квестов, ничего заполнять не нужно. До 31 декабря раздел скрыт.",
+  ] },
   { v: 23, date: "2026-11-19", title: "Дневник", items: [
     "Новая вкладка «Дневник». Каждая запись это событие дня: настроение (5 смайлов) и текст. Записать можно только за сегодня.",
     "Новая запись по умолчанию 🔒 «только мне»: её видишь только ты, сервер не отдаёт её друзьям. Нажми на замок, чтобы стало 👁 «друзьям», и обратно.",
@@ -3357,6 +3486,239 @@ async function dAct(b, act) {
 }
 document.addEventListener("click", (ev) => { if (dPick && !ev.target.closest(".dpick") && !ev.target.closest('[data-act="dpick"]')) { dPick = null; renderDiary(); if (friendId) renderFriend(); } });
 
+// ---------- v24: итоги сезона (сторис как Spotify Wrapped) ----------
+// Всё считается из тех же данных и функций, что «Статус»; ничего не хранится, кроме prefs.yrSeen (видел ли игрок итоги).
+const YR_OPEN = Date.parse("2026-12-31T18:00:00+05:00");
+const yrReady = () => now() >= YR_OPEN;
+const yrCan = () => yrReady() || isOwner;
+const YR_COL = ["#5ec8ff", "#ffcf5c", "#49e3a0", "#b48cff", "#ff9ecf", "#ff9d4d"];
+const YR_MON = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+const YR_MONN = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+const YR_WD_PO = ["понедельникам", "вторникам", "средам", "четвергам", "пятницам", "субботам", "воскресеньям"];
+const YR_DUR = 7000;
+let yr = null, yrTimer = null;
+const yrDl = (s) => { const [, m, d] = s.split("-").map(Number); return d + " " + YR_MON[m - 1]; };
+const yrPl = (n, a, b, c) => { const x = Math.abs(n) % 100, y = x % 10; return n + " " + (x > 10 && x < 20 ? c : y === 1 ? a : y >= 2 && y <= 4 ? b : c); };
+const yrHrs = (m) => String(Math.round(m / 6) / 10).replace(".", ",");
+function yrData() {
+  const endMs = Date.parse(LAST_DAY + "T23:59:59+05:00");
+  const norm = (s) => String(s || "").trim().toLowerCase().replace(/ё/g, "е").replace(/\s+/g, " ");
+  const hourOf = (ms) => new Date(Number(ms) + 5 * 3600e3).getUTCHours();
+  const out = { players: [], weeks: [] };
+  activePlayers().forEach((pl, pi) => {
+    const pid = pl.id, pr = profile(pid), ss = (storiesBy[pid] || []).filter((s) => !(num(s.createdAt) > endMs));
+    const ts = (tasksBy[pid] || []).filter((t) => t && t.date <= LAST_DAY && !t.moved && t.date <= today());
+    const done = ts.filter((t) => t.done && !flagOf(t) && taskState(t) !== "rejected"), failed = ts.filter((t) => t.date < today() && !t.done && !isOff(pid, t.date));
+    const xpBy = {}; for (const k in pr.xpByDay) if (k <= LAST_DAY && pr.xpByDay[k] > 0) xpBy[k] = pr.xpByDay[k];
+    const months = {}; for (const k in xpBy) months[k.slice(0, 7)] = (months[k.slice(0, 7)] || 0) + xpBy[k];
+    let bestDay = null; for (const k in xpBy) if (!bestDay || xpBy[k] > bestDay.xp) bestDay = { d: k, xp: xpBy[k] };
+    const cnt = (list) => { const m = {}; for (const t of list) { const k = norm(t.title); if (k) (m[k] = m[k] || { t: t.title, n: 0 }).n++; } return Object.values(m).sort((a, b) => b.n - a.n).slice(0, 3); };
+    const wd = [0, 0, 0, 0, 0, 0, 0], hours = Array(24).fill(0);
+    for (const t of done) { wd[wdOf(t.date) - 1]++; if (typeof t.doneAt === "number") hours[hourOf(t.doneAt)]++; }
+    const sx = Object.fromEntries(STATS.map((s) => [s.k, 0]));
+    for (const d in pr.statByDay) if (d <= LAST_DAY) for (const k in pr.statByDay[d]) sx[k] = (sx[k] || 0) + pr.statByDay[d][k];
+    const order = [...STATS].sort((a, b) => sx[b.k] - sx[a.k]).filter((s) => sx[s.k] > 0);
+    const vs = (votesBy[pid] || []).filter((x) => !(num(x.at) > endMs));
+    const st = {}; for (const s of ss) { const k = storyState(s); st[k] = (st[k] || 0) + 1; }
+    const first = done.slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : num(a.doneAt) - num(b.doneAt)))[0];
+    const li = levelInfo(pr.seasonXp);
+    out.players.push({
+      id: pid, name: pl.name, col: YR_COL[pi % YR_COL.length], joined: joinedOf(pid), xp: pr.seasonXp, level: li.L,
+      cls: order.length === 0 ? "Новичок" : order.length === 1 ? order[0].title : order[0].title + "-" + order[1].title,
+      stats: Object.fromEntries(STATS.map((s) => [s.k, 10 + Math.floor(sx[s.k] / 25)])),
+      best: pr.bestIn, streak: today() <= LAST_DAY ? pr.streak : 0, months, bestDay,
+      achs: ACH.filter((a) => pr.ach[a.k] && pr.ach[a.k] <= LAST_DAY).map((a) => ({ k: a.k, at: pr.ach[a.k] })),
+      done: done.length, failed: failed.length, mins: done.filter(isNewQ).reduce((a, t) => a + t.m, 0),
+      night: done.filter((t) => typeof t.doneAt === "number" && (hourOf(t.doneAt) >= 23 || hourOf(t.doneAt) < 4)).length, wd, hours,
+      topDone: cnt(done), topFail: cnt(failed), activeDays: Object.keys(xpBy).length, daysIn: pr.daysIn, perDay: pr.perDay,
+      stories: ss.map((s) => { const sp = (s.steps || []).filter((x) => !x.removed); return { t: s.title, st: storyState(s), steps: sp.length, stepsDone: sp.filter((x) => x.done).length }; }), storyStates: st,
+      votes: { yes: vs.filter((x) => x.vote === "yes").length, no: vs.filter((x) => x.vote === "no").length, disputes: vs.filter((x) => x.kind === "dispute" || x.kind === "sdispute").length, comments: vs.filter((x) => x.kind === "comment").length },
+      first: first ? { t: first.title, d: first.date } : null, habits: done.filter((t) => typeof t.fromDaily === "string").length,
+    });
+  });
+  // завершённые недели сезона: кто был первым
+  for (let w = lastWeekStart(); addDays(w, 6) >= SEASON_START; w = addDays(w, -7)) {
+    if (w > LAST_DAY) continue;
+    const we = addDays(w, 6) < LAST_DAY ? addDays(w, 6) : LAST_DAY;
+    const board = out.players.map((p) => { let x = 0; const pp = profile(p.id); for (let d = w; d <= we; d = addDays(d, 1)) x += num(pp.xpByDay[d]); return { id: p.id, x }; }).sort((a, b) => b.x - a.x);
+    out.weeks.push(board);
+  }
+  return out;
+}
+const yrPct = (p) => (p.done + p.failed ? Math.round((p.done / (p.done + p.failed)) * 100) : 0);
+const yrWeeks = (p) => yr.D.weeks.filter((b) => b[0] && b[0].x > 0 && b[0].id === p.id).length;
+const yrOkStories = (p) => (p.storyStates.approved || 0) + (p.storyStates.late || 0);
+const YR_NOMS = [
+  { e: "👑", t: "Чемпион сезона", d: "больше всего опыта", v: (p) => p.xp, f: (v) => v + " XP" },
+  { e: "🎯", t: "Самый дисциплинированный", d: "лучший процент выполнения", v: yrPct, f: (v) => v + "%" },
+  { e: "🔥", t: "Железная серия", d: "самая длинная серия дней", v: (p) => p.best, f: (v) => yrPl(v, "день", "дня", "дней") },
+  { e: "⏳", t: "Трудяга", d: "больше всего часов в квестах", v: (p) => p.mins, f: (v) => yrHrs(v) + " ч" },
+  { e: "🦉", t: "Ночной житель", d: "больше всего отметок после 23:00", v: (p) => p.night, f: (v) => yrPl(v, "раз", "раза", "раз") },
+  { e: "⚖️", t: "Судья", d: "больше всего голосов и споров", v: (p) => p.votes.yes + p.votes.no + p.votes.disputes, f: (v) => yrPl(v, "голос", "голоса", "голосов") },
+  { e: "📜", t: "Сюжетный герой", d: "больше всего пройденных сюжетов", v: yrOkStories, f: (v) => yrPl(v, "сюжет", "сюжета", "сюжетов") },
+  { e: "🏅", t: "Коллекционер", d: "больше всего ачивок", v: (p) => p.achs.length, f: (v) => v + " из " + ACH.length },
+  { e: "🥇", t: "Лидер недель", d: "чаще всех первый за неделю", v: (p) => yrWeeks(p), f: (v) => yrPl(v, "неделя", "недели", "недель") },
+  { e: "💬", t: "Душа пати", d: "больше всего комментариев", v: (p) => p.votes.comments, f: (v) => yrPl(v, "комментарий", "комментария", "комментариев") },
+  { e: "🫠", t: "Король провалов", d: "больше всего несделанных квестов", v: (p) => p.failed, f: (v) => yrPl(v, "квест", "квеста", "квестов") },
+];
+const yrWin = (n) => { const P = yr.D.players, m = Math.max(...P.map(n.v)); return m > 0 ? P.filter((p) => n.v(p) === m) : []; };
+function yrAva(p, px) {
+  const a = avaOf(p.id), st = "width:" + px + "px;height:" + px + "px;font-size:" + Math.round(px * 0.45) + "px;background:" + p.col;
+  return '<span class="y-ava" style="' + st + '" aria-hidden="true">' + (a ? '<img src="' + esc(blobUrl(a)) + '" alt="">' : esc((p.name || "?")[0])) + "</span>";
+}
+function yrSlides(p) {
+  const P = yr.D.players, S = [], c = p.col, place = [...P].sort((a, b) => b.xp - a.xp).indexOf(p) + 1, mine = p.id === me;
+  const months = ["2026-10", "2026-11", "2026-12"].filter((m) => m >= p.joined.slice(0, 7));
+  const mx = Math.max(1, ...months.map((m) => p.months[m] || 0));
+  const bestM = months.reduce((a, m) => ((p.months[m] || 0) > (p.months[a] || 0) ? m : a), months[0]);
+  const ring = (v) => { const L = 2 * Math.PI * 54; return '<div class="y-ring"><svg viewBox="0 0 132 132" aria-hidden="true"><circle class="bgc" cx="66" cy="66" r="54"/><circle class="fgc" cx="66" cy="66" r="54" stroke-dasharray="' + L + '" stroke-dashoffset="' + L + '" data-off="' + L * (1 - v / 100) + '"/></svg><b>' + v + "%</b></div>"; };
+  const dWord = (n) => (n % 10 === 1 && n % 100 !== 11 ? "день" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 > 20) ? "дня" : "дней");
+
+  S.push({ g: [c, "#b48cff"], h: '<div class="y-lab">Сезон 1 · итоги</div><div class="y-h" style="font-size:46px">' + esc(p.name) + '</div><div class="y-sub">С ' + yrDl(p.joined) + " в Системе. " + yrPl(p.daysIn, "день", "дня", "дней") + ", " + yrPl(p.done, "выполненный квест", "выполненных квеста", "выполненных квестов") + ". Посмотрим, что получилось.</div>" +
+    (p.first ? '<div class="y-card"><div class="y-row"><span>Первый квест</span><b>' + esc(p.first.t) + '</b></div><div class="y-row"><span>Дата</span><b>' + yrDl(p.first.d) + "</b></div></div>" : "") + '<div class="y-hint">Нажимай справа, чтобы листать. Слева: назад.</div>' });
+
+  S.push({ g: [c, "#ffcf5c"], h: '<div class="y-lab">Опыт за сезон</div><div class="y-big" data-count="' + p.xp + '">0<small>XP</small></div><div class="y-sub">Уровень <b>' + p.level + "</b> · класс <b>" + esc(p.cls) + "</b></div>" +
+    '<div class="y-4"><div class="y-s4" style="--c:var(--gold)"><b>' + (MEDALS[place - 1] ? MEDALS[place - 1] + " " : "") + place + "</b><span>место в пати из " + P.length + '</span></div><div class="y-s4"><b>' + p.perDay + "</b><span>XP в среднем за день</span></div></div>" });
+
+  if (months.length) S.push({ g: ["#5ec8ff", c], h: '<div class="y-lab">По месяцам</div><div class="y-h">Лучший месяц: ' + YR_MONN[Number(bestM.slice(5)) - 1].toLowerCase() + "</div>" +
+    '<div class="y-cols">' + months.map((m) => { const v = p.months[m] || 0, fut = m > today().slice(0, 7); return '<div class="y-col' + (m === bestM ? " hi" : "") + '"><span class="v">' + (fut ? "впереди" : "+" + v) + '</span><span class="b' + (fut ? " fut" : "") + '" data-h="' + (fut ? 40 : Math.max(4, Math.round((v / mx) * 100))) + '"></span><span class="n">' + YR_MONN[Number(m.slice(5)) - 1] + "</span></div>"; }).join("") + "</div>" +
+    (today() < LAST_DAY ? '<div class="y-sub">Предпросмотр: сезон ещё идёт, к 31 декабря цифры дополнятся.</div>' : "") });
+
+  const pc = yrPct(p);
+  S.push({ g: ["#49e3a0", c], h: '<div class="y-lab" style="--c:var(--ok)">Дисциплина</div><div class="y-ringw">' + ring(pc) + '<div><div class="y-h" style="margin:0">' + p.done + " из " + (p.done + p.failed) + '</div><div class="y-sub">квестов выполнено</div></div></div>' +
+    '<div class="y-card"><div class="y-row"><span>Дней с опытом</span><b>' + p.activeDays + " из " + p.daysIn + '</b></div><div class="y-row"><span>Часов в квестах</span><b>' + yrHrs(p.mins) + ' ч</b></div><div class="y-row"><span>Повторов (привычек) сделано</span><b>' + p.habits + "</b></div></div>" });
+
+  S.push({ g: ["#ff9d4d", "#ffcf5c"], h: '<div class="y-lab" style="--c:#ff9d4d">Серия</div><div class="y-big" style="--c:#ff9d4d;--g:rgba(255,157,77,.5)" data-count="' + p.best + '">0<small>' + dWord(p.best) + '</small></div><div class="y-sub">самая длинная серия подряд' + (p.streak === p.best && p.streak > 2 ? ", и она <b>ещё идёт</b> 🔥" : "") + "</div>" +
+    (p.bestDay ? '<div class="y-card"><div class="y-lab" style="--c:var(--gold);margin-bottom:4px">Самый мощный день</div><div class="y-h" style="font-size:24px;margin:0">' + yrDl(p.bestDay.d) + '</div><div class="y-sub">+' + p.bestDay.xp + " XP за один день</div></div>" : "") });
+
+  if (p.topDone.length) S.push({ g: [c, "#49e3a0"], h: '<div class="y-lab">Главный квест</div><div class="y-h" style="font-size:34px">' + esc(p.topDone[0].t) + '</div><div class="y-sub">выполнен <b>' + yrPl(p.topDone[0].n, "раз", "раза", "раз") + "</b></div>" +
+    (p.topDone.length > 1 ? '<div class="y-card">' + p.topDone.slice(1).map((q, i) => '<div class="y-qi"><span class="r">' + (i + 2) + '</span><span class="t">' + esc(q.t) + '</span><span class="n">×' + q.n + "</span></div>").join("") + "</div>" : "") +
+    (p.topFail.length ? '<div class="y-card" style="border-color:rgba(255,93,115,.3)"><div class="y-lab" style="--c:var(--bad);margin-bottom:2px">А это так и не далось</div><div class="y-qi"><span class="r" style="--c:var(--bad)">✗</span><span class="t">' + esc(p.topFail[0].t) + '</span><span class="n">' + yrPl(p.topFail[0].n, "пропуск", "пропуска", "пропусков") + "</span></div></div>" : "") });
+
+  const wmx = Math.max(1, ...p.wd), wbest = p.wd.indexOf(Math.max(...p.wd));
+  let ph = -1, phm = 0; p.hours.forEach((v, i) => { if (v > phm) { phm = v; ph = i; } });
+  if (p.done) S.push({ g: ["#a58bff", "#5ec8ff"], h: '<div class="y-lab" style="--c:var(--violet)">Ритм</div><div class="y-h">Больше всего дел по ' + YR_WD_PO[wbest] + "</div>" +
+    '<div class="y-cols sm">' + p.wd.map((v, i) => '<div class="y-col' + (i === wbest ? " hi" : "") + '" style="--c:var(--violet);--g:rgba(165,139,255,.4)"><span class="v">' + v + '</span><span class="b" data-h="' + Math.max(3, Math.round((v / wmx) * 100)) + '"></span><span class="n">' + WDS[i] + "</span></div>").join("") + "</div>" +
+    '<div class="y-card">' + (ph >= 0 ? '<div class="y-row"><span>Чаще всего отмечает квесты</span><b>около ' + ph + ":00</b></div>" : "") + '<div class="y-row"><span>🦉 Отметок после 23:00</span><b>' + p.night + "</b></div></div>" });
+
+  let grow = null; STATS.forEach((s) => { const g = p.stats[s.k] - 10; if (g > 0 && (!grow || g > grow.g)) grow = { s, g }; });
+  const smx = Math.max(20, ...STATS.map((s) => p.stats[s.k]));
+  S.push({ g: [c, "#b48cff"], h: '<div class="y-lab">Характеристики</div><div class="y-h">' + (grow ? "Сильнее всего вырос: " + grow.s.n.toLowerCase() : "Всё только начинается") + '</div><div class="y-sub">Серым: с чего начинал (10). Цветом: что сейчас.</div><div class="y-card">' +
+    STATS.map((s) => { const v = p.stats[s.k]; return '<div class="y-st"><span class="k">' + statIco(s.k) + s.s + '</span><span class="tr"><span class="was" style="width:' + (10 / smx) * 100 + '%"></span><span class="now" data-w="' + (v / smx) * 100 + '"></span></span><span class="num">' + v + (v > 10 ? "<em>+" + (v - 10) + "</em>" : "") + "</span></div>"; }).join("") + "</div>" });
+
+  const SC = { approved: ["пройден", "var(--ok)"], late: ["пройден с опозданием", "var(--gold)"], active: ["в процессе", "var(--story)"], pending: ["на проверке", "var(--sys)"], disputed: ["оспорен", "var(--gold)"], closed: ["закрыт", "var(--muted)"], expired: ["провален", "var(--bad)"], rejected: ["не засчитан", "var(--bad)"] };
+  if (p.stories.length) S.push({ g: ["#b48cff", "#ff9ecf"], h: '<div class="y-lab" style="--c:var(--story)">Сюжетные квесты</div><div class="y-big" style="--c:var(--story);--g:rgba(180,140,255,.5)">' + yrOkStories(p) + "<small>из " + p.stories.length + '</small></div><div class="y-sub">сюжетов пройдено</div><div class="y-card">' +
+    p.stories.slice(0, 5).map((s) => { const x = SC[s.st] || [s.st, "var(--muted)"]; return '<div class="y-qi"><span class="t">' + esc(s.t) + (s.steps ? '<br><span class="y-sub" style="font-size:12px">шагов ' + s.stepsDone + " из " + s.steps + "</span>" : "") + '</span><span class="y-chip" style="color:' + x[1] + '">' + x[0] + "</span></div>"; }).join("") + "</div>" });
+
+  const got = new Map(p.achs.map((a) => [a.k, a.at]));
+  S.push({ g: ["#ffcf5c", c], h: '<div class="y-lab" style="--c:var(--gold)">Ачивки</div><div class="y-h">' + p.achs.length + " из " + ACH.length + " открыто</div>" +
+    '<div class="y-achs">' + ACH.map((a) => { const at = got.get(a.k); return '<div class="y-ach' + (at ? " on" : "") + '"><b>' + (at ? "🏅 " : "🔒 ") + esc(a.n) + "</b><span>" + (at ? yrDl(at) : "не открыта") + "</span></div>"; }).join("") + "</div>" });
+
+  const ww = yrWeeks(p);
+  S.push({ g: ["#5ec8ff", "#49e3a0"], h: '<div class="y-lab">В пати</div><div class="y-h">' + (ww ? yrPl(ww, "неделю", "недели", "недель") + " первое место" : "Первое место за неделю ещё впереди") + "</div>" +
+    '<div class="y-4"><div class="y-s4" style="--c:var(--ok)"><b>' + p.votes.yes + '</b><span>✅ раз подтвердил друзей</span></div><div class="y-s4" style="--c:var(--bad)"><b>' + p.votes.no + '</b><span>❌ раз сказал «нет»</span></div><div class="y-s4" style="--c:var(--gold)"><b>' + p.votes.disputes + '</b><span>⚔ споров начал</span></div><div class="y-s4" style="--c:var(--sys)"><b>' + p.votes.comments + "</b><span>💬 комментариев</span></div></div>" });
+
+  const myN = YR_NOMS.filter((n) => yrWin(n).includes(p)), who = (x) => (x.id === me ? "Ты" : x.name);
+  S.push({ g: ["#ffcf5c", "#b48cff"], h: '<div class="y-lab" style="--c:var(--gold)">Номинации пати</div><div class="y-h">' + (myN.length ? (mine ? "Твоих номинаций: " : "Номинаций у " + esc(p.name) + ": ") + myN.length : "В этот раз без номинаций") + "</div>" +
+    YR_NOMS.map((n) => { const w = yrWin(n); if (!w.length) return ""; return '<div class="y-nom' + (w.includes(p) ? " me" : "") + '"><span class="e">' + n.e + '</span><span class="t" title="' + n.d + '"><b>' + n.t + '</b></span><span class="w">' + w.map((x) => esc(who(x))).join(", ") + "<br><small>" + n.f(n.v(w[0])) + "</small></span></div>"; }).join("") });
+
+  S.push({ g: [c, "#ffcf5c"], final: true, h: '<div class="y-lab">Сезон в одной карточке</div><div class="y-final"><div class="y-fh">' + yrAva(p, 46) + "<div><b>" + esc(p.name) + "</b><span>Система · Сезон 1 · " + esc(p.cls) + "</span></div></div>" +
+    '<div class="y-fg"><div><b>' + p.xp + "</b><span>XP</span></div><div><b>" + p.level + "</b><span>уровень</span></div><div><b>" + place + " из " + P.length + "</b><span>место</span></div><div><b>" + pc + "%</b><span>выполнено</span></div><div><b>" + p.best + "</b><span>лучшая серия</span></div><div><b>" + p.achs.length + "/" + ACH.length + "</b><span>ачивки</span></div></div>" +
+    '<div class="y-fm">' + (p.topDone[0] ? "Главный квест: <b>" + esc(p.topDone[0].t) + "</b><br>" : "") + (myN.length ? "Номинации: <b>" + myN.map((n) => n.e + " " + n.t).join(", ") + "</b>" : "") + "</div></div>" +
+    '<div class="y-btns"><button class="btn" type="button" data-act="yragain">↺ Ещё раз</button><button class="btn ghost" type="button" data-act="yrhome">Итоги друзей</button><button class="btn ghost" type="button" data-act="yrtbl">📊 Таблица пати</button></div>' });
+  return S;
+}
+function yrHomeHtml() {
+  const P = [...yr.D.players].sort((a, b) => (a.id === me ? -1 : b.id === me ? 1 : b.xp - a.xp));
+  return '<div class="y-homebox"><button type="button" class="y-x" data-act="yrclose" aria-label="Закрыть">×</button><div class="y-kick">Система · Сезон 1</div><h2 class="y-title">Итоги сезона</h2><p class="y-sub">15 октября · 31 декабря. Чей сезон смотрим?</p>' +
+    (yrReady() ? "" : '<p class="y-prev">Предпросмотр: видно только владельцу. Для всех итоги откроются 31 декабря в 18:00.</p>') +
+    '<div class="y-who">' + P.map((p) => '<button type="button" data-act="yropen" data-p="' + esc(p.id) + '">' + yrAva(p, 38) + "<b>" + esc(p.id === me ? "Мои итоги" : p.name) + '</b><span class="m">ур. ' + p.level + " · " + p.xp + " XP</span></button>").join("") + "</div>" +
+    '<button class="btn ghost" type="button" data-act="yrtbl" style="margin-top:16px">📊 Таблица пати</button></div>';
+}
+function yrTblHtml() {
+  const P = yr.D.players;
+  const cols = [["XP", (p) => p.xp], ["Ур.", (p) => p.level], ["Выполнено", yrPct, "%"], ["Серия", (p) => p.best], ["Часы", (p) => p.mins, "", yrHrs], ["Ачивки", (p) => p.achs.length], ["Недель 🥇", yrWeeks], ["Сюжеты", yrOkStories]];
+  const rows = [...P].sort((a, b) => b.xp - a.xp);
+  return '<div class="y-tb" role="dialog" aria-modal="true" aria-label="Таблица пати"><div class="y-tbh"><b>Таблица пати</b><button type="button" class="y-x" data-act="yrtclose" aria-label="Закрыть">×</button></div><div class="y-sub">Золотом: лучший в столбце. Сезон 1' + (today() < LAST_DAY ? ", данные на " + yrDl(today()) : "") + '.</div><div class="tscroll"><table><thead><tr><th>Игрок</th>' + cols.map((c) => "<th>" + c[0] + "</th>").join("") + "</tr></thead><tbody>" +
+    rows.map((p, i) => "<tr><td>" + (MEDALS[i] || "") + " " + esc(p.name) + "</td>" + cols.map((c) => { const v = c[1](p), m = Math.max(...P.map(c[1])); return '<td class="' + (v === m && v > 0 ? "lead" : "") + '">' + (c[3] ? c[3](v) : v) + (c[2] || "") + "</td>"; }).join("") + "</tr>").join("") + "</tbody></table></div></div>";
+}
+function yrShow() {
+  clearTimeout(yrTimer);
+  const ov = $("yrOv");
+  if (!yr) { ov.hidden = true; ov.innerHTML = ""; document.documentElement.classList.remove("yr-lock"); return; }
+  ov.hidden = false; document.documentElement.classList.add("yr-lock");
+  let h = "";
+  if (yr.view === "home") h = '<div class="y-home">' + yrHomeHtml() + "</div>";
+  else {
+    const s = yr.list[yr.idx], p = yr.p;
+    h = '<div class="y-frame" style="--yc:' + p.col + '"><div class="y-glow" style="background:radial-gradient(60% 40% at 15% 10%,' + s.g[0] + "33,transparent 70%),radial-gradient(60% 45% at 90% 95%," + s.g[1] + '2e,transparent 70%)"></div>' +
+      '<div class="y-bars">' + yr.list.map((_, i) => '<i class="' + (i < yr.idx || (i === yr.idx && s.final) ? "done" : i === yr.idx ? "cur" : "") + '"><b style="animation-duration:' + YR_DUR + "ms;animation-play-state:" + (yr.paused ? "paused" : "running") + '"></b></i>').join("") + "</div>" +
+      '<div class="y-top">' + yrAva(p, 26) + "<b>" + esc(p.name) + '</b><span class="y-sub" style="font-size:12px">· итоги сезона</span><button class="y-pp" type="button" data-act="yrpause" aria-label="' + (yr.paused ? "Продолжить" : "Пауза") + '">' + (yr.paused ? "▶" : "❚❚") + '</button><button class="y-x" type="button" data-act="yrclose" aria-label="Закрыть">×</button></div>' +
+      '<button class="y-tap l" type="button" data-act="yrprev" aria-label="Назад"></button><button class="y-tap r" type="button" data-act="yrnext" aria-label="Дальше"></button>' +
+      '<div class="y-slide" aria-live="polite">' + s.h + "</div></div>";
+  }
+  if (yr.tbl) h += '<div class="y-tblov">' + yrTblHtml() + "</div>";
+  const fa = document.activeElement && ov.contains(document.activeElement) ? document.activeElement.dataset.act : null;
+  ov.innerHTML = h;
+  const fb = (fa && ov.querySelector('[data-act="' + fa + '"]')) || ov.querySelector(yr.tbl ? '[data-act="yrtclose"]' : yr.view === "home" ? ".y-who button" : '[data-act="yrnext"]');
+  if (fb) try { fb.focus({ preventScroll: true }); } catch {}
+  if (yr.view !== "story") return;
+  const rm = RM();
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    ov.querySelectorAll("[data-h]").forEach((b) => (b.style.height = b.dataset.h + "%"));
+    ov.querySelectorAll("[data-w]").forEach((b) => (b.style.width = b.dataset.w + "%"));
+    ov.querySelectorAll("[data-off]").forEach((b) => (b.style.strokeDashoffset = b.dataset.off));
+    ov.querySelectorAll("[data-count]").forEach((el) => {
+      const to = num(el.dataset.count), sm = el.querySelector("small").outerHTML, t0 = performance.now();
+      if (rm) { el.innerHTML = to + sm; return; }
+      const step = (t) => { const k = Math.min(1, (t - t0) / 1100); el.innerHTML = Math.round(to * (1 - Math.pow(1 - k, 3))) + sm; if (k < 1 && el.isConnected) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    });
+  }));
+  if (!yr.list[yr.idx].final && !yr.paused && !yr.tbl) yrTimer = setTimeout(() => { if (yr && yr.view === "story" && yr.idx < yr.list.length - 1) { yr.idx++; yrShow(); } }, YR_DUR);
+}
+function yrOpen(pid) {
+  if (!yrCan()) return;
+  if (!yr) yr = { D: yrData(), view: "home", idx: 0, list: [], p: null, paused: false, tbl: false };
+  const p = pid && yr.D.players.find((x) => x.id === pid);
+  if (p) { yr.p = p; yr.list = yrSlides(p); yr.idx = 0; yr.view = "story"; yr.paused = false; if (p.id === me && yrReady() && !prefs.yrSeen) { writePrefs({ yrSeen: now() }); renderYrEntry(); } }
+  else yr.view = "home";
+  yrShow();
+}
+function yrUi(b, act) {
+  if (!/^yr(open|close|home|next|prev|pause|again|tbl|tclose)$/.test(act)) return false;
+  if (act === "yropen") { yrOpen(b.dataset.p || (b.dataset.me ? me : null)); return true; }
+  if (!yr) return true;
+  if (act === "yrclose") { yr = null; yrShow(); return true; }
+  if (act === "yrhome") { yr.view = "home"; yrShow(); return true; }
+  if (act === "yrnext") { if (yr.idx < yr.list.length - 1) { yr.idx++; yrShow(); } return true; }
+  if (act === "yrprev") { if (yr.idx > 0) yr.idx--; yrShow(); return true; }
+  if (act === "yrpause") { yr.paused = !yr.paused; yrShow(); return true; }
+  if (act === "yragain") { yr.idx = 0; yr.paused = false; yrShow(); return true; }
+  if (act === "yrtbl") { yr.tbl = true; yrShow(); return true; }
+  if (act === "yrtclose") { yr.tbl = false; yrShow(); return true; }
+  return true;
+}
+document.addEventListener("keydown", (e) => {
+  if (!yr) return;
+  if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); if (yr.tbl) yr.tbl = false; else if (yr.view === "story") yr.view = "home"; else yr = null; yrShow(); return; }
+  if (yr.view !== "story" || yr.tbl) return;
+  if (e.key === "ArrowRight") { e.preventDefault(); if (yr.idx < yr.list.length - 1) { yr.idx++; yrShow(); } }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); if (yr.idx > 0) { yr.idx--; yrShow(); } }
+  else if (e.key === " " && !(e.target.closest && e.target.closest("button"))) { e.preventDefault(); yr.paused = !yr.paused; yrShow(); }
+}, true);
+document.addEventListener("visibilitychange", () => { if (yr && yr.view === "story" && document.hidden && !yr.paused) { yr.paused = true; yrShow(); } });
+// вход: плашка на «Сегодня» (пока не смотрел) и панель в «Ещё»
+function renderYrEntry() {
+  const note = $("yrNote"), panel = $("yrPanel");
+  if (!note || !panel) return;
+  const can = yrCan() && activePlayers().length > 0;
+  panel.hidden = !can;
+  note.hidden = !(yrReady() && me && isActive(PLAYERS.find((x) => x.id === me)) && !prefs.yrSeen);
+  if (can) setHtml("yrBox", '<p class="hint" style="margin:0 0 10px">' + (yrReady() ? "Сезон 1 позади. Опыт, серии, любимые квесты, рост характеристик и номинации пати в формате сторис." : "Предпросмотр, видно только тебе. Для всех итоги откроются 31 декабря в 18:00, на «Сегодня» появится плашка.") + "</p>" +
+    '<div class="acts">' + (me && isActive(PLAYERS.find((x) => x.id === me)) ? '<button type="button" class="btn" data-act="yropen" data-p="' + esc(me) + '">🎬 Мои итоги</button>' : "") + '<button type="button" class="btn ghost" data-act="yropen">Итоги друзей</button></div>');
+}
+
 function renderLinkSelect() {
   const sel = $("qLink"), prev = sel.value;
   const repeat = $("qRepeat").value !== "";
@@ -3542,7 +3904,7 @@ function renderSeason() {
   setHtml("season", (w ? '<p style="margin:0 0 10px;font-family:var(--f-display);font-weight:800;font-size:18px">🏆 Победитель сезона: <span style="color:var(--gold)">' + esc(w.pl.name) + "</span></p>" : "") +
     '<div class="tscroll"><table class="season-t"><thead><tr><th>#</th><th>Игрок</th><th>Опыт</th><th>В день</th><th>Уровень</th><th>Лучшая серия</th><th>Сюжетных</th><th>Ачивок</th></tr></thead><tbody>' +
     rows.map(({ pl, p }, i) => "<tr><td>" + (MEDALS[i] || i + 1) + "</td><td>" + esc(pl.name) + '</td><td class="n">' + p.seasonXp + '</td><td class="n">' + p.perDay + '</td><td class="n">' + levelInfo(p.seasonXp).L + '</td><td class="n">' + p.bestIn + ' дн</td><td class="n">' + p.storiesDone + '</td><td class="n">' + Object.keys(p.ach).filter((k) => p.ach[k] <= LAST_DAY).length + "</td></tr>").join("") +
-    '</tbody></table></div><p class="hint" style="margin:10px 0 0">Сезон 2 настроим вместе: правила и дату старта.</p>');
+    '</tbody></table></div><div class="acts" style="margin-top:10px"><button type="button" class="btn" data-act="yropen" data-me="1">🎬 Смотреть итоги сезона</button></div><p class="hint" style="margin:10px 0 0">Сезон 2 настроим вместе: правила и дату старта.</p>');
 }
 function achHtml(pid, compact) {
   const p = profile(pid);
@@ -3579,6 +3941,7 @@ const GUIDE = [
   { id: "b-repeat", l: 2, t: "Повторяющиеся квесты", b: "<p>В плашке «повтор» выбери: <b>каждый день</b>, <b>каждые N дней</b> (2–30) или <b>по дням недели</b>. Квест сам появляется в нужные дни, когда открываешь сайт. Повторять можно только E, D, C.</p><p>Список повторов — внизу «Сегодня» в строке «Повторяющиеся квесты». Там ✎ — изменить, × — больше не повторять.</p><p>У каждого повтора видно, как он идёт: «18 из 25 · 72%», то есть в скольких днях по расписанию он выполнен. Ниже 40% подсвечивается красным с подсказкой: может, делать реже или меньше. Друзья видят твои повторы в твоём профиле.</p>", v: 13 },
   { id: "b-story", l: 2, t: "Сюжетные квесты", b: "<p>Сюжетный квест это большая цель, разбитая на <b>шаги</b>. Вкладка «Сюжет» → «+ Новый квест»: 1) цель, 2) срок (неделя, 2 недели, месяц… или своя дата, не позже 31 декабря), 3) характеристика, 4) шаги: пиши шаг и жми Enter.</p><p>Шаг это задача, как квест дня: <b>время × сложность × «нравится»</b>, опыт по той же формуле. У шага две кнопки: <b>дата</b> (мини-календарь, «Без даты», «повторять до срока» каждый день, через день или раз в неделю) и <b>время · сложность</b> (ползунки). Дата необязательна.</p><p>Шаги с датой «сегодня» видны на вкладке «Сегодня» в блоке <b>«Сюжет сегодня»</b>. Отметить можно <b>любой</b> несделанный шаг до срока: он засчитается сегодняшним днём. Когда все шаги сделаны, квест <b>сам уходит друзьям</b> на проверку. Одобрили: <b>бонус +50%</b> от опыта шагов.</p>", v: 22 },
   { id: "b-diary", l: 2, t: "Дневник", b: "<p>Вкладка «Дневник»: записи о том, что происходит. Кнопка <b>«+ Запись за сегодня»</b>: настроение и текст. Записать можно только за сегодня, править только в тот же день, удалить в любой момент. Опыта за дневник нет.</p><p>Новая запись по умолчанию <b>🔒 только мне</b>: её видишь только ты, сервер не отдаёт её друзьям. Замок у записи переключает <b>👁 друзьям</b> и обратно. «👀 Как видят друзья» показывает твой дневник их глазами.</p><p>Открытые записи друзей во вкладке «Дневник → Друзья» (новые с меткой НОВОЕ) и в окне друга. Под ними реакции и комментарии. Если запись скрыть, реакции и комментарии спрячутся вместе с ней и вернутся, когда откроешь снова.</p>", v: 23 },
+  { id: "b-yr", l: 2, t: "Итоги сезона", b: "<p>31 декабря в 18:00 открываются <b>итоги сезона 1</b>: на «Сегодня» плашка, в «Ещё» раздел «Итоги сезона». Это сторис: нажми справа, чтобы листать, слева, чтобы вернуться, ❚❚ ставит на паузу.</p><p>Что внутри: опыт по месяцам, процент выполнения, лучшая серия, главный квест, ритм по дням недели, рост характеристик, сюжеты, ачивки, голоса в пати и номинации. В конце карточка-итог и таблица пати. Можно открыть итоги любого друга.</p><p>Всё считается из квестов с 15 октября по 31 декабря, ничего заполнять не нужно.</p>", v: 24 },
   { id: "b-link", l: 2, t: "Шаги на ходу и лимит дня", b: "<p>Пока срок не вышел, шаги можно менять: дату и время у несделанных, добавлять новые, убирать лишние (×). Убранный шаг уходит в «Убрано»: опыта за него нет, бонус меньше, друзья видят «убрано N». Его можно вернуть. Последний шаг убрать нельзя. Сделанный шаг под замком 🔒.</p><p>Лимит дня общий: <b>16 часов и 5 привычек</b> на квесты дня, повторы и шаги сюжетов вместе. Шаг без даты день не занимает, пока не отметишь его или не поставишь дату. Честные часы действуют и для шагов.</p><p>Привязка квеста дня к сюжету (плашка «сюжет») осталась только у старых квестов: новым она не нужна.</p>", v: 22 },
   { id: "b-verify", l: 2, t: "Проверка друзьями", b: "<p>Ежедневные квесты друзья не проверяют, их можно только <b>оспорить</b> в течение суток. На проверку уходит <b>сюжетный квест</b>: сам, когда сделаны все шаги (и старые крупные B, A, S, отправленные до v18). Фото или пояснение для друзей добавь в обсуждении под квестом. У друзей появляется запрос во вкладке «Пати» и цифра на вкладке.</p><p>Засчитано, если <b>большинство</b> друзей сказали «да» (при 2 друзьях оба, при 3 двое, при 4 трое), или если есть хотя бы одно «да», ни одного «нет» и прошло <b>48 часов</b>. Зеркально: одно или больше «нет», ни одного «да» и 48 часов, и квест отклонён. Если «нет» сказали столько, что большинства уже не набрать, квест отклонён, его можно отправить снова.</p>", v: 22 },
   { id: "b-talk", l: 2, t: "Комментарии и обсуждения", b: "<p>Под квестом на проверке или в споре есть <b>обсуждение</b>: друзья спрашивают, ты отвечаешь, можно с фото. Когда итог подведён, переписка остаётся, но писать туда уже нельзя.</p><p>Голосуя, можно оставить комментарий. К «Не засчитывать» он обязателен, к «Подтверждаю» по желанию. «Спросить» отправляет вопрос без голоса. «Оспорить» тоже требует причину.</p><p>Все твои обсуждения собраны во вкладке «Пати» в разделе «Обсуждения». Новые комментарии видны цифрой на вкладке и в плашке на «Сегодня».</p>", v: 11 },
@@ -3988,6 +4351,7 @@ function renderAll() {
   renderMigr();
   renderSmig();
   renderDiary();
+  renderYrEntry();
   bgUpdate();
   bootCheck();
 }
@@ -4478,6 +4842,7 @@ document.addEventListener("click", async (e) => {
   if (act === "tab") { setTab(b.dataset.t); return; }
   if (plUi(b, act)) return;
   if (dUi(b, act)) return;
+  if (yrUi(b, act)) return;
   if (act === "guideopen") { setTab("more"); setTimeout(() => { const g = $("guidePanel"); if (g) g.scrollIntoView({ block: "start" }); }, 30); return; }
   if (act === "bugsold") { bugsOld = !bugsOld; openKeys.add("bugsClosed"); renderAdmin(); return; }
   if (act === "bugopen") { setTab("more"); setTimeout(() => { const g = $("bugPanel"); if (g) g.scrollIntoView({ block: "start" }); const t = $("bugText"); if (t) t.focus(); }, 30); return; }
