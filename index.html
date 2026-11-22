@@ -4504,7 +4504,7 @@ class Stage {
     STAGES.add(this); this.ready = true; if (FX.live) this.frame(0); else this.still();
   }
   resize() {
-    const r = this.el.getBoundingClientRect(), sm = this.el.dataset.fxsm === "1", dpr = sm ? 1 : Math.min(window.devicePixelRatio || 1, FX.q > 1 ? 2 : 1.25);
+    const r = { width: this.el.offsetWidth, height: this.el.offsetHeight }, sm = this.el.dataset.fxsm === "1", dpr = sm ? 1 : Math.min(window.devicePixelRatio || 1, FX.q > 1 ? 2 : 1.25);
     this.w = Math.max(10, r.width); this.h = Math.max(10, r.height);
     if (this.cg) { const k = sm ? .6 : FX.q > 1 ? Math.min(dpr, 1.5) : .75; this.cg.width = Math.round(this.w * k); this.cg.height = Math.round(this.h * k); }
     if (this.c2) { this.c2.width = Math.round(this.w * dpr); this.c2.height = Math.round(this.h * dpr); this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); this.S = {}; this.S.clear = true; if (this.sc.init) this.sc.init(this.S, this.w, this.h); }
@@ -4542,7 +4542,7 @@ class Ring {
   constructor(el, id) { this.el = el; this.id = id; this.cfg = RINGS[id]; this.p = []; this.t = 0; this.arcT = 0; this.arcs = [];
     this.c = document.createElement("canvas"); this.c.className = "ringc"; el.appendChild(this.c); this.ctx = this.c.getContext("2d"); this.resize();
     this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(el); STAGES.add(this); this.ready = true; for (let i = 0; i < (FX.live ? 1 : 20); i++) this.frame(1 / 30); }
-  resize() { const dpr = Math.min(window.devicePixelRatio || 1, 2), s = this.el.getBoundingClientRect().width * 1.7, av = this.el.querySelector(".pfav, .av"); this.s = s; this.ar = av ? av.getBoundingClientRect().width / 2 : s / 1.7 / 2 - 6; this.c.width = s * dpr; this.c.height = s * dpr; this.c.style.width = this.c.style.height = s + "px"; this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); if (this.ready && !FX.live) for (let i = 0; i < 20; i++) this.frame(1 / 30); }
+  resize() { const dpr = Math.min(window.devicePixelRatio || 1, 2), s = this.el.offsetWidth * 1.7, av = this.el.querySelector(".pfav, .av"); this.s = s; this.ar = av ? av.offsetWidth / 2 : s / 1.7 / 2 - 6; /* offsetWidth: без масштаба анимации открытия окна */ this.c.width = s * dpr; this.c.height = s * dpr; this.c.style.width = this.c.style.height = s + "px"; this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); if (this.ready && !FX.live) for (let i = 0; i < 20; i++) this.frame(1 / 30); }
   frame(dt) {
     const c = this.ctx, s = this.s, cx = s / 2, cy = s / 2, R = this.ar - 1.5, g = this.cfg; /* рамка прямо на краю аватарки */ this.t += dt; const t = this.t;
     c.clearRect(0, 0, s, s); if (!g || !(this.ar > 10)) return; // скрытый элемент: размеров ещё нет
