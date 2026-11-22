@@ -1561,10 +1561,6 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
     </section>
     <section class="panel" id="talkEmpty"><p class="hint" style="margin:0">Обсуждений пока нет. Комментарии к твоим квестам, дневнику и стене профиля собираются здесь.</p></section>
     </div>
-    <section class="panel" id="adminPanel" hidden aria-labelledby="aT">
-      <div class="ph"><h2 class="ptitle" id="aT">Сообщения об ошибках</h2><span class="sub">Видно только владельцу сайта</span></div>
-      <div id="admin" style="display:flex;flex-direction:column;gap:10px"></div>
-    </section>
   </div>
 
   <!-- ===== ЕЩЁ ===== -->
@@ -1622,6 +1618,10 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
       </form>
       <h3 class="fh">Мои сообщения</h3>
       <div id="myBugs" class="bugs"></div>
+    </section>
+    <section class="panel" id="adminPanel" hidden aria-labelledby="aT">
+      <div class="ph"><h2 class="ptitle" id="aT">Сообщения об ошибках</h2><span class="sub">Видно только владельцу сайта</span></div>
+      <div id="admin" style="display:flex;flex-direction:column;gap:10px"></div>
     </section>
     <section class="panel" aria-labelledby="accT">
       <div class="ph"><h2 class="ptitle" id="accT">Аккаунт</h2></div>
@@ -4924,7 +4924,7 @@ function renderProfile() {
   if (!pid) return;
   setHtml("profHero", pfHeroHtml(pid, "me"));
   setHtml("profShow", pfShowHtml(pid, "me"));
-  const gd = $("gearDot"); if (gd) gd.hidden = $("moreDot").hidden;
+  dotSync();
   if (pf) renderPf();
   pfMountFx(); syncTheme();
 }
@@ -5788,9 +5788,14 @@ async function fillNames() {
 function renderTabs() {
   document.querySelectorAll(".tabp").forEach((el) => (el.hidden = el.dataset.tab !== tab));
   document.querySelectorAll(".tab").forEach((el) => el.setAttribute("aria-current", el.dataset.t === tab || (tab === "more" && el.dataset.t === "status") ? "page" : "false"));
-  $("moreDot").hidden = (seenVer() >= APP_VERSION && !newAnswers()) || tab === "more";
-  const gd = $("gearDot"); if (gd) gd.hidden = seenVer() >= APP_VERSION && !newAnswers();
+  dotSync();
   fxTabs();
+}
+// точки «есть новое» на Профиле и ⚙: новая версия, ответы на мои баги, у владельца новые сообщения об ошибках (v28: перенесены в Настройки)
+function dotSync() {
+  const on = seenVer() < APP_VERSION || newAnswers() || (isOwner && newBugCount() > 0);
+  $("moreDot").hidden = !on || tab === "more";
+  const gd = $("gearDot"); if (gd) gd.hidden = !on;
 }
 const seenVer = () => Math.max(num(store.get("sys.seenVer")), num(prefs.seenVer));
 function writePrefs(patch) {
@@ -5860,7 +5865,7 @@ function newBugCount() {
 }
 function renderBadges() {
   const un = unreadCmts();
-  const n = verifyCount + adminPend + (isOwner ? newBugCount() : 0) + un + gReqN() + gChatUnread(), b = $("partyBadge");
+  const n = verifyCount + adminPend + un + gReqN() + gChatUnread(), b = $("partyBadge"); dotSync();
   b.hidden = !n; b.textContent = n;
   const v = $("vNote");
   v.hidden = !verifyCount && !un;
