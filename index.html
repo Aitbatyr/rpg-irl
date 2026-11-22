@@ -50,9 +50,8 @@ body{
 
 /* ---------- system panel ---------- */
 .panel{position:relative;background:var(--panel);border:1px solid var(--line);box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 24px rgba(40,140,255,.12),inset 0 0 30px rgba(94,200,255,.05);backdrop-filter:blur(6px);padding:18px 18px 20px;min-width:0}
-.panel::before,.panel::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--sys);pointer-events:none}
-.panel::before{top:-2px;left:-2px;border-right:0;border-bottom:0}
-.panel::after{bottom:-2px;right:-2px;border-left:0;border-top:0}
+.panel{transition:border-color .35s ease,box-shadow .35s ease}
+@media (hover:hover){.tabp .panel:hover,.ov .panel.sheetp .panel:hover{border-color:rgba(94,200,255,.62);box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 32px rgba(94,200,255,.2),inset 0 0 30px rgba(94,200,255,.06)}}
 .ph{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .ptitle{font-family:var(--f-display);font-weight:800;font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--sys);text-shadow:0 0 10px var(--sys-glow);margin:0}
 .ptitle::before{content:"[ "}.ptitle::after{content:" ]"}
@@ -1117,8 +1116,100 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .pfr-crown{box-shadow:0 0 0 3px var(--gold),0 0 18px 4px rgba(255,207,92,.55)}
 .pfr-crown::after{content:"👑";position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(-8deg);font-size:24px}
 @media (prefers-reduced-motion:reduce){.pbg-aurora::before,.pbg-storm::before,.pbg-storm::after,.pfr-rainbow,.pfr-fire{animation:none}}
-#profShow{display:flex;flex-direction:column;gap:18px}
-#profShow:empty{display:none}
+/* v26: витрины сеткой, окно друга во всю ширину, новые фоны, рамки, значки */
+.pfgw{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;grid-auto-flow:row dense}
+.pfgw:empty{display:none}
+@media (min-width:820px){.pfgw{grid-template-columns:repeat(2,minmax(0,1fr))}.pfgw>[data-sc="wall"],.pfgw>[data-sc="recent"]{grid-column:1/-1}}
+.pfsc{padding:14px 16px 16px}
+.pfsc>.ph{margin-bottom:8px}
+.pfsc .ptitle{font-size:12.5px;letter-spacing:.2em}
+.fprof{display:flex;flex-direction:column;gap:14px}
+.ov .panel.sheetp .panel{max-width:none;width:auto;text-align:left;margin:0;padding:14px 16px 16px;box-shadow:none;backdrop-filter:none;background:rgba(255,255,255,.025);border-color:var(--line-soft)}
+.ov .panel.sheetp .panel.pfhero{padding:0}
+.pfnm{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.pfon{margin:0}
+.pfcls{gap:4px 16px}
+.pfcls>span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.tnew{color:var(--gold);font-weight:700}
+#talkPanel .pfold:not([open])>summary{margin:0}
+/* снег, дождь, звёзды */
+.pbg-snow{background:linear-gradient(180deg,#0b1a33,#1c2f52)}
+.pbg-snow::before,.pbg-snow::after{content:"";position:absolute;inset:0;background-image:radial-gradient(2px 2px at 20px 30px,#fff 60%,transparent 61%),radial-gradient(1.5px 1.5px at 80px 70px,#e8f6ff 60%,transparent 61%),radial-gradient(2.5px 2.5px at 50px 110px,#fff 60%,transparent 61%),radial-gradient(1.5px 1.5px at 100px 15px,#fff 60%,transparent 61%);background-size:120px 120px;animation:pfsnow 9s linear infinite}
+.pbg-snow::after{background-size:80px 80px;opacity:.6;animation-duration:14s;filter:blur(.6px)}
+@keyframes pfsnow{to{background-position:30px 120px}}
+.pbg-rain{background:linear-gradient(180deg,#0c1424,#1b2a3f)}
+.pbg-rain::before{content:"";position:absolute;inset:-20%;background:repeating-linear-gradient(105deg,transparent 0 9px,rgba(170,210,255,.35) 9px 10px,transparent 10px 23px);background-size:100% 60px;animation:pfrain .45s linear infinite}
+@keyframes pfrain{to{background-position:0 60px}}
+.pbg-stars{background:radial-gradient(80% 60% at 50% 120%,rgba(94,120,255,.35),transparent 70%),#04060f}
+.pbg-stars::before,.pbg-stars::after{content:"";position:absolute;inset:0;background-image:radial-gradient(1px 1px at 12px 18px,#fff 60%,transparent 61%),radial-gradient(1.5px 1.5px at 70px 44px,#fff 60%,transparent 61%),radial-gradient(1px 1px at 120px 80px,#dfe9ff 60%,transparent 61%),radial-gradient(1px 1px at 40px 100px,#fff 60%,transparent 61%),radial-gradient(2px 2px at 150px 25px,#fff 60%,transparent 61%);background-size:170px 120px}
+.pbg-stars::after{background-position:60px 40px;animation:pftw 3.2s ease-in-out infinite alternate}
+@keyframes pftw{from{opacity:.15}to{opacity:1}}
+/* океан, дюны, лес, город */
+.pbg-ocean{background:linear-gradient(180deg,#5ec8ff 0,#1d6fb8 45%,#0a2c5a 100%)}
+.pbg-ocean::before,.pbg-ocean::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40'%3E%3Cpath d='M0 20 Q25 5 50 20 T100 20 T150 20 T200 20 V40 H0Z' fill='%230b3d75'/%3E%3C/svg%3E") repeat-x 0 0/200px 100%;animation:pfwave 6s linear infinite}
+.pbg-ocean::after{height:40%;opacity:.85;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40'%3E%3Cpath d='M0 20 Q25 8 50 20 T100 20 T150 20 T200 20 V40 H0Z' fill='%23062449'/%3E%3C/svg%3E");animation-duration:9s;animation-direction:reverse}
+@keyframes pfwave{to{background-position:200px 0}}
+.pbg-dunes{background:radial-gradient(40% 50% at 70% 35%,#ffe2a1,transparent 70%),linear-gradient(180deg,#ff9d4d,#ffcf8a 55%,#d9894a)}
+.pbg-dunes::before{content:"";position:absolute;inset:auto 0 0 0;height:60%;background:radial-gradient(120% 80% at 20% 100%,#b8622f 49%,transparent 50%),radial-gradient(110% 70% at 85% 100%,#8f4a24 49%,transparent 50%),radial-gradient(140% 60% at 50% 110%,#6e3519 49%,transparent 50%)}
+.pbg-forest{background:linear-gradient(180deg,#2a3d4f,#5f7b86 60%,#8fa6a8)}
+.pbg-forest::before{content:"";position:absolute;inset:auto 0 0 0;height:75%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60'%3E%3Cpath d='M10 60 L20 22 L30 60Z M28 60 L40 10 L52 60Z M50 60 L58 30 L66 60Z M64 60 L78 6 L92 60Z M90 60 L100 26 L110 60Z M106 60 L114 34 L122 60Z' fill='%23142430'/%3E%3C/svg%3E") repeat-x 0 100%/180px 100%}
+.pbg-forest::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(220,235,240,.55),transparent 55%);animation:pffog 8s ease-in-out infinite alternate}
+@keyframes pffog{from{opacity:.55}to{opacity:.9}}
+.pbg-city{background:radial-gradient(60% 40% at 50% 100%,rgba(255,120,200,.35),transparent 70%),linear-gradient(180deg,#070b1c,#1b1442)}
+.pbg-city::before{content:"";position:absolute;inset:auto 0 0 0;height:72%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 60'%3E%3Cpath d='M0 60V30h12V18h10v42h6V8h14v52h6V26h12v34h8V14h12v46h6V34h10v26h8V20h14v40h8V28h10v32h12V16h12v44z' fill='%23050712'/%3E%3C/svg%3E") repeat-x 0 100%/240px 100%}
+.pbg-city .win{position:absolute;inset:auto 0 0 0;height:60%;background-image:radial-gradient(1.5px 1.5px at 18px 20px,#ffd36b 60%,transparent 61%),radial-gradient(1.5px 1.5px at 44px 36px,#ffd36b 60%,transparent 61%),radial-gradient(1.5px 1.5px at 70px 14px,#9fe3ff 60%,transparent 61%),radial-gradient(1.5px 1.5px at 96px 44px,#ffd36b 60%,transparent 61%),radial-gradient(1.5px 1.5px at 130px 26px,#ffd36b 60%,transparent 61%);background-size:160px 60px;animation:pftw 4s ease-in-out infinite alternate}
+/* лава, синтвейв, восход */
+.pbg-lava{background:linear-gradient(180deg,#1a0603,#3b0b05)}
+.pbg-lava::before{content:"";position:absolute;inset:-30%;background:radial-gradient(18% 22% at 25% 70%,#ff7a1a,transparent 70%),radial-gradient(22% 18% at 70% 60%,#ff3d1a,transparent 70%),radial-gradient(15% 15% at 50% 85%,#ffc21a,transparent 70%),radial-gradient(20% 20% at 85% 90%,#ff5a1a,transparent 70%);filter:blur(10px);animation:pflava 10s ease-in-out infinite alternate}
+@keyframes pflava{to{transform:translate(6%,-8%) scale(1.15)}}
+.pbg-synth{background:linear-gradient(180deg,#1a0838 0,#5a1170 45%,#ff5da8 62%,#1a0838 62%)}
+.pbg-synth .sun{position:absolute;left:50%;top:14%;width:90px;height:90px;transform:translateX(-50%);border-radius:50%;background:linear-gradient(180deg,#ffd35c,#ff5da8);-webkit-mask:linear-gradient(180deg,#000 52%,transparent 52% 58%,#000 58% 68%,transparent 68% 74%,#000 74% 82%,transparent 82% 88%,#000 88%);mask:linear-gradient(180deg,#000 52%,transparent 52% 58%,#000 58% 68%,transparent 68% 74%,#000 74% 82%,transparent 82% 88%,#000 88%);box-shadow:0 0 30px rgba(255,93,168,.7)}
+.pbg-synth .grid{position:absolute;left:-50%;right:-50%;bottom:-10%;height:48%;background:linear-gradient(90deg,rgba(255,93,168,.8) 1px,transparent 1px) 0 0/30px 100%,linear-gradient(0deg,rgba(255,93,168,.8) 1px,transparent 1px) 0 0/100% 18px;transform:perspective(120px) rotateX(55deg);transform-origin:top;animation:pfgrid 1.2s linear infinite}
+@keyframes pfgrid{to{background-position:0 0,0 18px}}
+.pbg-dawn{background:linear-gradient(180deg,#2b3a7a,#ff9d6b 65%,#ffd59a)}
+.pbg-dawn .rays{position:absolute;left:50%;top:95%;width:320%;aspect-ratio:1;transform:translate(-50%,-50%);background:repeating-conic-gradient(rgba(255,240,200,.28) 0 6deg,transparent 6deg 18deg);animation:pfspin 60s linear infinite}
+.pbg-dawn .sun{position:absolute;left:50%;bottom:-38px;width:96px;height:96px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,#fff6d6,#ffcf5c 60%,#ff9d4d);box-shadow:0 0 40px 10px rgba(255,207,92,.6)}
+/* гроза: тучи плывут, косой дождь, молнии в разное время и в разных местах */
+.pbg-storm{background:linear-gradient(180deg,#05080f 0,#0d1526 55%,#182238 100%)}
+.pbg-storm::before,.pbg-storm::after{content:none}
+.pbg-storm .cl{position:absolute;left:0;width:200%;pointer-events:none;background-repeat:repeat-x;animation:pfcloud linear infinite}
+.pbg-storm .c1{top:-30%;height:80%;background-image:radial-gradient(30% 45% at 15% 60%,#1c2538 60%,transparent 62%),radial-gradient(26% 40% at 38% 50%,#232d44 60%,transparent 62%),radial-gradient(32% 48% at 62% 58%,#1a2234 60%,transparent 62%),radial-gradient(24% 38% at 85% 48%,#212b40 60%,transparent 62%);background-size:50% 100%;filter:blur(6px);animation-duration:60s;z-index:1}
+.pbg-storm .c2{top:-10%;height:60%;background-image:radial-gradient(22% 40% at 20% 55%,#2c3852 60%,transparent 62%),radial-gradient(28% 46% at 55% 50%,#28334b 60%,transparent 62%),radial-gradient(20% 36% at 85% 60%,#303d58 60%,transparent 62%);background-size:50% 100%;filter:blur(9px);opacity:.85;animation-duration:38s;z-index:2}
+.pbg-storm .c3{top:-20%;height:55%;background-image:radial-gradient(35% 50% at 30% 40%,rgba(10,14,24,.95) 60%,transparent 62%),radial-gradient(30% 45% at 75% 35%,rgba(12,16,28,.9) 60%,transparent 62%);background-size:50% 100%;filter:blur(12px);animation-duration:90s;animation-direction:reverse;z-index:5}
+@keyframes pfcloud{to{transform:translateX(-50%)}}
+.pbg-storm .rn{position:absolute;inset:-30% -10%;z-index:4;background:repeating-linear-gradient(105deg,transparent 0 13px,rgba(175,205,255,.22) 13px 14px,transparent 14px 31px);background-size:100% 70px;animation:pfrain .5s linear infinite;pointer-events:none}
+.pbg-storm .fl{position:absolute;inset:0;z-index:3;opacity:0;pointer-events:none}
+.pbg-storm .f1{background:radial-gradient(60% 80% at 52% 10%,rgba(215,232,255,.95),rgba(140,180,255,.35) 45%,transparent 75%);animation:pfflash1 9.3s infinite}
+.pbg-storm .f2{background:radial-gradient(50% 70% at 30% 5%,rgba(215,232,255,.85),rgba(140,180,255,.3) 45%,transparent 75%);animation:pfflash2 13.7s 3.1s infinite}
+.pbg-storm .bolt{position:absolute;top:0;height:100%;width:30%;z-index:4;opacity:0;overflow:visible;pointer-events:none}
+.pbg-storm .bolt path{fill:none;stroke:#f4f8ff;stroke-width:1.4;stroke-linejoin:round;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 3px #bfe0ff) drop-shadow(0 0 8px #6fb6ff)}
+.pbg-storm .bolt .br{stroke-width:.9;opacity:.8}
+.pbg-storm .b1{left:37%;animation:pfflash1 9.3s infinite}
+.pbg-storm .b2{left:16%;width:26%;animation:pfflash2 13.7s 3.1s infinite}
+@keyframes pfflash1{0%,61%,100%{opacity:0}62%{opacity:1}63%{opacity:.15}64.5%{opacity:.95}67%{opacity:0}}
+@keyframes pfflash2{0%,40%,100%{opacity:0}41%{opacity:.9}42.5%{opacity:0}}
+.pfit .pv.pbg-storm .bolt path{stroke-width:1.1}
+/* новые рамки */
+.pfr-double{box-shadow:0 0 0 2px var(--fg),0 0 0 5px rgba(6,10,20,.9),0 0 0 7px var(--sys)}
+.pfr-ice{box-shadow:0 0 0 3px #d9f6ff,0 0 0 5px #5ec8ff,0 0 18px 4px rgba(191,239,255,.6)}
+.pfr-pulse{box-shadow:0 0 0 3px var(--story);animation:pfpulse 2s ease-in-out infinite}
+@keyframes pfpulse{50%{box-shadow:0 0 0 3px var(--story),0 0 22px 8px rgba(180,140,255,.55)}}
+.pfr-electric{background:repeating-conic-gradient(#7cf3ff 0 7deg,transparent 7deg 15deg);-webkit-mask:radial-gradient(circle,transparent 41px,#000 42px);mask:radial-gradient(circle,transparent 41px,#000 42px);filter:drop-shadow(0 0 6px #7cf3ff);animation:pfspin 1.4s steps(12) infinite,pfflick 1.7s infinite}
+@keyframes pfflick{0%,100%{opacity:1}43%{opacity:.4}45%{opacity:1}71%{opacity:.6}}
+.pfr-holo{background:conic-gradient(#7cf3ff,#ff9ecf,#ffcf5c,#49e3a0,#7cf3ff);-webkit-mask:radial-gradient(circle,transparent 41px,#000 42px);mask:radial-gradient(circle,transparent 41px,#000 42px);opacity:.85;animation:pfholo 3s linear infinite}
+@keyframes pfholo{to{filter:hue-rotate(360deg)}}
+.pfr-blueflame{background:conic-gradient(from 0deg,#2d6bff,#5ec8ff,#bff3ff,#5ec8ff,#2d6bff);-webkit-mask:radial-gradient(circle,transparent 41px,#000 42px);mask:radial-gradient(circle,transparent 41px,#000 42px);filter:drop-shadow(0 0 10px #5ec8ff);animation:pfspin 2.2s linear infinite}
+.pfr-gold{background:conic-gradient(#fff2b8,#ffcf5c,#b8862b,#ffe08a,#fff2b8);-webkit-mask:radial-gradient(circle,transparent 41px,#000 42px);mask:radial-gradient(circle,transparent 41px,#000 42px);filter:drop-shadow(0 0 6px rgba(255,207,92,.7))}
+.pfr-crystal{background:conic-gradient(from 45deg,#fff,#cfe9ff,#ffd6f0,#fff,#d6fff0,#fff);-webkit-mask:radial-gradient(circle,transparent 40px,#000 41px);mask:radial-gradient(circle,transparent 40px,#000 41px);filter:drop-shadow(0 0 8px #fff) drop-shadow(0 0 16px #cfe9ff);animation:pfholo 6s linear infinite}
+/* новые формы значка */
+.slv.octa::before,.slv.gem::before{border:0;background:var(--lc);box-shadow:none}
+.slv.octa::before{clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)}
+.slv.octa::after,.slv.gem::after{content:"";position:absolute;inset:3px;background:#0b1830}
+.slv.octa::after{clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)}
+.slv.gem::before{clip-path:polygon(50% 0,100% 35%,80% 100%,20% 100%,0 35%)}
+.slv.gem::after{clip-path:polygon(50% 0,100% 35%,80% 100%,20% 100%,0 35%);inset:4px}
+.slv.gem>span{margin-top:3px}
+@media (prefers-reduced-motion:reduce){.pfbg *,.pfbg::before,.pfbg::after,.pv *,.pv::before,.pv::after,.pfr{animation:none !important}}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
@@ -1268,7 +1359,7 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
   </div>
   <div class="tabp" data-tab="status" hidden>
     <div id="profHero"></div>
-    <div id="profShow"></div>
+    <div id="profShow" class="pfgw"></div>
     <section class="panel" id="recapPanel" hidden aria-labelledby="rcT">
       <div class="ph"><h2 class="ptitle" id="rcT">Итоги недели</h2><span class="sub" id="recapSub"></span></div>
       <div id="recap"></div>
@@ -1289,25 +1380,25 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 
   <!-- ===== ПАТИ ===== -->
   <div class="tabp" data-tab="party" hidden>
+    <section class="panel" aria-labelledby="pT">
+      <div class="ph"><h2 class="ptitle" id="pT">Пати</h2><span class="sub">Нажми на друга, чтобы открыть его профиль</span></div>
+      <div class="party" id="party"></div>
+    </section>
     <section class="panel alert" id="verifyPanel" hidden aria-labelledby="vT">
       <div class="ph"><h2 class="ptitle" id="vT">Запрос подтверждения</h2><span class="sub" id="vCount"></span></div>
       <div id="verify" style="display:flex;flex-direction:column;gap:10px"></div>
     </section>
     <section class="panel" id="talkPanel" hidden aria-labelledby="tkT">
-      <div class="ph"><h2 class="ptitle" id="tkT">Обсуждения</h2><span class="sub" id="talkSub"></span></div>
-      <div id="talk" style="display:flex;flex-direction:column;gap:10px"></div>
-    </section>
-    <section class="panel alert" id="seasonPanel" hidden aria-labelledby="seT">
-      <div class="ph"><h2 class="ptitle" id="seT">Итоги сезона 1</h2><span class="sub">15 октября · 31 декабря</span></div>
-      <div id="season"></div>
+      <details class="pfold" data-key="st:talk"><summary class="ph"><h2 class="ptitle" id="tkT">💬 Обсуждения</h2><span class="sub" id="talkSub"></span></summary>
+      <div id="talk" style="display:flex;flex-direction:column;gap:10px"></div></details>
     </section>
     <section class="panel" aria-labelledby="wkT">
       <div class="ph"><h2 class="ptitle" id="wkT">Неделя</h2><span class="sub" id="wkSub"></span></div>
       <div class="week" id="week"></div>
     </section>
-    <section class="panel" aria-labelledby="pT">
-      <div class="ph"><h2 class="ptitle" id="pT">Пати</h2><span class="sub">Нажми на друга, чтобы открыть его профиль</span></div>
-      <div class="party" id="party"></div>
+    <section class="panel alert" id="seasonPanel" hidden aria-labelledby="seT">
+      <div class="ph"><h2 class="ptitle" id="seT">Итоги сезона 1</h2><span class="sub">15 октября · 31 декабря</span></div>
+      <div id="season"></div>
     </section>
     <section class="panel" id="adminPanel" hidden aria-labelledby="aT">
       <div class="ph"><h2 class="ptitle" id="aT">Управление пати</h2><span class="sub">Видно только владельцу</span></div>
@@ -1698,7 +1789,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 25;
+const APP_VERSION = 26;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -1739,6 +1830,15 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 26, date: "2026-11-22", title: "Интерфейс и магазин", items: [
+    "Профиль друга на ПК больше не ужимается в узкую колонку: витрины во всю ширину, на ПК в 2 колонки, без рамки в рамке.",
+    "Пати: сверху сразу друзья, «Обсуждения» свёрнуты в одну строку и показывают, сколько новых. Открыл, и они прочитаны.",
+    "У блоков больше нет уголков-скобок. На ПК блок мягко подсвечивается, когда наводишь на него курсор.",
+    "Шапка профиля аккуратнее: «в сети» ровно под именем, строка с классом и рангом не обрезается. Часы с одним знаком после запятой.",
+    "Магазин: 10 новых фонов (снегопад, ливень, звёздное небо, дюны, океан, туманный лес, ночной город, лава, синтвейв), 8 рамок (двойное кольцо, ледяная, пульс, электрическая, голограмма, синее пламя, золотое кольцо), 2 формы значка (октагон, кристалл).",
+    "Новые трофеи: фон «Восход» за «Идеальный день» и рамка «Хрусталь» за «Без провалов».",
+    "«Гроза» переделана: тучи плывут, идёт косой дождь, молнии бьют в разное время и в разных местах, иногда двойной вспышкой.",
+  ] },
   { v: 25, date: "2026-11-20", title: "Профиль как в Steam", items: [
     "Внизу теперь 5 вкладок с иконками: Сегодня, Сюжет, Дневник, Пати, Профиль. «Статус» стал «Профилем», а вкладка «Ещё» превратилась в ⚙ Настройки (шестерёнка в профиле).",
     "Профиль: фон, рамка аватарки, значок уровня как в Steam (цвет меняется каждые 10 уровней), статус и «О себе».",
@@ -2525,9 +2625,10 @@ function renderTalk() {
   out.sort((a, b) => b.last - a.last);
   panel.hidden = !out.length;
   const un = unreadCmts();
-  $("talkSub").textContent = un ? un + " " + plCmt(un) : "твои квесты и споры, где ты участвуешь";
+  $("talkSub").innerHTML = un ? '<b class="tnew">' + un + " " + plCmt(un) + "</b>" : plDn(out.length, "обсуждение", "обсуждения", "обсуждений");
   setHtml("talk", out.slice(0, 12).map((o) => '<div class="vi"><p class="sub">' + (o.ik === "wall" ? (o.owner === me ? "Твоя стена" : "Стена · <b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b>") + "</p>" : (o.owner === me ? "Твой" : "<b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b> ·") + " " + (o.ik === "step" ? "этап" : o.ik === "story" ? "сюжетный квест" : o.ik === "diary" ? "запись в дневнике" : "квест") + " «" + esc(o.ti.title) + "»</p>") + threadHtml(o.ik, o.owner, o.id, o.ti.open, "t") + "</div>").join(""));
-  if (tab === "party" && un > 0 && !document.hidden) writePrefs({ cmtSeen: now() });
+  const tOpen = !!document.querySelector('details[data-key="st:talk"][open]');
+  if (tab === "party" && un > 0 && tOpen && !document.hidden) { writePrefs({ cmtSeen: now() }); $("talkSub").textContent = plDn(out.length, "обсуждение", "обсуждения", "обсуждений"); renderBadges(); }
 }
 function droppedHtml(pid) {
   const a = (droppedBy[pid] || []).filter((x) => now() - num(x.deletedAt) <= 7 * 864e5);
@@ -3878,17 +3979,32 @@ function renderYrEntry() {
 // Потраченное не хранится числом, а считается из списка покупок: подделать «очки» правкой одного поля нельзя.
 const PF_SHOP = {
   bg: [
-    { id: "base", n: "Базовый", p: 0 }, { id: "neon", n: "Неоновая сетка", p: 300 }, { id: "sunset", n: "Закат", p: 450 },
-    { id: "sakura", n: "Сакура", p: 600 }, { id: "aurora", n: "Северное сияние", p: 800 }, { id: "matrix", n: "Матрица", p: 900 },
-    { id: "storm", n: "Гроза", tr: "s14" }, { id: "cosmos", n: "Космос", tr: "q100" }],
+    { id: "base", n: "Базовый", p: 0 }, { id: "neon", n: "Неоновая сетка", p: 300 }, { id: "snow", n: "Снегопад", p: 350 }, { id: "rain", n: "Ливень", p: 400 },
+    { id: "sunset", n: "Закат", p: 450 }, { id: "stars", n: "Звёздное небо", p: 500 }, { id: "dunes", n: "Дюны", p: 500 }, { id: "ocean", n: "Океан", p: 550 },
+    { id: "sakura", n: "Сакура", p: 600 }, { id: "forest", n: "Туманный лес", p: 600 }, { id: "city", n: "Ночной город", p: 750 }, { id: "aurora", n: "Северное сияние", p: 800 },
+    { id: "lava", n: "Лава", p: 850 }, { id: "matrix", n: "Матрица", p: 900 }, { id: "synth", n: "Синтвейв", p: 1000 },
+    { id: "storm", n: "Гроза", tr: "s14" }, { id: "dawn", n: "Восход", tr: "perfect" }, { id: "cosmos", n: "Космос", tr: "q100" }],
   fr: [
-    { id: "none", n: "Без рамки", p: 0 }, { id: "neon", n: "Неоновая", p: 200 }, { id: "emerald", n: "Изумрудная", p: 350 },
-    { id: "pixel", n: "Пиксельная", p: 500 }, { id: "rainbow", n: "Радужная", p: 1000 },
-    { id: "fire", n: "Огненная", tr: "s30" }, { id: "crown", n: "Корона", tr: "bigS" }],
+    { id: "none", n: "Без рамки", p: 0 }, { id: "neon", n: "Неоновая", p: 200 }, { id: "double", n: "Двойное кольцо", p: 300 }, { id: "emerald", n: "Изумрудная", p: 350 },
+    { id: "ice", n: "Ледяная", p: 400 }, { id: "pulse", n: "Пульс", p: 450 }, { id: "pixel", n: "Пиксельная", p: 500 }, { id: "electric", n: "Электрическая", p: 700 },
+    { id: "holo", n: "Голограмма", p: 800 }, { id: "blueflame", n: "Синее пламя", p: 900 }, { id: "rainbow", n: "Радужная", p: 1000 }, { id: "gold", n: "Золотое кольцо", p: 1200 },
+    { id: "fire", n: "Огненная", tr: "s30" }, { id: "crystal", n: "Хрусталь", tr: "clean7" }, { id: "crown", n: "Корона", tr: "bigS" }],
   bd: [
     { id: "circle", n: "Круг", p: 0 }, { id: "shield", n: "Щит", p: 250 }, { id: "diamond", n: "Ромб", p: 250 },
-    { id: "hex", n: "Гексагон", p: 500 }, { id: "star", n: "Звезда", tr: "story" }],
+    { id: "octa", n: "Октагон", p: 400 }, { id: "hex", n: "Гексагон", p: 500 }, { id: "gem", n: "Кристалл", p: 600 }, { id: "star", n: "Звезда", tr: "story" }],
 };
+// фоны со своей разметкой внутри (гроза: тучи, дождь, молнии)
+const PF_BOLT1 = "M54 0 L47 22 L58 24 L44 50 L55 52 L38 100", PF_BOLT2 = "M30 0 L35 18 L26 21 L37 44 L29 46 L40 78";
+function pfBgInner(id) {
+  if (id === "storm") return '<i class="cl c1"></i><i class="cl c2"></i><i class="rn"></i><i class="fl f1"></i><i class="fl f2"></i>' +
+    '<svg class="bolt b1" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="' + PF_BOLT1 + '"/><path class="br" d="M47 22 L36 34 L33 44"/></svg>' +
+    '<svg class="bolt b2" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="' + PF_BOLT2 + '"/></svg><i class="cl c3"></i>';
+  if (id === "city") return '<i class="win"></i>';
+  if (id === "synth") return '<i class="sun"></i><i class="grid"></i>';
+  if (id === "dawn") return '<i class="rays"></i><i class="sun"></i>';
+  return "";
+}
+const pfHrs = (m) => (m < 60 ? m + " мин" : String(Math.round(m / 6) / 10).replace(".", ",") + " ч");
 const PF_CATS = [["bg", "Фоны"], ["fr", "Рамки"], ["bd", "Значок"]];
 const PF_ITEM = {}; for (const c in PF_SHOP) for (const it of PF_SHOP[c]) PF_ITEM[c + ":" + it.id] = { ...it, cat: c };
 const PF_DEF = { bg: "base", fr: "none", bd: "circle" };
@@ -3943,11 +4059,11 @@ function pfOnline(pid) {
 function pfHeroHtml(pid, ctx) {
   const p = profile(pid), pr = profOf(pid), eq = pfEq(pid), own = pid === me && canWrite && ctx === "me";
   const fr = pid !== me && ctx === "friend" && me && canWrite && meActive() && isActive(PLAYERS.find((x) => x.id === pid));
-  return '<section class="panel pfhero"><div class="pfbg pbg-' + eq.bg + '" aria-hidden="true"></div>' +
+  return '<section class="panel pfhero"><div class="pfbg pbg-' + eq.bg + '" aria-hidden="true">' + pfBgInner(eq.bg) + "</div>" +
     (own ? '<div class="pftools"><button type="button" class="pfpts" data-act="pfshop" aria-label="Очки и магазин">💠 ' + pfPoints(pid) + '</button><button type="button" class="pfgear" data-act="tab" data-t="more" aria-label="Настройки">⚙' + '<span class="dot" id="gearDot" hidden></span></button></div>' : "") +
     '<div class="pfid"><div class="pfavw">' + pfAva(pid, own) + '<span class="pfr pfr-' + eq.fr + '" aria-hidden="true"></span></div><div class="pfnm"><div class="pfname">' + esc(pname(pid)) + pfLvl(p.li.L, eq.bd) + "</div>" + pfOnline(pid) + (own && avaOf(pid) ? '<div class="pfavl"><button type="button" class="linkbtn" data-act="imgview" data-kind="ava" data-src="' + esc(blobUrl(avaOf(pid))) + '">открыть аватарку</button><button type="button" class="linkbtn" data-act="avadel">убрать</button></div>' : "") + "</div></div>" +
     '<div class="pfbody">' + (pr.status ? '<div class="pfst">' + esc(pr.status) + "</div>" : own ? '<button type="button" class="pfst empty" data-act="pfedit">+ Добавить статус</button>' : "") +
-    '<div class="pfcls">Класс <b>' + esc(p.cls) + '</b> · Ранг охотника <span class="rank r-' + hunter(p.li.L) + '">' + hunter(p.li.L) + "</span> · в Системе с " + nice(joinedOf(pid)) + "</div>" +
+    '<div class="pfcls"><span>Класс <b>' + esc(p.cls) + '</b></span><span>Ранг охотника <span class="rank r-' + hunter(p.li.L) + '">' + hunter(p.li.L) + "</span></span><span>в Системе с " + nice(joinedOf(pid)) + "</span></div>" +
     (pr.about ? '<div class="pfab">' + esc(pr.about) + "</div>" : "") +
     '<div class="lvlrow"><div class="lvl">УРОВЕНЬ<b>' + p.li.L + '</b></div><div class="xpn">' + p.li.into + " / " + p.li.need + ' XP</div></div><div class="bar"><i style="width:' + ((p.li.into / p.li.need) * 100).toFixed(1) + '%"></i></div>' +
     (own ? '<div class="acts"><button type="button" class="btn sm" data-act="pfedit">✎ Изменить профиль</button><button type="button" class="btn sm ghost" data-act="pfshop">🛒 Магазин</button></div>' : "") +
@@ -3968,7 +4084,7 @@ function pfScHtml(pid, k, ctx) {
     const m = {}; for (const t of pfDone(pid)) { const key = norm(t.title); if (!key) continue; const o = (m[key] = m[key] || { t: t.title, n: 0, min: 0, stat: t.stat }); o.n++; if (isNewQ(t)) o.min += t.m; }
     const f = Object.values(m).sort((a, b) => b.n - a.n || b.min - a.min)[0];
     if (!f) return own ? pfCard(k, "Любимый квест", "", '<p class="hint" style="margin:0">Появится, когда выполнишь первые квесты.</p>') : "";
-    return pfCard(k, "Любимый квест", "", '<div class="pffav"><span class="ic">' + statIco(f.stat || "int") + "</span><div><b>" + esc(f.t) + "</b><span>выполнен " + plDn(f.n, "раз", "раза", "раз") + (f.min ? " · " + fmtMin(f.min) : "") + "</span></div></div>");
+    return pfCard(k, "Любимый квест", "", '<div class="pffav"><span class="ic">' + statIco(f.stat || "int") + "</span><div><b>" + esc(f.t) + "</b><span>выполнен " + plDn(f.n, "раз", "раза", "раз") + (f.min ? " · " + pfHrs(f.min) : "") + "</span></div></div>");
   }
   if (k === "story") {
     const s = (storiesBy[pid] || []).find((x) => storyState(x) === "active");
@@ -3988,7 +4104,7 @@ function pfScHtml(pid, k, ctx) {
     for (const t of pfDone(pid)) if (t.date >= from) { const key = norm(t.title); const o = (m[key] = m[key] || { t: t.title, n: 0, min: 0, last: t.date, stat: t.stat }); o.n++; if (isNewQ(t)) o.min += t.m; if (t.date > o.last) o.last = t.date; }
     const list = Object.values(m).sort((a, b) => b.min - a.min || b.n - a.n).slice(0, 4), tot = Object.values(m).reduce((a, o) => a + o.min, 0);
     if (!list.length) return own ? pfCard(k, "Недавняя активность", "", '<p class="hint" style="margin:0">За 2 недели пусто.</p>') : "";
-    return pfCard(k, "Недавняя активность", '<span class="sub">' + (tot ? fmtMin(tot) + " за 2 недели" : "за 2 недели") + "</span>", list.map((o) => '<div class="pfrec"><span class="ic">' + statIco(o.stat || "int") + '</span><span class="t"><b>' + esc(o.t) + "</b><span>" + plDn(o.n, "раз", "раза", "раз") + " · последний " + nice(o.last) + '</span></span><span class="h">' + (o.min ? fmtMin(o.min) : "привычка") + "</span></div>").join(""));
+    return pfCard(k, "Недавняя активность", '<span class="sub">' + (tot ? pfHrs(tot) + " за 2 недели" : "за 2 недели") + "</span>", list.map((o) => '<div class="pfrec"><span class="ic">' + statIco(o.stat || "int") + '</span><span class="t"><b>' + esc(o.t) + "</b><span>" + plDn(o.n, "раз", "раза", "раз") + " · последний " + nice(o.last) + '</span></span><span class="h">' + (o.min ? pfHrs(o.min) : "привычка") + "</span></div>").join(""));
   }
   if (k === "diary") {
     const list = (diaryBy[pid] || []).filter((e) => e.open).sort((a, b) => num(b.at) - num(a.at)).slice(0, 3);
@@ -4021,7 +4137,7 @@ function renderProfile() {
 }
 // ---------- шторки профиля ----------
 function pfItemPv(it, pid) {
-  if (it.cat === "bg") return '<div class="pv pbg-' + it.id + '"></div>';
+  if (it.cat === "bg") return '<div class="pv pbg-' + it.id + '">' + pfBgInner(it.id) + "</div>";
   if (it.cat === "fr") return '<div class="pv"><div class="pfavw sm"><span class="pfav">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="">' : esc(pname(pid)[0])) + '</span><span class="pfr pfr-' + it.id + '"></span></div></div>';
   return '<div class="pv">' + pfLvl(profile(pid).li.L, it.id, true) + "</div>";
 }
@@ -4354,7 +4470,7 @@ const GUIDE = [
   { id: "b-story", l: 2, t: "Сюжетные квесты", b: "<p>Сюжетный квест это большая цель, разбитая на <b>шаги</b>. Вкладка «Сюжет» → «+ Новый квест»: 1) цель, 2) срок (неделя, 2 недели, месяц… или своя дата, не позже 31 декабря), 3) характеристика, 4) шаги: пиши шаг и жми Enter.</p><p>Шаг это задача, как квест дня: <b>время × сложность × «нравится»</b>, опыт по той же формуле. У шага две кнопки: <b>дата</b> (мини-календарь, «Без даты», «повторять до срока» каждый день, через день или раз в неделю) и <b>время · сложность</b> (ползунки). Дата необязательна.</p><p>Шаги с датой «сегодня» видны на вкладке «Сегодня» в блоке <b>«Сюжет сегодня»</b>. Отметить можно <b>любой</b> несделанный шаг до срока: он засчитается сегодняшним днём. Когда все шаги сделаны, квест <b>сам уходит друзьям</b> на проверку. Одобрили: <b>бонус +50%</b> от опыта шагов.</p>", v: 22 },
   { id: "b-diary", l: 2, t: "Дневник", b: "<p>Вкладка «Дневник»: записи о том, что происходит. Кнопка <b>«+ Запись за сегодня»</b>: настроение и текст. Записать можно только за сегодня, править только в тот же день, удалить в любой момент. Опыта за дневник нет.</p><p>Новая запись по умолчанию <b>🔒 только мне</b>: её видишь только ты, сервер не отдаёт её друзьям. Замок у записи переключает <b>👁 друзьям</b> и обратно. «👀 Как видят друзья» показывает твой дневник их глазами.</p><p>Открытые записи друзей во вкладке «Дневник → Друзья» (новые с меткой НОВОЕ) и в окне друга. Под ними реакции и комментарии. Если запись скрыть, реакции и комментарии спрячутся вместе с ней и вернутся, когда откроешь снова.</p>", v: 23 },
   { id: "b-yr", l: 2, t: "Итоги сезона", b: "<p>31 декабря в 18:00 открываются <b>итоги сезона 1</b>: на «Сегодня» плашка, в ⚙ Настройках раздел «Итоги сезона». Это сторис: нажми справа, чтобы листать, слева, чтобы вернуться, ❚❚ ставит на паузу.</p><p>Что внутри: опыт по месяцам, процент выполнения, лучшая серия, главный квест, ритм по дням недели, рост характеристик, сюжеты, ачивки, голоса в пати и номинации. В конце карточка-итог и таблица пати. Можно открыть итоги любого друга.</p><p>Всё считается из квестов с 15 октября по 31 декабря, ничего заполнять не нужно.</p>", v: 24 },
-  { id: "b-prof", l: 2, t: "Профиль, магазин и награды", b: "<p><b>Профиль</b> как в Steam: фон, рамка аватарки, значок уровня, статус и «О себе». Ниже витрины: ачивки (выбираешь до 6), любимый квест, текущий сюжет, статистика, недавняя активность за 2 недели, дневник (только открытые записи), награды и стена. «✎ Изменить профиль»: статус, о себе, какие витрины показывать и в каком порядке.</p><p><b>Очки 💠</b> копятся вместе с опытом: 1 XP = 1 очко. В <b>магазине</b> на них покупаются фоны, рамки и форма значка уровня. Покупка тратит только очки, опыт и уровень не меняются. Цвет значка показывает уровень (меняется каждые 10 уровней) и не продаётся. Вещи с 🏆 открываются только ачивкой: Гроза (Две недели), Космос (Сотня), Огненная рамка (Железная воля), Корона (Легенда), Звезда (Сюжет пройден).</p><p><b>Профиль друга</b> открывается в «Пати» по нажатию на него. Там можно написать на <b>стене</b> и <b>наградить</b> 🔥 💪 🧠 🎯 🌙 🤝: награда стоит 100 очков, одному другу одна в день, и навсегда остаётся у него на профиле.</p>", v: 25 },
+  { id: "b-prof", l: 2, t: "Профиль, магазин и награды", b: "<p><b>Профиль</b> как в Steam: фон, рамка аватарки, значок уровня, статус и «О себе». Ниже витрины: ачивки (выбираешь до 6), любимый квест, текущий сюжет, статистика, недавняя активность за 2 недели, дневник (только открытые записи), награды и стена. «✎ Изменить профиль»: статус, о себе, какие витрины показывать и в каком порядке.</p><p><b>Очки 💠</b> копятся вместе с опытом: 1 XP = 1 очко. В <b>магазине</b> на них покупаются фоны, рамки и форма значка уровня. Покупка тратит только очки, опыт и уровень не меняются. Цвет значка показывает уровень (меняется каждые 10 уровней) и не продаётся. Вещи с 🏆 открываются только ачивкой: фоны Гроза (Две недели), Восход (Идеальный день), Космос (Сотня), рамки Огненная (Железная воля), Хрусталь (Без провалов), Корона (Легенда), значок Звезда (Сюжет пройден).</p><p><b>Профиль друга</b> открывается в «Пати» по нажатию на него. Там можно написать на <b>стене</b> и <b>наградить</b> 🔥 💪 🧠 🎯 🌙 🤝: награда стоит 100 очков, одному другу одна в день, и навсегда остаётся у него на профиле.</p>", v: 26 },
   { id: "b-link", l: 2, t: "Шаги на ходу и лимит дня", b: "<p>Пока срок не вышел, шаги можно менять: дату и время у несделанных, добавлять новые, убирать лишние (×). Убранный шаг уходит в «Убрано»: опыта за него нет, бонус меньше, друзья видят «убрано N». Его можно вернуть. Последний шаг убрать нельзя. Сделанный шаг под замком 🔒.</p><p>Лимит дня общий: <b>16 часов и 5 привычек</b> на квесты дня, повторы и шаги сюжетов вместе. Шаг без даты день не занимает, пока не отметишь его или не поставишь дату. Честные часы действуют и для шагов.</p><p>Привязка квеста дня к сюжету (плашка «сюжет») осталась только у старых квестов: новым она не нужна.</p>", v: 22 },
   { id: "b-verify", l: 2, t: "Проверка друзьями", b: "<p>Ежедневные квесты друзья не проверяют, их можно только <b>оспорить</b> в течение суток. На проверку уходит <b>сюжетный квест</b>: сам, когда сделаны все шаги (и старые крупные B, A, S, отправленные до v18). Фото или пояснение для друзей добавь в обсуждении под квестом. У друзей появляется запрос во вкладке «Пати» и цифра на вкладке.</p><p>Засчитано, если <b>большинство</b> друзей сказали «да» (при 2 друзьях оба, при 3 двое, при 4 трое), или если есть хотя бы одно «да», ни одного «нет» и прошло <b>48 часов</b>. Зеркально: одно или больше «нет», ни одного «да» и 48 часов, и квест отклонён. Если «нет» сказали столько, что большинства уже не набрать, квест отклонён, его можно отправить снова.</p>", v: 22 },
   { id: "b-talk", l: 2, t: "Комментарии и обсуждения", b: "<p>Под квестом на проверке или в споре есть <b>обсуждение</b>: друзья спрашивают, ты отвечаешь, можно с фото. Когда итог подведён, переписка остаётся, но писать туда уже нельзя.</p><p>Голосуя, можно оставить комментарий. К «Не засчитывать» он обязателен, к «Подтверждаю» по желанию. «Спросить» отправляет вопрос без голоса. «Оспорить» тоже требует причину.</p><p>Все твои обсуждения собраны во вкладке «Пати» в разделе «Обсуждения». Новые комментарии видны цифрой на вкладке и в плашке на «Сегодня».</p>", v: 11 },
@@ -4731,7 +4847,7 @@ function renderFriend() {
   showOv(ov);
   const fn = avaHtml(friendId, "md") + esc(pname(friendId)) + (isHere(friendId) ? ' <span class="ondot" aria-hidden="true"></span><span class="onl">онлайн</span>' : isAway(friendId) ? ' <span class="ondot away" aria-hidden="true"></span><span class="onl" style="color:var(--gold)">' + esc(awayTxt(friendId)) + "</span>" : roster[friendId] ? '<span class="onl" style="color:var(--muted)">' + esc(lastSeenTxt(friendId)) + "</span>" : "");
   if ($("fName").innerHTML !== fn) $("fName").innerHTML = fn;
-  setHtml("fProf", pfHeroHtml(friendId, "friend") + pfShowHtml(friendId, "friend"));
+  setHtml("fProf", pfHeroHtml(friendId, "friend") + '<div class="pfgw">' + pfShowHtml(friendId, "friend") + "</div>");
   setHtml("fNudge", nudgeHtml(friendId));
   setHtml("fQuests", questsListHtml(friendId).html);
   setHtml("fStories", storiesHtml(friendId));
@@ -6059,6 +6175,7 @@ document.addEventListener("toggle", (e) => {
   if (d && d.dataset && d.dataset.key) {
     if (d.open) openKeys.add(d.dataset.key); else openKeys.delete(d.dataset.key);
     if (d.dataset.key.startsWith("st:")) saveOpen();
+    if (d.dataset.key === "st:talk" && d.open) renderTalk();
     if (d.open && d.dataset.key.startsWith("g:")) {
       const id = d.dataset.key.slice(2), read = Array.isArray(prefs.guideRead) ? prefs.guideRead : [], g = GUIDE.find((x) => x.id === id);
       const key = id + "@" + num(g && g.v);
