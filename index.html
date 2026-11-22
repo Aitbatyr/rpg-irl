@@ -1359,6 +1359,23 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .gcols button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
 .gcols button[aria-pressed=true]{border-color:#fff;box-shadow:0 0 12px currentColor}
 .gprw{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;justify-content:flex-end}.gprw .linkbtn{font-size:13px}
+
+/* ---------- v29: лента проверки, окно друга ---------- */
+.rvf{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}.rvf:empty{display:none}
+.rvf .chip.on{background:rgba(94,200,255,.16);border-color:var(--sys);color:var(--fg)}
+.rvl{display:flex;flex-direction:column;gap:12px}
+.rvi{border:1px solid var(--line-soft);background:rgba(255,255,255,.02);padding:10px 12px}
+.rvi.new{border-color:rgba(94,200,255,.45)}
+.rvi.sus{border-color:rgba(255,207,92,.5);background:rgba(255,207,92,.04)}
+.rvh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.rvh .linkbtn{font-weight:700;color:var(--fg)}
+.rvn{font:700 9.5px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#06101f;background:var(--sys);padding:2px 6px}
+.rvw{font-size:12.5px;color:var(--gold);margin-bottom:6px}
+.rvi .qlist{margin:0}
+.fseg{margin:-4px 0 14px}
+.fseg .fn{font:700 10px var(--f-mono);color:var(--muted);margin-left:2px}
+.fseg button[aria-pressed=true] .fn{color:var(--sys)}
+.fsub[hidden]{display:none}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
@@ -1557,7 +1574,12 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
       <div class="ph"><h2 class="ptitle" id="vT">Запрос подтверждения</h2><span class="sub" id="vCount"></span></div>
       <div id="verify" style="display:flex;flex-direction:column;gap:10px"></div>
     </section>
-    <section class="panel" id="verEmpty"><p class="hint" style="margin:0">Сейчас проверять нечего. Когда друг отправит крупный квест на проверку или кто-то оспорит квест, он появится здесь.</p></section>
+    <section class="panel" id="verEmpty" hidden><p class="hint" style="margin:0">Голосовать сейчас не за что. Крупные квесты и споры друзей появятся здесь.</p></section>
+    <section class="panel" id="revPanel" aria-labelledby="rvT">
+      <div class="ph"><h2 class="ptitle" id="rvT">Лента друзей</h2><span class="sub" id="rvSub">оспорить можно в течение суток</span></div>
+      <div class="rvf" id="rvF" role="group" aria-label="Фильтр ленты"></div>
+      <div id="rev" class="rvl"></div>
+    </section>
     </div>
     <div class="gsub" data-sub="talk" hidden>
     <section class="panel" id="talkPanel" hidden aria-labelledby="tkT">
@@ -1662,19 +1684,26 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 <div id="friendOv" class="ov sheet" hidden>
   <div class="panel sheetp" role="dialog" aria-modal="true" aria-labelledby="fName">
     <div class="ph"><h2 class="ptitle" id="fName">Профиль</h2><button type="button" class="btn sm ghost" data-act="fclose" aria-label="Закрыть">Закрыть ×</button></div>
-    <div id="fProf" class="fprof"></div>
+    <div class="gseg fseg" id="fSeg" role="group" aria-label="Раздел профиля друга"></div>
+    <div class="fsub" data-fs="q">
     <div id="fNudge"></div>
     <h3 class="fh">Квесты дня</h3>
     <ul class="qlist" id="fQuests"></ul>
     <div id="fRep"></div>
+    </div>
+    <div class="fsub" data-fs="s" hidden>
     <h3 class="fh">Сюжет</h3>
     <div class="qlist" id="fStories"></div>
+    </div>
+    <div class="fsub" data-fs="p" hidden>
+    <div id="fProf" class="fprof"></div>
     <h3 class="fh">Дневник</h3>
     <div id="fDiary"></div>
     <h3 class="fh">Характеристики и ачивки</h3>
     <div id="fStatus"></div>
     <h3 class="fh">Активность</h3>
     <div id="fHeat"></div>
+    </div>
   </div>
 </div>
 <div id="pickOv" class="ov" hidden>
@@ -1961,7 +1990,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 28;
+const APP_VERSION = 29;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -2002,6 +2031,12 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 29, date: "2026-11-22", title: "Удобная проверка", items: [
+    "Группа → Проверка: сверху то, где нужен твой голос, ниже «Лента друзей»: все квесты друзей за сутки, пока их можно оспорить. «Оспорить» и комментарии прямо в ленте, заходить в профиль не нужно.",
+    "Подсказки «на что посмотреть»: квест на несколько часов создан и отмечен за минуты, отметки пачкой, долгий квест без фото, необычно много за день. Это не обвинение, а повод глянуть внимательнее.",
+    "Фильтры ленты: все, «на что посмотреть» и по каждому другу. Новое с прошлого захода помечено, цифра на «Проверке» показывает, сколько непросмотренного.",
+    "Окно друга: сверху переключатель Квесты · Сюжет · Профиль. Сразу открываются квесты, профиль с витринами отдельно.",
+  ] },
   { v: 28, date: "2026-11-22", title: "Группы", items: [
     "Пати стала группой «Система». Вкладка теперь называется «Группа»: сверху шапка с эмблемой, ниже Участники, Чат, Проверка и Обсуждения.",
     "Любой может создать свою группу и стать лидером. Друзья вступают по ссылке-приглашению, лидер или помощник принимает заявку. Порядок в группе держат лидер и помощники, владелец сайта больше не подтверждает каждого.",
@@ -5302,7 +5337,7 @@ const GUIDE = [
   { id: "d-pace", l: 3, t: "Срок, продление и закрытие сюжета", b: "<p>Срок задаётся при создании и потом не меняется. Если срок вышел, а шаги не все сделаны, остаются две кнопки: <b>«Продлить»</b> (на неделю или на 2 недели, не позже 31 декабря) или <b>«Закрыть без бонуса»</b> (опыт за сделанные шаги остаётся).</p><p>Продлевать можно сколько угодно. Каждое продление уменьшает вдвое бонус только за <b>уже сделанные</b> шаги, за оставшиеся бонус полный. Поэтому бросить и создать квест заново невыгодно: за сделанное бонуса не будет совсем. Цифры видны в карточке. После срока шаги менять и убирать нельзя.</p><p>Пока ни один друг не проголосовал, квест можно «Вернуть с проверки», чтобы добавить шаги. Если друзья не засчитали: «Отправить снова» или «Вернуть в работу». Удалить квест можно, пока в нём нет сделанных шагов.</p><p>Старые квесты (с буквами B, A, S) переводятся окном «Сюжет по новым правилам»: сделанные этапы остаются по 10 XP, остальным ставишь день и время.</p>", v: 22 },
   { id: "d-rankhint", l: 3, t: "Подсказка времени", b: "<p>Когда пишешь название, сайт ищет похожие квесты в истории группы и подсказывает, сколько времени для них обычно ставят, например «обычно на 30 мин (Английский ×12)», с кнопкой «Поставить». Подсказка ничего не запрещает.</p>", v: 18 },
   { id: "d-join", l: 3, t: "Группы: создать, вступить, роли", b: "<p>В Системе играют <b>группами</b>. Любой может создать группу и стать её <b>лидером</b>. Лидер зовёт друзей и знакомых по <b>ссылке-приглашению</b> (⚙ Управление → Пригласить): друг открывает ссылку, называет себя и отправляет заявку, а лидер или помощник её принимает. Новая ссылка отключает старую.</p><p>Роли: <b>👑 Лидер</b> может всё (роли, оформление, передать лидерство), <b>⭐ Помощник</b> принимает заявки и исключает участников, проверяют квесты все. Игрок бывает только в одной группе. Лидер выходит, только когда передал лидерство. Группы друг друга не видят и не соревнуются.</p><p>Опыт двух видов. <b>Общий</b> идёт с тобой в любую группу. <b>Опыт в группе</b> считается с момента вступления: по нему неделя, места и итоги, поэтому накрутить опыт в одной группе и прийти с ним в другую бесполезно.</p>", v: 28 },
-  { id: "d-party", l: 3, t: "Группа и профиль друга", b: "<p>Во вкладке «Группа» сверху шапка группы и ⚙, ниже переключатель: <b>Участники</b> (карточки и неделя), <b>Чат</b> (переписка группы за 2 недели, своё сообщение можно удалить; помощник удаляет и сообщения участников, лидер любые), <b>Проверка</b> (квесты друзей ждут твоего голоса) и <b>Обсуждения</b>.</p><p>Нажми на друга, откроется окно с его квестами, сюжетом, характеристиками и картой активности. Там же кнопки «Оспорить». Если друг сегодня не открывал сайт, на карточке будет «сегодня не заходил», а в его окне кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление. Одному другу раз в день.</p><p>Состояние друга как в Steam: <b style=\"color:var(--ok)\">● онлайн</b> сайт открыт на экране, <b style=\"color:var(--gold)\">● отошёл</b> сайт открыт, но свёрнут или 5 минут без действий, без точки «был …» значит не в сети.</p>", v: 28 },
+  { id: "d-party", l: 3, t: "Группа и профиль друга", b: "<p>Во вкладке «Группа» сверху шапка группы и ⚙, ниже переключатель: <b>Участники</b> (карточки и неделя), <b>Чат</b> (переписка группы за 2 недели; своё сообщение можно удалить, помощник удаляет и сообщения участников, лидер любые), <b>Проверка</b> и <b>Обсуждения</b>.</p><p><b>Проверка</b>: сверху квесты и споры, где нужен твой голос, ниже <b>«Лента друзей»</b>: все мелкие квесты друзей за сутки, пока их можно оспорить. Жёлтым подсвечено, на что стоит посмотреть (создан и отмечен за минуты, пачка отметок, долгий квест без фото, необычно много за день). Фильтры: все, «на что посмотреть», по другу. Новое с прошлого захода помечено, цифра на «Проверке» считает непросмотренное.</p><p>Нажми на друга, откроется окно: сверху <b>Квесты · Сюжет · Профиль</b>, сразу открыты квесты с кнопками «Оспорить». Если друг сегодня не открывал сайт, там же кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление, одному другу раз в день.</p><p>Состояние друга как в Steam: <b style=\"color:var(--ok)\">● онлайн</b> сайт открыт на экране, <b style=\"color:var(--gold)\">● отошёл</b> сайт открыт, но свёрнут или 5 минут без действий, без точки «был …» значит не в сети.</p>", v: 29 },
   { id: "b-v17", l: 2, t: "Выходной, напоминания, карта активности", b: "<p><b>Выходной</b>: 2 дня в месяц. На «Сегодня» под полоской дня: «взять сегодня» (только пока ничего не отмечено), «на завтра» или «выбрать день»: календарь на этот и следующий месяц, можно взять любой день вперёд. Лимит считается по месяцу самого дня. Запланированные выходные видны списком, × отменяет (пока день не начался). Задним числом нельзя. В выходной повторы не создаются, провалов нет, серия не сгорает, опыт за сделанное засчитывается. Отменить можно в тот же день.</p><p><b>Напоминание</b>: плашка «⏰» при создании квеста или ⏰ в строке квеста. Придёт уведомление в это время, если квест не отмечен (точность около 5 минут). У повтора время сохраняется на все дни. Нужны включённые уведомления.</p><p><b>Карта активности</b> в «Статусе» и в профиле друга: квадратик на день, яркость по числу выполненных квестов (1–2, 3–4, 5–6, 7+). Золотая рамка: закрыты все квесты дня (от трёх). Серый с 🌙: выходной. Красный уголок: день правили задним числом. Наведи или нажми на квадратик, чтобы увидеть подробности.</p><p><b>Живой фон</b> меняет цвет по рангу охотника, ночью звёзды, в декабре снег. Выключить: «Ещё → Оформление».</p>", v: 20 },
   { id: "b-push", l: 2, t: "Уведомления", b: "<p>⚙ Настройки (шестерёнка в «Профиле») → <b>«Уведомления»</b> → «Включить уведомления» и разреши их в браузере. Настройка на каждом устройстве своя.</p><p>Что приходит: <b>друг ждёт твоего голоса</b>; <b>твой квест оспорили</b> или по нему проголосовали; <b>новый комментарий</b> в обсуждении, где ты участвуешь; <b>в 21:00</b> напоминание, если квесты дня не закрыты или ты сегодня не заходил; <b>друг тебя «пнул»</b>; <b>в понедельник в 9:00</b> итоги недели готовы. Любой тип можно выключить галочкой. «Прислать тестовое» проверяет, что всё работает.</p><p>На iPhone уведомления работают, только если сайт добавлен на экран «Домой» и открыт с иконки. На Android надёжнее всего через Chrome.</p>", v: 16 },
   { id: "b-week", l: 2, t: "Итоги недели и аватарка", b: "<p><b>Итоги недели</b>: каждый понедельник во вкладке «Профиль» карточка за прошлую неделю (пн–вс): опыт, место в пати, выполнено и провалено, процент повторов, лучший день и какие характеристики выросли. Ниже «Прошлые недели»: по строке на неделю (даты, опыт, место, полоска выполнено/провалено), нажатие раскрывает итоги целиком. Пока не посмотрел свежие итоги, на «Сегодня» висит плашка, а в понедельник в 9:00 приходит уведомление.</p><p><b>Аватарка</b>: во вкладке «Профиль» нажми на кружок со своей буквой (📷) и выбери картинку. Под именем: «открыть аватарку» и «убрать».</p><p>Чужую аватарку можно открыть на весь экран: нажми на неё в пати, в профиле друга или в обсуждении. Закрыть: нажатие по экрану или «Закрыть ×».</p>", v: 16 },
@@ -5525,11 +5560,11 @@ function renderGroup() {
   setHtml("gTop", '<section class="panel gtop">' + gEmb(gInfo.emb, gInfo.col, 46) + '<div class="t"><h2>' + esc(gInfo.name) + "</h2><span>" + gPl(n) + (r ? " · ты " + G_ROLE[r].replace(/^\S+ /, "").toLowerCase() : "") + "</span></div>" +
     '<button type="button" class="gear" data-act="gmanage">⚙ ' + (gMod() ? "Управление" : "О группе") + (rq ? '<span class="bd">' + rq + "</span>" : "") + "</button></section>");
   const cu = gChatUnread(), tu = unreadCmts();
-  setHtml("gSeg", [["mem", "Участники", ""], ["chat", "Чат", cu ? '<span class="n">' + (cu > 99 ? "99+" : cu) + "</span>" : ""], ["ver", "Проверка", verifyCount ? '<span class="n">' + verifyCount + "</span>" : ""], ["talk", "Обсуждения", tu ? '<span class="n">' + tu + "</span>" : ""]]
+  setHtml("gSeg", [["mem", "Участники", ""], ["chat", "Чат", cu ? '<span class="n">' + (cu > 99 ? "99+" : cu) + "</span>" : ""], ["ver", "Проверка", verifyCount + revNew ? '<span class="n">' + (verifyCount + revNew) + "</span>" : ""], ["talk", "Обсуждения", tu ? '<span class="n">' + tu + "</span>" : ""]]
     .map(([k, t, b]) => '<button type="button" data-act="gsub" data-s="' + k + '" aria-pressed="' + (gSub === k) + '">' + t + b + "</button>").join(""));
   $("gSeg").hidden = false;
   document.querySelectorAll(".gsub").forEach((el) => (el.hidden = el.dataset.sub !== gSub));
-  $("verEmpty").hidden = !$("verifyPanel").hidden;
+  $("verEmpty").hidden = true;
   $("talkEmpty").hidden = !$("talkPanel").hidden;
   if (gSub === "chat") renderChat();
 }
@@ -5632,7 +5667,7 @@ function gKeepForm() { if (!gOv) return; if ($("gNm")) gOv.name = gVal("gNm"); i
 async function groupAct(act, b) {
   if (!/^g(manage|create|close|emb|col|docreate|doreq|cancel|copy|newinv|ok|no|role|lead|kick|leave|cf|save|sub|cdel)$/.test(act)) return false;
   gKeepForm();
-  if (act === "gsub") { gSub = b.dataset.s; store.set("sys.gsub", gSub); if (gSub === "chat") gChatBottom = true; lastHtml.talk = null; renderTalk(); renderGroup(); renderBadges(); return true; }
+  if (act === "gsub") { gSub = b.dataset.s; store.set("sys.gsub", gSub); if (gSub === "chat") gChatBottom = true; lastHtml.talk = null; renderTalk(); renderRev(); renderGroup(); renderBadges(); return true; }
   if (act === "gmanage") { if (!inGroup()) return true; gOv = { kind: "manage", name: gInfo.name, about: gInfo.about || "", emb: gInfo.emb, col: gInfo.col }; renderGOv(); return true; }
   if (act === "gcreate") { gOv = { kind: "create", name: "", about: "", emb: G_EMB[0], col: G_COL[0] }; renderGOv(); setTimeout(() => { const n = $("gNm"); if (n) n.focus(); }, 50); return true; }
   if (act === "gclose") { gOv = null; renderGOv(); return true; }
@@ -5688,6 +5723,59 @@ async function groupSubmit(e) {
 
 // v28: обучение ждёт, пока новичок разберётся с именем и приглашением в группу
 function tourWhenFree() { if (gOv || !$("pickOv").hidden) { setTimeout(tourWhenFree, 1500); return; } startTour(); }
+// ---------- v29: лента проверки ----------
+// Во вкладке «Группа → Проверка»: сверху то, где нужен мой голос, ниже все мелкие квесты друзей за сутки (пока их можно оспорить).
+// Строка квеста та же, что в окне друга (questItem): те же кнопки «Оспорить», споры, обсуждения, правила не меняются.
+const REV_MS = 864e5;
+let revF = "all", revBase = null, revList = [], revNew = 0, fSub = "q";
+// поле рядом с кнопкой: одна и та же форма бывает и в ленте, и в окне друга (одинаковые id), берём ту, где нажали
+const nearInp = (b) => { const box = b.closest(".proof, .vi, .cin, li"), id = b.dataset.inp || ""; return (box && ((id && box.querySelector("#" + CSS.escape(id))) || box.querySelector("input[data-draft], input[type=text]"))) || $(id); };
+function revWhy(t, pid, pr, ts) {
+  const w = [];
+  if (isNewQ(t) && t.m >= 120 && typeof t.createdAt === "number" && t.doneAt - t.createdAt < 10 * 6e4 && !t.fromDaily) w.push("создан и отмечен за " + Math.max(1, Math.round((t.doneAt - t.createdAt) / 6e4)) + " мин, а квест на " + fmtMin(t.m));
+  // пачка: несколько квестов со временем (не привычки) отмечены за 2 минуты, вместе на 2+ часа. Привычки пачкой отмечают все, это нормально
+  const bt = isNewQ(t) && t.m > 0 ? ts.filter((x) => isNewQ(x) && x.m > 0 && Math.abs(x.doneAt - t.doneAt) <= 2 * 6e4) : [];
+  const bm = bt.reduce((a2, x) => a2 + x.m, 0);
+  if (bt.length >= 3 && bm >= 120) w.push("отмечено пачкой: " + bt.length + " квеста на " + fmtMin(bm) + " за 2 мин");
+  if (isNewQ(t) && t.m >= 240 && !t.proof && !imgIds(t.imgs).length) w.push(fmtMin(t.m) + " без фото");
+  const odd = oddDay(pid, t.date, pr); if (odd) w.push(odd);
+  return w;
+}
+function revItems() {
+  if (!me) return [];
+  const out = [];
+  for (const p of activePlayers()) {
+    if (p.id === me || !loadedBy[p.id]) continue;
+    const pr = profile(p.id);
+    const ts = (tasksBy[p.id] || []).filter((t) => t.done && !t.moved && !taskBig(t) && typeof t.doneAt === "number" && now() - t.doneAt <= REV_MS && !flagOf(t));
+    for (const t of ts) out.push({ t, pid: p.id, why: revWhy(t, p.id, pr, ts) });
+  }
+  return out.sort((a, b) => b.t.doneAt - a.t.doneAt);
+}
+function renderRev() {
+  if (!$("rev")) return;
+  revList = revItems();
+  const open = tab === "party" && gSub === "ver" && !document.hidden;
+  if (open && revBase == null) revBase = num(prefs.revSeen);
+  if (!open) revBase = null;
+  const seen = revBase != null ? revBase : num(prefs.revSeen);
+  revNew = revList.filter((x) => x.t.doneAt > num(prefs.revSeen)).length;
+  const sus = revList.filter((x) => x.why.length), by = {};
+  for (const x of revList) by[x.pid] = (by[x.pid] || 0) + 1;
+  if (revF !== "all" && revF !== "sus" && !by[revF]) revF = "all";
+  if (revF === "sus" && !sus.length) revF = "all";
+  const chip = (f, t, n) => '<button type="button" class="chip' + (revF === f ? " on" : "") + '" data-act="rvf" data-f="' + esc(f) + '" aria-pressed="' + (revF === f) + '">' + t + " · " + n + "</button>";
+  setHtml("rvF", revList.length ? chip("all", "Все", revList.length) + (sus.length ? chip("sus", "⚠ На что посмотреть", sus.length) : "") + Object.keys(by).map((pid) => chip(pid, esc(pname(pid)), by[pid])).join("") : "");
+  const list = revF === "all" ? revList : revF === "sus" ? sus : revList.filter((x) => x.pid === revF);
+  setHtml("rev", !me ? "" : !list.length ? '<p class="hint" style="margin:0">' + (activePlayers().length > 1 ? "За последние сутки друзья ничего не отметили. Всё, что они выполнят, появится здесь, и это можно будет оспорить в течение суток." : "В группе пока только ты. Позови друзей по ссылке из ⚙.") + "</p>" :
+    list.map((x) => '<div class="rvi' + (x.why.length ? " sus" : "") + (x.t.doneAt > seen ? " new" : "") + '"><div class="rvh">' + avaHtml(x.pid, "sm") + '<button type="button" class="linkbtn" data-act="view" data-p="' + esc(x.pid) + '">' + esc(pname(x.pid)) + "</button>" +
+      '<span class="hint">отметил ' + esc(chatTime(x.t.doneAt)) + (x.t.date !== today() ? " · квест за " + esc(nice(x.t.date)) : "") + "</span>" + (x.t.doneAt > seen ? '<span class="rvn">новое</span>' : "") + "</div>" +
+      (x.why.length ? '<div class="rvw">⚠ ' + x.why.map(esc).join(" · ") + "</div>" : "") +
+      '<ul class="qlist">' + questItem(x.t, false, profile(x.pid)) + "</ul></div>").join(""));
+  $("rvSub").textContent = revList.length ? plDn(revList.length, "квест", "квеста", "квестов") + " за сутки · оспорить можно сутки" : "оспорить можно в течение суток";
+  if (open && revList.length) { const mx = Math.max(...revList.map((x) => x.t.doneAt)); if (mx > num(prefs.revSeen)) { writePrefs({ revSeen: mx }); revNew = 0; } }
+}
+
 function renderLog() { const r = heatHtml(mainPid(), "heat"); setHtml("heat", r.html); $("hmSub").textContent = r.sub; hmScroll("heat"); }
 // на узком экране год не влезает: при первой отрисовке прокрутить к сегодняшнему дню
 function hmScroll(id) {
@@ -5896,10 +5984,15 @@ function renderFriend() {
   showOv(ov);
   const fn = avaHtml(friendId, "md") + esc(pname(friendId)) + (isHere(friendId) ? ' <span class="ondot" aria-hidden="true"></span><span class="onl">онлайн</span>' : isAway(friendId) ? ' <span class="ondot away" aria-hidden="true"></span><span class="onl" style="color:var(--gold)">' + esc(awayTxt(friendId)) + "</span>" : roster[friendId] ? '<span class="onl" style="color:var(--muted)">' + esc(lastSeenTxt(friendId)) + "</span>" : "");
   if ($("fName").innerHTML !== fn) $("fName").innerHTML = fn;
+  // v29: переключатель, чтобы квесты для проверки были сразу, без прокрутки профиля
+  const fq = questsListHtml(friendId), nst = (storiesBy[friendId] || []).filter((x) => storyState(x) === "active").length;
+  setHtml("fSeg", [["q", "Квесты", fq.total ? fq.done + "/" + fq.total : ""], ["s", "Сюжет", nst ? String(nst) : ""], ["p", "Профиль", ""]]
+    .map(([k, t, n]) => '<button type="button" data-act="fsub" data-s="' + k + '" aria-pressed="' + (fSub === k) + '">' + t + (n ? '<span class="fn">' + n + "</span>" : "") + "</button>").join(""));
+  document.querySelectorAll("#friendOv .fsub").forEach((el) => (el.hidden = el.dataset.fs !== fSub));
   setHtml("fProf", pfHeroHtml(friendId, "friend") + '<div class="pfgw">' + pfShowHtml(friendId, "friend") + "</div>");
   pfMountFx(); syncTheme();
   setHtml("fNudge", nudgeHtml(friendId));
-  setHtml("fQuests", questsListHtml(friendId).html);
+  setHtml("fQuests", fq.html);
   setHtml("fStories", storiesHtml(friendId));
   setHtml("fDiary", dFriendHtml(friendId));
   setHtml("fRep", repListHtml(friendId));
@@ -5916,7 +6009,7 @@ function renderNews() {
 
 function renderAll() {
   profCache.clear(); offCache.clear();
-  renderTop(); renderTabs(); setHtml("strip", stripHtml(mainPid())); renderStatus(); renderStories(); renderVerify(); renderTalk(); renderQuests(); renderLinkSelect(); renderWeek(); renderSeason(); renderParty(); renderAch(); renderLog(); renderAdmin(); renderBadges(); renderIdentity(); renderFriend(); renderMyBugs();
+  renderTop(); renderTabs(); setHtml("strip", stripHtml(mainPid())); renderStatus(); renderStories(); renderVerify(); renderRev(); renderTalk(); renderQuests(); renderLinkSelect(); renderWeek(); renderSeason(); renderParty(); renderAch(); renderLog(); renderAdmin(); renderBadges(); renderIdentity(); renderFriend(); renderMyBugs();
   if (me && loadedBy[me] && storyLoadedBy[me] && votesReady()) {
     const L = profile(me).li.L;
     // окно нового уровня и тост ачивки показываем один раз: сняли галочку и отметили снова, повтора нет
@@ -6479,7 +6572,9 @@ document.addEventListener("click", async (e) => {
     renderAll(); $("sTitle").focus(); return;
   }
   if (act === "scancel") { storyFormOpen = false; renderAll(); return; }
-  if (act === "view") { const p = b.dataset.p; if (me && p === me) { setTab("status"); return; } friendId = p; renderFriend(); renderParty(); return; }
+  if (act === "view") { const p = b.dataset.p; if (me && p === me) { setTab("status"); return; } if (friendId !== p) fSub = "q"; friendId = p; renderFriend(); renderParty(); return; }
+  if (act === "fsub") { fSub = ["q", "s", "p"].includes(b.dataset.s) ? b.dataset.s : "q"; renderFriend(); const sp = document.querySelector("#friendOv .sheetp"); if (sp) sp.scrollTop = 0; if (fSub === "p") requestAnimationFrame(() => { pfMountFx(); hmScroll("fHeat"); }); return; }
+  if (act === "rvf") { revF = b.dataset.f || "all"; renderRev(); return; }
   if (act === "viewme") { if (me) viewId = me; renderAll(); return; }
   if (act === "dismiss") { pickDismissed = true; renderIdentity(); return; }
   if (act === "reclaim") { reclaiming = true; renderIdentity(); return; }
@@ -6722,7 +6817,7 @@ document.addEventListener("click", async (e) => {
       if (!s || owner === me) return;
       const ref = db.doc("v/" + uid + "/votes/" + owner + "__xs-" + s.id + "~" + i);
       if (act === "sdispute") {
-        const inp = $(b.dataset.inp || ""), note = ((inp && inp.value) || "").trim().replace(/\s+/g, " ").slice(0, CMT_MAX);
+        const inp = nearInp(b), note = ((inp && inp.value) || "").trim().replace(/\s+/g, " ").slice(0, CMT_MAX);
         if (note.length < 3) { toast("Напиши причину спора. Её увидят все."); if (inp) inp.focus(); return; }
         b.disabled = true;
         await ref.set({ task: s.id + "~" + i, kind: "sdispute", owner, note, at: now() });
@@ -6819,7 +6914,7 @@ document.addEventListener("click", async (e) => {
       if (!t || owner === me) return;
       const ref = db.doc("v/" + uid + "/votes/" + owner + "__x-" + t.id);
       if (act === "dispute") {
-        const inp = $(b.dataset.inp || ""), note = ((inp && inp.value) || "").trim().replace(/\s+/g, " ").slice(0, CMT_MAX);
+        const inp = nearInp(b), note = ((inp && inp.value) || "").trim().replace(/\s+/g, " ").slice(0, CMT_MAX);
         if (note.length < 3) { toast("Напиши причину спора. Её увидят все."); if (inp) inp.focus(); return; }
         b.disabled = true;
         await ref.set({ task: t.id, kind: "dispute", owner, sig: sigOf(t, "task"), note, at: now() });
@@ -6836,7 +6931,7 @@ document.addEventListener("click", async (e) => {
       else it = (kind === "story" ? storiesBy[owner] : tasksBy[owner] || []).find((x) => x.id === b.dataset.id);
       if (!it || owner === me) return;
       const round = b.dataset.round === "dispute" ? "dispute" : it.submittedAt;
-      const inp = $(b.dataset.inp || ""), note = ((inp && inp.value) || "").trim().replace(/\s+/g, " ").slice(0, CMT_MAX);
+      const inp = nearInp(b), note = ((inp && inp.value) || "").trim().replace(/\s+/g, " ").slice(0, CMT_MAX);
       if (b.dataset.v === "no" && note.length < 3) { toast("Напиши, почему не засчитываешь. Это увидят все."); if (inp) inp.focus(); return; }
       b.disabled = true;
       await db.doc("v/" + uid + "/votes/" + owner + "__" + (kind === "story" ? "s-" : kind === "step" ? "p-" : "") + (round === "dispute" ? "d-" : "") + it.id).set({ task: it.id, kind, owner, vote: b.dataset.v, round, sig: sigOf(it, kind), ...(note ? { note } : {}), at: now() });
@@ -6847,7 +6942,7 @@ document.addEventListener("click", async (e) => {
       const k = b.dataset.k || "", [ik, owner, ...rest] = k.split(":"), id = rest.join(":"), dk = "c:" + k;
       if (!["task", "story", "step", "diary", "wall"].includes(ik) || !owner || !id) return;
       if (upBusy[dk]) { toast("Подожди, фото ещё загружаются."); return; }
-      const inp = $(b.dataset.inp || ""), text = ((inp && inp.value) || "").trim().replace(/\s+/g, " ").slice(0, CMT_MAX), imgs = imgIds(pendImgs[dk]);
+      const inp = nearInp(b), text = ((inp && inp.value) || "").trim().replace(/\s+/g, " ").slice(0, CMT_MAX), imgs = imgIds(pendImgs[dk]);
       if (!text && !imgs.length) { toast("Напиши комментарий."); if (inp) inp.focus(); return; }
       const ti = threadItem(ik, owner, id);
       if (!ti || !ti.open) { toast("Итог уже подведён, обсуждение закрыто."); return; }
@@ -7190,7 +7285,7 @@ function syncSubs() {
       prefs = snap.exists ? { ...snap.data() } : {}; prefsLoaded = true;
       renderTabs(); renderGuide(); renderMyBugs(); if (tab === "more") markSeen(); touchSeen();
       if (tab === "party" && cmtBase == null) cmtBase = num(prefs.cmtSeen);
-      lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderGroup(); renderStatus(); renderMigr(); renderSmig(); renderDiary(); renderProfile();
+      lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderRev(); renderGroup(); renderStatus(); renderMigr(); renderSmig(); renderDiary(); renderProfile();
       if (!prefs.tourDone && !tourAuto && me) { tourAuto = true; setTimeout(tourWhenFree, 900); }
     }, onErr);
   }
