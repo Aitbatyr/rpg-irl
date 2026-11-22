@@ -1662,10 +1662,6 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
       <div class="ph"><h2 class="ptitle" id="aT">Сообщения об ошибках</h2><span class="sub">Видно только владельцу сайта</span></div>
       <div id="admin" style="display:flex;flex-direction:column;gap:10px"></div>
     </section>
-    <section class="panel" aria-labelledby="accT">
-      <div class="ph"><h2 class="ptitle" id="accT">Аккаунт</h2></div>
-      <div id="accBox"></div>
-    </section>
   </div>
   <div class="foot"><button type="button" class="linkbtn" data-act="guideopen">Гайд</button><span aria-hidden="true">·</span><button type="button" class="linkbtn" data-act="bugopen">Нашёл баг или есть пожелания?</button></div>
 </div>
@@ -2050,6 +2046,8 @@ const NEWS = [
     "Окно друга: сверху широкая кнопка «Профиль» (открыт по умолчанию), под ней «Квесты» и «Сюжет». Квесты с кнопками «Оспорить» в один клик.",
     "Обсуждения: у каждого кнопка «открыть →». Она ведёт к самой вещи (квест, этап, запись в дневнике или стена, свои или друга) и подсвечивает её.",
     "Управление группой: действия с участником (помощник, передать лидерство, исключить) спрятаны под кнопку «⋯», список стал компактнее.",
+    "В чате у своих сообщений теперь твоё имя вместо «Ты».",
+    "Настройки: убран отдельный блок «Аккаунт» (почта и «Выйти» есть внизу страницы). Итоги сезона откроются всем одновременно 31 декабря в 18:00.",
   ] },
   { v: 28, date: "2026-11-22", title: "Группы", items: [
     "Пати стала группой «Система». Вкладка теперь называется «Группа»: сверху шапка с эмблемой, ниже Участники, Чат, Проверка и Обсуждения.",
@@ -4036,7 +4034,7 @@ document.addEventListener("click", (ev) => { if (dPick && !ev.target.closest(".d
 // Всё считается из тех же данных и функций, что «Статус»; ничего не хранится, кроме prefs.yrSeen (видел ли игрок итоги).
 const YR_OPEN = Date.parse("2026-12-31T18:00:00+05:00");
 const yrReady = () => now() >= YR_OPEN;
-const yrCan = () => yrReady() || isOwner;
+const yrCan = () => yrReady(); // предпросмотр владельцу убран: итоги для всех 31 декабря в 18:00
 const YR_COL = ["#5ec8ff", "#ffcf5c", "#49e3a0", "#b48cff", "#ff9ecf", "#ff9d4d"];
 const YR_MON = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
 const YR_MONN = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
@@ -5146,12 +5144,6 @@ async function pfAct(b, act) {
 }
 $("pfOv").addEventListener("click", (e) => { if (e.target === e.currentTarget) { pf = null; renderPf(); } });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && pf) { e.preventDefault(); e.stopImmediatePropagation(); pf = null; renderPf(); } }, true);
-// аккаунт в настройках: почта и «Выйти» берём у входа (shim)
-function renderAccount() {
-  const sp = document.querySelector(".authfoot span"), btn = $("authOut");
-  const h = btn ? '<div class="setrow" style="border:0;padding:0"><span><b>Почта</b><span class="hint" style="display:block">' + esc(sp ? sp.textContent : "") + '</span></span><button type="button" class="btn sm no" data-act="logout">Выйти</button></div>' : '<p class="hint" style="margin:0">Вход не выполнен.</p>';
-  setHtml("accBox", h);
-}
 
 function renderLinkSelect() {
   const sel = $("qLink"), prev = sel.value;
@@ -5642,7 +5634,7 @@ function renderChat() {
       const cont = !sep && prev && !prev.sys && prev.by === m.by && m.at - prev.at < 5 * 60e3;
       const r = inG ? gRole(m.pid) : null, eq = inG ? pfEq(m.pid) : { fr: "none", hat: "none", bd: "circle" }, a = inG ? avaOf(m.pid) : null;
       const ava = cont ? '<span class="gsp"></span>' : '<div class="pfavw gcav"' + (eq.fr !== "none" ? ' data-fxfr="' + esc(eq.fr) + '"' : "") + '><span class="pfav">' + (a ? '<img src="' + esc(blobUrl(a)) + '" alt="">' : esc(((inG ? pname(m.pid) : m.n) || "?")[0])) + "</span>" + (eq.hat !== "none" ? pfHatHtml(eq.hat, "c" + m.id) : "") + "</div>";
-      const who = mine ? "Ты" : inG ? pname(m.pid) : m.n || "Бывший участник";
+      const who = inG ? pname(m.pid) : m.n || (mine ? "Ты" : "Бывший участник");
       return sep + '<div class="gmsg' + (mine ? " me" : "") + (cont ? " cont" : "") + '">' + ava + '<div class="b">' +
         '<div class="h">' + (cont ? "" : "<b>" + esc(who) + "</b>" + (inG ? pfLvl(profile(m.pid).li.L, eq.bd) : "") + (r ? '<span class="grl ' + r + '">' + esc(G_ROLE[r]) + "</span>" : "") + " · ") + esc(dTm(m.at)) +
         (del ? '<button type="button" class="gdel" data-act="gcdel" data-id="' + esc(m.id) + '" title="Удалить сообщение" aria-label="Удалить сообщение">×</button>' : "") + "</div><p>" + esc(m.t) + "</p></div></div>";
@@ -6088,7 +6080,6 @@ function renderAll() {
   renderDiary();
   renderYrEntry();
   renderProfile();
-  renderAccount();
   bgUpdate();
   bootCheck();
 }
