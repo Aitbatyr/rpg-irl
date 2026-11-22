@@ -1354,6 +1354,7 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .gcols{display:flex;gap:10px;flex-wrap:wrap}
 .gcols button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
 .gcols button[aria-pressed=true]{border-color:#fff;box-shadow:0 0 12px currentColor}
+.gprw{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;justify-content:flex-end}.gprw .linkbtn{font-size:13px}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
@@ -1588,7 +1589,7 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
       <label class="setrow"><span><b>Цвет сайта по фону профиля</b><span class="hint" style="display:block">Фон сайта в гамме твоего фона, а в профиле друга в гамме его фона.</span></span><input type="checkbox" id="themeBg"></label>
     </section>
     <section class="panel" id="guidePanel" aria-labelledby="gT">
-      <div class="ph"><h2 class="ptitle" id="gT">Гайд</h2><span class="sub" id="gProg"></span></div>
+      <div class="ph"><h2 class="ptitle" id="gT">Гайд</h2><span class="gprw"><span class="sub" id="gProg"></span><button type="button" class="linkbtn" data-act="greadall" id="gReadAll" hidden>✓ отметить всё прочитанным</button></span></div>
       <div class="cheat" aria-label="Шпаргалка">
         <div><span class="lbl">Опыт</span><span>20 XP за час средней задачи · лёгкий ×0,5 · сложный ×1,5 · после 3 ч час за половину · 👎 +30% · — +15%</span></div>
         <div><span class="lbl">Привычка</span><span>без времени: 3 / 5 / 10 XP, не больше 5 в день · у дня 16 ч</span></div>
@@ -5317,6 +5318,7 @@ function renderGuide() {
   const lvlName = ["", "старт", "основы", "подробно"];
   const unread = GUIDE.filter((g) => !gIsRead(g, read));
   $("gProg").textContent = unread.length ? "непрочитанных " + unread.length : "всё прочитано";
+  $("gReadAll").hidden = !unread.length || !me;
   [1, 2, 3].forEach((l) => { const b = $("gl-" + l); if (!b) return; const has = unread.some((g) => g.l === l); let d = b.querySelector(".gdot"); if (has && !d) { d = document.createElement("span"); d.className = "gdot"; d.setAttribute("aria-label", "есть непрочитанное"); b.appendChild(d); } else if (!has && d) d.remove(); });
   setHtml("guide", list.length ? list.map((g) => '<details class="gsec" data-key="g:' + g.id + '"' + (openKeys.has("g:" + g.id) ? " open" : "") + "><summary>" + esc(g.t) +
     (gIsRead(g, read) ? "" : '<span class="gdot" title="' + (g.v === APP_VERSION ? "Обновлено в v" + g.v : "Не прочитано") + '" aria-label="не прочитано"></span>') + (gQuery ? '<span class="gl">' + lvlName[g.l] + "</span>" : "") +
@@ -6424,6 +6426,7 @@ document.addEventListener("click", async (e) => {
   if (yrUi(b, act)) return;
   if (await pfAct(b, act)) return;
   if (await groupAct(act, b)) return;
+  if (act === "greadall") { writePrefs({ guideRead: GUIDE.map((g) => g.id + "@" + num(g.v)) }); renderGuide(); toast("Гайд отмечен прочитанным. Новые и изменённые разделы снова получат точку."); return; }
   if (act === "guideopen") { setTab("more"); setTimeout(() => { const g = $("guidePanel"); if (g) g.scrollIntoView({ block: "start" }); }, 30); return; }
   if (act === "bugsold") { bugsOld = !bugsOld; openKeys.add("bugsClosed"); renderAdmin(); return; }
   if (act === "bugopen") { setTab("more"); setTimeout(() => { const g = $("bugPanel"); if (g) g.scrollIntoView({ block: "start" }); const t = $("bugText"); if (t) t.focus(); }, 30); return; }
