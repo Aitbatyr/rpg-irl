@@ -1353,6 +1353,11 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .grow{display:flex;align-items:center;gap:8px 10px;padding:8px 0;border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
 .grow:last-of-type{border-bottom:0}
 .grow .t{flex:1 1 150px;min-width:0}
+.gmore{flex:none;width:36px;height:32px;border:1px solid var(--line);background:transparent;color:var(--fg);font:700 18px/1 var(--f-mono);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
+.gmore:hover,.gmore[aria-expanded=true]{background:rgba(94,200,255,.14);border-color:var(--sys)}
+.gmenu{flex:1 0 100%;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;padding:8px 0 2px;animation:gmIn .18s ease-out}
+@keyframes gmIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.gmenu{animation:none}}
 .gfld{display:flex;flex-direction:column;gap:6px}
 .gfld label{font:600 10.5px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .gfld input,.gfld textarea{width:100%;flex:none}
@@ -2044,6 +2049,7 @@ const NEWS = [
     "Фильтры ленты: все, «на что посмотреть» и по каждому другу. Новое с прошлого захода помечено, цифра на «Проверке» показывает, сколько непросмотренного.",
     "Окно друга: сверху широкая кнопка «Профиль» (открыт по умолчанию), под ней «Квесты» и «Сюжет». Квесты с кнопками «Оспорить» в один клик.",
     "Обсуждения: у каждого кнопка «открыть →». Она ведёт к самой вещи (квест, этап, запись в дневнике или стена, свои или друга) и подсвечивает её.",
+    "Управление группой: действия с участником (помощник, передать лидерство, исключить) спрятаны под кнопку «⋯», список стал компактнее.",
   ] },
   { v: 28, date: "2026-11-22", title: "Группы", items: [
     "Пати стала группой «Система». Вкладка теперь называется «Группа»: сверху шапка с эмблемой, ниже Участники, Чат, Проверка и Обсуждения.",
@@ -5700,7 +5706,8 @@ function renderGOv() {
         if (lead) b.push(cf.act === "glead" && cf.p === p.id ? '<button type="button" class="btn sm" data-act="glead" data-p="' + esc(p.id) + '"' + dis + ">Точно передать?</button>" : '<button type="button" class="btn sm ghost" data-act="gcf" data-a="glead" data-p="' + esc(p.id) + '">👑 Передать</button>');
         if (lead || (r === "helper" && pr === "member")) b.push(cf.act === "gkick" && cf.p === p.id ? '<button type="button" class="btn sm no" data-act="gkick" data-p="' + esc(p.id) + '"' + dis + ">Точно исключить?</button>" : '<button type="button" class="btn sm no" data-act="gcf" data-a="gkick" data-p="' + esc(p.id) + '">Исключить</button>');
       }
-      return '<div class="grow">' + avaHtml(p.id, "sm") + '<span class="t"><b>' + esc(p.name) + (p.id === me ? " (ты)" : "") + "</b> " + (pr && pr !== "member" ? '<span class="grole ' + pr + '">' + G_ROLE[pr] + "</span>" : '<span class="hint">участник</span>') + "</span>" + b.join("") + "</div>";
+      return '<div class="grow">' + avaHtml(p.id, "sm") + '<span class="t"><b>' + esc(p.name) + (p.id === me ? " (ты)" : "") + "</b> " + (pr && pr !== "member" ? '<span class="grole ' + pr + '">' + G_ROLE[pr] + "</span>" : '<span class="hint">участник</span>') + "</span>" +
+        (b.length ? '<button type="button" class="gmore" data-act="gmenu" data-p="' + esc(p.id) + '" aria-expanded="' + (gOv.menu === p.id) + '" aria-label="Действия с участником ' + esc(p.name) + '">⋯</button>' + (gOv.menu === p.id ? '<div class="gmenu" role="group" aria-label="Действия">' + b.join("") + "</div>" : "") : "") + "</div>";
     }).join("") + '<p class="hint"><b>Лидер</b>: всё. <b>Помощник</b>: принимает заявки, исключает участников и удаляет их сообщения в чате. Проверяют квесты все.</p></div>';
     if (lead) h += '<div class="gsec"><h3>Оформление</h3><div class="gfld"><label for="gNm">Название</label><input type="text" id="gNm" maxlength="30" value="' + esc(x.name) + '"></div>' +
       '<div class="gfld"><label for="gAb">Описание</label><textarea id="gAb" rows="2" maxlength="200">' + esc(x.about) + "</textarea></div>" + gPickers(x.emb, x.col) +
@@ -5718,7 +5725,7 @@ function renderGOv() {
 const gVal = (id) => { const el = $(id); return el ? el.value : ""; };
 function gKeepForm() { if (!gOv) return; if ($("gNm")) gOv.name = gVal("gNm"); if ($("gAb")) gOv.about = gVal("gAb"); if ($("gNote")) gOv.note = gVal("gNote"); }
 async function groupAct(act, b) {
-  if (!/^g(manage|create|close|emb|col|docreate|doreq|cancel|copy|newinv|ok|no|role|lead|kick|leave|cf|save|sub|cdel)$/.test(act)) return false;
+  if (!/^g(manage|create|close|emb|col|docreate|doreq|cancel|copy|newinv|ok|no|role|lead|kick|leave|cf|menu|save|sub|cdel)$/.test(act)) return false;
   gKeepForm();
   if (act === "gsub") { gSub = b.dataset.s; store.set("sys.gsub", gSub); if (gSub === "chat") gChatBottom = true; lastHtml.talk = null; renderTalk(); renderRev(); renderGroup(); renderBadges(); return true; }
   if (act === "gmanage") { if (!inGroup()) return true; gOv = { kind: "manage", name: gInfo.name, about: gInfo.about || "", emb: gInfo.emb, col: gInfo.col }; renderGOv(); return true; }
@@ -5727,6 +5734,7 @@ async function groupAct(act, b) {
   if (act === "gemb") { if (gOv) gOv.emb = b.dataset.e; renderGOv(); return true; }
   if (act === "gcol") { if (gOv) gOv.col = b.dataset.c; renderGOv(); return true; }
   if (act === "gcf") { if (gOv) gOv.cf = { act: b.dataset.a, p: b.dataset.p }; renderGOv(); return true; }
+  if (act === "gmenu") { if (gOv) { gOv.menu = gOv.menu === b.dataset.p ? null : b.dataset.p; gOv.cf = {}; } renderGOv(); return true; }
   if (act === "gcopy") { const l = gLink(); try { await navigator.clipboard.writeText(l); toast("Ссылка скопирована. Отправь её другу."); } catch { toast("Скопируй ссылку вручную: " + l); } return true; }
   if (act === "gdocreate") { const r = await gCall({ a: "create", name: gOv.name, about: gOv.about, emb: gOv.emb, col: gOv.col }, "Группа создана. Ты лидер: позови друзей по ссылке."); if (r) { gOv = null; gSub = "mem"; renderGOv(); } return true; }
   if (act === "gdoreq") { const r = await gCall({ a: "request", code: gOv.code, note: gOv.note }, "Заявка отправлена. Ждём, когда её примут."); if (r) { gOv = null; renderGOv(); } return true; }
@@ -5735,8 +5743,8 @@ async function groupAct(act, b) {
   if (act === "gok") { await gCall({ a: "approve", uid: b.dataset.u }, "Принят в группу."); return true; }
   if (act === "gno") { await gCall({ a: "reject", uid: b.dataset.u }, "Заявка отклонена."); return true; }
   if (act === "grole") { await gCall({ a: "role", pid: b.dataset.p, role: b.dataset.r }, b.dataset.r === "helper" ? pname(b.dataset.p) + " теперь помощник." : "Роль снята."); return true; }
-  if (act === "glead") { if (gOv) gOv.cf = null; await gCall({ a: "lead", pid: b.dataset.p }, "Лидерство передано."); return true; }
-  if (act === "gkick") { if (gOv) gOv.cf = null; await gCall({ a: "kick", pid: b.dataset.p }, "Участник исключён."); return true; }
+  if (act === "glead") { if (gOv) { gOv.cf = null; gOv.menu = null; } await gCall({ a: "lead", pid: b.dataset.p }, "Лидерство передано."); return true; }
+  if (act === "gkick") { if (gOv) { gOv.cf = null; gOv.menu = null; } await gCall({ a: "kick", pid: b.dataset.p }, "Участник исключён."); return true; }
   if (act === "gleave") { const r = await gCall({ a: "leave" }, "Ты вышел из группы."); if (r) { gOv = null; renderGOv(); } return true; }
   if (act === "gsave") { await gCall({ a: "edit", name: gOv.name, about: gOv.about, emb: gOv.emb, col: gOv.col }, "Сохранено."); return true; }
   if (act === "gcdel") {
