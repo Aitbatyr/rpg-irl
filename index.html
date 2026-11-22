@@ -187,6 +187,12 @@ input::placeholder{color:var(--dim)}
 .alert .ptitle{color:var(--gold);text-shadow:0 0 10px rgba(255,207,92,.45)}
 .vi{display:flex;flex-direction:column;gap:8px;padding:12px;border:1px solid rgba(255,207,92,.25);background:rgba(30,22,4,.25)}
 .vi p{margin:0}
+.talkh{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.talkh>span{min-width:0}
+.tgo{flex:none;font:inherit;font-size:11px;letter-spacing:.04em;padding:3px 10px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--fg);cursor:pointer;white-space:nowrap}
+.tgo:hover,.tgo:focus-visible{border-color:var(--gold);color:var(--gold)}
+@keyframes tgHl{0%,55%{box-shadow:0 0 0 2px var(--gold),0 0 18px rgba(255,207,92,.35)}100%{box-shadow:0 0 0 2px transparent,0 0 0 transparent}}
+.tghl{animation:tgHl 2s ease-out}
+@media (prefers-reduced-motion:reduce){.tghl{animation:none;outline:2px solid var(--gold)}}
 .vi .acts{display:flex;gap:8px;flex-wrap:wrap}
 
 /* ---------- party ---------- */
@@ -2036,6 +2042,7 @@ const NEWS = [
     "Подсказки «на что посмотреть»: квест на несколько часов создан и отмечен за минуты, отметки пачкой, долгий квест без фото, необычно много за день. Это не обвинение, а повод глянуть внимательнее.",
     "Фильтры ленты: все, «на что посмотреть» и по каждому другу. Новое с прошлого захода помечено, цифра на «Проверке» показывает, сколько непросмотренного.",
     "Окно друга: сверху переключатель Квесты · Сюжет · Профиль. Сразу открываются квесты, профиль с витринами отдельно.",
+    "Обсуждения: у каждого кнопка «открыть →». Она ведёт к самой вещи (квест, этап, запись в дневнике или стена, свои или друга) и подсвечивает её.",
   ] },
   { v: 28, date: "2026-11-22", title: "Группы", items: [
     "Пати стала группой «Система». Вкладка теперь называется «Группа»: сверху шапка с эмблемой, ниже Участники, Чат, Проверка и Обсуждения.",
@@ -2814,7 +2821,7 @@ function threadIndex() {
 }
 function threadItem(ik, owner, id) {
   if (ik === "wall") return id === "wall" && PLAYERS.some((p) => p.id === owner) ? { title: "стена", open: true } : null;
-  if (ik === "diary") { const e = (diaryBy[owner] || []).find((x) => x.id === id); return e ? { title: e.title, open: true } : null; }
+  if (ik === "diary") { const e = (diaryBy[owner] || []).find((x) => x.id === id); return e ? { title: e.title || dSnip(e.text) || "без названия", open: true } : null; }
   if (ik === "task") { const t = (tasksBy[owner] || []).find((x) => x.id === id); if (!t) return null; const st = taskState(t); return { title: t.title, open: taskBig(t) ? st === "pending" : st === "disputed" }; }
   if (ik === "story") { const s = storyOf(owner, id); return s ? { title: s.title, open: storyState(s) === "pending" } : null; }
   const [sid, si] = id.split("~"), s = storyOf(owner, sid), i = num(si);
@@ -2842,6 +2849,51 @@ function unreadCmts() {
   });
   return n;
 }
+const dSnip = (t) => { const x = String(t || "").replace(/\s+/g, " ").trim(); return x.length > 40 ? x.slice(0, 38) + "…" : x; };
+// v29: «открыть →» в обсуждении ведёт к самой вещи: чей квест, этап, запись или стена
+const tgVis = (sel, root) => [...(root || document).querySelectorAll(sel)].map((el) => (el.classList.contains("sqw") ? el.firstElementChild : el)).find((el) => el && el.getClientRects().length);
+function tgShow(el) {
+  if (!el) return false;
+  requestAnimationFrame(() => {
+    el.scrollIntoView({ block: "center", behavior: RM() ? "auto" : "smooth" });
+    el.classList.remove("tghl"); void el.offsetWidth; el.classList.add("tghl");
+    setTimeout(() => el.classList.remove("tghl"), 2200);
+  });
+  return true;
+}
+function talkGo(ik, owner, id) {
+  const mine = owner === me, sid = ik === "step" ? id.split("~")[0] : id, T = (x) => '[data-tp="' + CSS.escape(owner) + '"][data-tid="' + CSS.escape(x) + '"]';
+  const S = '.sqw[data-sp="' + CSS.escape(owner) + '"][data-sid="' + CSS.escape(sid) + '"]';
+  if (ik === "story" || ik === "step") plOpenSet.add(sid);
+  let el = null;
+  if (mine) {
+    friendId = null; renderFriend();
+    if (ik === "task") { setTab("today"); el = tgVis(T(id)); }
+    else if (ik === "story" || ik === "step") { setTab("story"); renderStories(); el = tgVis(S); }
+    else if (ik === "diary") { dView = "mine"; dAsFriend = false; setTab("diary"); el = tgVis("#de-" + CSS.escape(san(owner + "-" + id))); }
+    else { setTab("status"); el = tgVis('#profShow [data-sc="wall"]'); }
+  } else {
+    if (!PLAYERS.some((p) => p.id === owner)) { toast("Этого игрока уже нет в группе."); return; }
+    fSub = ik === "task" ? "q" : ik === "story" || ik === "step" ? "s" : "p";
+    friendId = owner; renderFriend(); renderParty();
+    const ov = $("friendOv");
+    if (ik === "task") el = tgVis(T(id), ov);
+    else if (ik === "story" || ik === "step") el = tgVis(S, ov);
+    else if (ik === "diary") el = tgVis("#dfe-" + CSS.escape(san(owner + "-" + id)), ov);
+    else el = tgVis('[data-sc="wall"]', ov);
+    if (!el && ik === "task") {
+      // старый квест: в списке дня его нет, ищем в «Проверке»
+      friendId = null; renderFriend(); renderParty();
+      gSub = "ver"; store.set("sys.gsub", gSub); setTab("party"); renderGroup(); renderRev();
+      el = tgVis('#verify [data-p="' + CSS.escape(owner) + '"][data-kind="task"][data-id="' + CSS.escape(id) + '"]');
+      if (el) el = el.closest(".vi") || el; else el = tgVis("#rev " + T(id));
+      if (!el) { friendId = owner; fSub = "q"; renderFriend(); renderParty(); }
+    }
+  }
+  if (tgShow(el)) return;
+  const t = ik === "task" && (tasksBy[owner] || []).find((x) => x.id === id);
+  toast(t ? "Квест за " + nice(t.date) + ", в списке дня его уже нет. Обсуждение можно читать тут." : ik === "wall" ? "Стена сейчас скрыта в профиле." : "Сейчас это не видно на экране. Обсуждение можно читать тут.");
+}
 function renderTalk() {
   const panel = $("talkPanel");
   if (!me) { panel.hidden = true; return; }
@@ -2858,7 +2910,7 @@ function renderTalk() {
   panel.hidden = !out.length;
   const un = unreadCmts();
   $("talkSub").innerHTML = un ? '<b class="tnew">' + un + " " + plCmt(un) + "</b>" : plDn(out.length, "обсуждение", "обсуждения", "обсуждений");
-  setHtml("talk", out.slice(0, 12).map((o) => '<div class="vi"><p class="sub">' + (o.ik === "wall" ? (o.owner === me ? "Твоя стена" : "Стена · <b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b>") + "</p>" : (o.owner === me ? "Твой" : "<b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b> ·") + " " + (o.ik === "step" ? "этап" : o.ik === "story" ? "сюжетный квест" : o.ik === "diary" ? "запись в дневнике" : "квест") + " «" + esc(o.ti.title) + "»</p>") + threadHtml(o.ik, o.owner, o.id, o.ti.open, "t") + "</div>").join(""));
+  setHtml("talk", out.slice(0, 12).map((o) => '<div class="vi"><p class="sub talkh"><span>' + (o.ik === "wall" ? (o.owner === me ? "Твоя стена" : "Стена · <b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b>") : (o.owner === me ? (o.ik === "diary" ? "Твоя" : "Твой") : "<b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b> ·") + " " + (o.ik === "step" ? "этап" : o.ik === "story" ? "сюжетный квест" : o.ik === "diary" ? "запись в дневнике" : "квест") + " «" + esc(o.ti.title) + "»") + '</span><button type="button" class="tgo" data-act="talkgo" data-ik="' + o.ik + '" data-p="' + esc(o.owner) + '" data-id="' + esc(o.id) + '" title="Показать, где это">открыть →</button></p>' + threadHtml(o.ik, o.owner, o.id, o.ti.open, "t") + "</div>").join(""));
   const tOpen = gSub === "talk";
   if (tab === "party" && un > 0 && tOpen && !document.hidden) { writePrefs({ cmtSeen: now() }); $("talkSub").textContent = plDn(out.length, "обсуждение", "обсуждения", "обсуждений"); renderBadges(); }
 }
@@ -2937,7 +2989,7 @@ function questItem(t, mine, prof, drag) {
   if (remOk && remEdit === t.id) extra += '<div class="proof remrow"><input type="time" id="rem-' + id + '" value="' + remTxt + '" aria-label="Время напоминания"><button class="btn sm" data-act="remsave" data-id="' + id + '">Напомнить</button>' + (remTxt ? '<button class="btn sm ghost" data-act="remdel" data-id="' + id + '">Убрать</button>' : "") + (t.fromDaily ? '<span class="hint" style="margin:0">У повтора время сохранится и на следующие дни.</span>' : "") + "</div>";
   const kp = isNewQ(t) ? kindTag(t.m) + '<span class="qp">' + esc(qParams(t)) + "</span>" + (mine && t.done && t.date === today() ? '<span class="qp" title="Выполненный квест нельзя менять. Сними галочку, поправь и отметь заново.">🔒</span>' : "") : "";
   const qk = qKey(t);
-  return '<li class="qi' + (pressed ? " done" : "") + (drag ? " dr" : "") + '" style="--rc:' + qCol(t) + '"' + (drag ? ' data-qk="' + esc(qk) + '"' : "") + ">" +
+  return '<li class="qi' + (pressed ? " done" : "") + (drag ? " dr" : "") + '" data-tp="' + esc(t.player) + '" data-tid="' + esc(t.id) + '" style="--rc:' + qCol(t) + '"' + (drag ? ' data-qk="' + esc(qk) + '"' : "") + ">" +
     (drag ? '<button type="button" class="drag" data-qk="' + esc(qk) + '" aria-label="Порядок: зажми и перетащи, или стрелки вверх и вниз" title="Зажми и перетащи"><svg viewBox="0 0 12 20" aria-hidden="true"><circle cx="3" cy="4" r="1.6"/><circle cx="9" cy="4" r="1.6"/><circle cx="3" cy="10" r="1.6"/><circle cx="9" cy="10" r="1.6"/><circle cx="3" cy="16" r="1.6"/><circle cx="9" cy="16" r="1.6"/></svg></button>' : "") + chk +
     '<div style="min-width:0"><div class="qt">' + (editable ? '<button type="button" class="qtbtn" data-act="tedit" data-id="' + id + '" title="Нажми, чтобы изменить">' + esc(t.title) + "</button>" : esc(t.title)) + '</div><div class="meta">' + kp + '<span title="' + esc(stat.n) + '">' + statLbl(stat) + "</span>" + badge + linkLabel(t) + remChip + "</div></div>" + right + extra + "</li>";
 }
@@ -3234,7 +3286,7 @@ function storiesHtml(pid) {
   const list = (storiesBy[pid] || []).slice().sort((a, b) => (order[storyState(a)] - order[storyState(b)]) || a.deadline.localeCompare(b.deadline));
   if (!db || !storyLoadedBy[pid]) return '<div class="empty">Загружаю сюжетные квесты…</div>';
   if (!list.length) return (mine && plDraft ? "" : '<div class="empty">' + (mine ? "Пока нет целей. Нажми «+ Новый квест»." : esc(pname(pid)) + " пока без сюжетных квестов.") + "</div>") + droppedHtml(pid);
-  return list.map((s) => storyCard(s, mine)).join("") + droppedHtml(pid);
+  return list.map((s) => '<div class="sqw" data-sp="' + esc(pid) + '" data-sid="' + esc(s.id) + '">' + storyCard(s, mine) + "</div>").join("") + droppedHtml(pid);
 }
 function renderStories() {
   const pid = mainPid(), mine = !!me && pid === me;
@@ -5337,7 +5389,7 @@ const GUIDE = [
   { id: "d-pace", l: 3, t: "Срок, продление и закрытие сюжета", b: "<p>Срок задаётся при создании и потом не меняется. Если срок вышел, а шаги не все сделаны, остаются две кнопки: <b>«Продлить»</b> (на неделю или на 2 недели, не позже 31 декабря) или <b>«Закрыть без бонуса»</b> (опыт за сделанные шаги остаётся).</p><p>Продлевать можно сколько угодно. Каждое продление уменьшает вдвое бонус только за <b>уже сделанные</b> шаги, за оставшиеся бонус полный. Поэтому бросить и создать квест заново невыгодно: за сделанное бонуса не будет совсем. Цифры видны в карточке. После срока шаги менять и убирать нельзя.</p><p>Пока ни один друг не проголосовал, квест можно «Вернуть с проверки», чтобы добавить шаги. Если друзья не засчитали: «Отправить снова» или «Вернуть в работу». Удалить квест можно, пока в нём нет сделанных шагов.</p><p>Старые квесты (с буквами B, A, S) переводятся окном «Сюжет по новым правилам»: сделанные этапы остаются по 10 XP, остальным ставишь день и время.</p>", v: 22 },
   { id: "d-rankhint", l: 3, t: "Подсказка времени", b: "<p>Когда пишешь название, сайт ищет похожие квесты в истории группы и подсказывает, сколько времени для них обычно ставят, например «обычно на 30 мин (Английский ×12)», с кнопкой «Поставить». Подсказка ничего не запрещает.</p>", v: 18 },
   { id: "d-join", l: 3, t: "Группы: создать, вступить, роли", b: "<p>В Системе играют <b>группами</b>. Любой может создать группу и стать её <b>лидером</b>. Лидер зовёт друзей и знакомых по <b>ссылке-приглашению</b> (⚙ Управление → Пригласить): друг открывает ссылку, называет себя и отправляет заявку, а лидер или помощник её принимает. Новая ссылка отключает старую.</p><p>Роли: <b>👑 Лидер</b> может всё (роли, оформление, передать лидерство), <b>⭐ Помощник</b> принимает заявки и исключает участников, проверяют квесты все. Игрок бывает только в одной группе. Лидер выходит, только когда передал лидерство. Группы друг друга не видят и не соревнуются.</p><p>Опыт двух видов. <b>Общий</b> идёт с тобой в любую группу. <b>Опыт в группе</b> считается с момента вступления: по нему неделя, места и итоги, поэтому накрутить опыт в одной группе и прийти с ним в другую бесполезно.</p>", v: 28 },
-  { id: "d-party", l: 3, t: "Группа и профиль друга", b: "<p>Во вкладке «Группа» сверху шапка группы и ⚙, ниже переключатель: <b>Участники</b> (карточки и неделя), <b>Чат</b> (переписка группы за 2 недели; своё сообщение можно удалить, помощник удаляет и сообщения участников, лидер любые), <b>Проверка</b> и <b>Обсуждения</b>.</p><p><b>Проверка</b>: сверху квесты и споры, где нужен твой голос, ниже <b>«Лента друзей»</b>: все мелкие квесты друзей за сутки, пока их можно оспорить. Жёлтым подсвечено, на что стоит посмотреть (создан и отмечен за минуты, пачка отметок, долгий квест без фото, необычно много за день). Фильтры: все, «на что посмотреть», по другу. Новое с прошлого захода помечено, цифра на «Проверке» считает непросмотренное.</p><p>Нажми на друга, откроется окно: сверху <b>Квесты · Сюжет · Профиль</b>, сразу открыты квесты с кнопками «Оспорить». Если друг сегодня не открывал сайт, там же кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление, одному другу раз в день.</p><p>Состояние друга как в Steam: <b style=\"color:var(--ok)\">● онлайн</b> сайт открыт на экране, <b style=\"color:var(--gold)\">● отошёл</b> сайт открыт, но свёрнут или 5 минут без действий, без точки «был …» значит не в сети.</p>", v: 29 },
+  { id: "d-party", l: 3, t: "Группа и профиль друга", b: "<p>Во вкладке «Группа» сверху шапка группы и ⚙, ниже переключатель: <b>Участники</b> (карточки и неделя), <b>Чат</b> (переписка группы за 2 недели; своё сообщение можно удалить, помощник удаляет и сообщения участников, лидер любые), <b>Проверка</b> и <b>Обсуждения</b> (у каждого обсуждения кнопка «открыть →»: покажет, к чему оно и чьё).</p><p><b>Проверка</b>: сверху квесты и споры, где нужен твой голос, ниже <b>«Лента друзей»</b>: все мелкие квесты друзей за сутки, пока их можно оспорить. Жёлтым подсвечено, на что стоит посмотреть (создан и отмечен за минуты, пачка отметок, долгий квест без фото, необычно много за день). Фильтры: все, «на что посмотреть», по другу. Новое с прошлого захода помечено, цифра на «Проверке» считает непросмотренное.</p><p>Нажми на друга, откроется окно: сверху <b>Квесты · Сюжет · Профиль</b>, сразу открыты квесты с кнопками «Оспорить». Если друг сегодня не открывал сайт, там же кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление, одному другу раз в день.</p><p>Состояние друга как в Steam: <b style=\"color:var(--ok)\">● онлайн</b> сайт открыт на экране, <b style=\"color:var(--gold)\">● отошёл</b> сайт открыт, но свёрнут или 5 минут без действий, без точки «был …» значит не в сети.</p>", v: 29 },
   { id: "b-v17", l: 2, t: "Выходной, напоминания, карта активности", b: "<p><b>Выходной</b>: 2 дня в месяц. На «Сегодня» под полоской дня: «взять сегодня» (только пока ничего не отмечено), «на завтра» или «выбрать день»: календарь на этот и следующий месяц, можно взять любой день вперёд. Лимит считается по месяцу самого дня. Запланированные выходные видны списком, × отменяет (пока день не начался). Задним числом нельзя. В выходной повторы не создаются, провалов нет, серия не сгорает, опыт за сделанное засчитывается. Отменить можно в тот же день.</p><p><b>Напоминание</b>: плашка «⏰» при создании квеста или ⏰ в строке квеста. Придёт уведомление в это время, если квест не отмечен (точность около 5 минут). У повтора время сохраняется на все дни. Нужны включённые уведомления.</p><p><b>Карта активности</b> в «Статусе» и в профиле друга: квадратик на день, яркость по числу выполненных квестов (1–2, 3–4, 5–6, 7+). Золотая рамка: закрыты все квесты дня (от трёх). Серый с 🌙: выходной. Красный уголок: день правили задним числом. Наведи или нажми на квадратик, чтобы увидеть подробности.</p><p><b>Живой фон</b> меняет цвет по рангу охотника, ночью звёзды, в декабре снег. Выключить: «Ещё → Оформление».</p>", v: 20 },
   { id: "b-push", l: 2, t: "Уведомления", b: "<p>⚙ Настройки (шестерёнка в «Профиле») → <b>«Уведомления»</b> → «Включить уведомления» и разреши их в браузере. Настройка на каждом устройстве своя.</p><p>Что приходит: <b>друг ждёт твоего голоса</b>; <b>твой квест оспорили</b> или по нему проголосовали; <b>новый комментарий</b> в обсуждении, где ты участвуешь; <b>в 21:00</b> напоминание, если квесты дня не закрыты или ты сегодня не заходил; <b>друг тебя «пнул»</b>; <b>в понедельник в 9:00</b> итоги недели готовы. Любой тип можно выключить галочкой. «Прислать тестовое» проверяет, что всё работает.</p><p>На iPhone уведомления работают, только если сайт добавлен на экран «Домой» и открыт с иконки. На Android надёжнее всего через Chrome.</p>", v: 16 },
   { id: "b-week", l: 2, t: "Итоги недели и аватарка", b: "<p><b>Итоги недели</b>: каждый понедельник во вкладке «Профиль» карточка за прошлую неделю (пн–вс): опыт, место в пати, выполнено и провалено, процент повторов, лучший день и какие характеристики выросли. Ниже «Прошлые недели»: по строке на неделю (даты, опыт, место, полоска выполнено/провалено), нажатие раскрывает итоги целиком. Пока не посмотрел свежие итоги, на «Сегодня» висит плашка, а в понедельник в 9:00 приходит уведомление.</p><p><b>Аватарка</b>: во вкладке «Профиль» нажми на кружок со своей буквой (📷) и выбери картинку. Под именем: «открыть аватарку» и «убрать».</p><p>Чужую аватарку можно открыть на весь экран: нажми на неё в пати, в профиле друга или в обсуждении. Закрыть: нажатие по экрану или «Закрыть ×».</p>", v: 16 },
@@ -6573,6 +6625,7 @@ document.addEventListener("click", async (e) => {
   }
   if (act === "scancel") { storyFormOpen = false; renderAll(); return; }
   if (act === "view") { const p = b.dataset.p; if (me && p === me) { setTab("status"); return; } if (friendId !== p) fSub = "q"; friendId = p; renderFriend(); renderParty(); return; }
+  if (act === "talkgo") { talkGo(b.dataset.ik, b.dataset.p, b.dataset.id); return; }
   if (act === "fsub") { fSub = ["q", "s", "p"].includes(b.dataset.s) ? b.dataset.s : "q"; renderFriend(); const sp = document.querySelector("#friendOv .sheetp"); if (sp) sp.scrollTop = 0; if (fSub === "p") requestAnimationFrame(() => { pfMountFx(); hmScroll("fHeat"); }); return; }
   if (act === "rvf") { revF = b.dataset.f || "all"; renderRev(); return; }
   if (act === "viewme") { if (me) viewId = me; renderAll(); return; }
