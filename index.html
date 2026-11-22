@@ -1222,6 +1222,17 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .pftest{margin:10px 0 0;padding:10px 12px;border:1px dashed rgba(255,207,92,.5)}
 .pfit .pvb{display:block;width:100%;padding:0;border:0;background:none;cursor:pointer}
 .pfit.tried{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+/* v26+: живой фон без старых слоёв; имя, уровень и «в сети» под фоном */
+.pfbg.fxon>:not(.fxc),.pv.fxon>:not(.fxc){display:none}
+.pfbg.fxon::before,.pfbg.fxon::after,.pv.fxon::before,.pv.fxon::after{display:none}
+.pv{isolation:isolate}
+.pv>.fxc{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pfid{align-items:flex-start}
+.pfid .pfnm{margin-top:50px;padding-bottom:0}
+.pftryid{align-items:flex-start}
+.pftryid>div:last-child{margin-top:50px}
+.pfavw.sm{transform:none;width:62px;height:62px}
+.pfavw.sm .pfav{width:54px;height:54px;font-size:22px;border-width:2px}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
@@ -4328,9 +4339,9 @@ class Stage {
     STAGES.add(this); this.frame(0);
   }
   resize() {
-    const r = this.el.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, FX.q > 1 ? 2 : 1.25);
+    const r = this.el.getBoundingClientRect(), sm = this.el.dataset.fxsm === "1", dpr = sm ? 1 : Math.min(window.devicePixelRatio || 1, FX.q > 1 ? 2 : 1.25);
     this.w = Math.max(10, r.width); this.h = Math.max(10, r.height);
-    if (this.cg) { const k = FX.q > 1 ? Math.min(dpr, 1.5) : .75; this.cg.width = Math.round(this.w * k); this.cg.height = Math.round(this.h * k); }
+    if (this.cg) { const k = sm ? .6 : FX.q > 1 ? Math.min(dpr, 1.5) : .75; this.cg.width = Math.round(this.w * k); this.cg.height = Math.round(this.h * k); }
     if (this.c2) { this.c2.width = Math.round(this.w * dpr); this.c2.height = Math.round(this.h * dpr); this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); this.S = {}; this.S.clear = true; if (this.sc.init) this.sc.init(this.S, this.w, this.h); }
   }
   frame(dt) {
@@ -4567,7 +4578,7 @@ function pfMountFx() {
   PFX.FX.live = bgLiveOn() && !RM();
   document.querySelectorAll("[data-fxbg]").forEach((el) => {
     const id = el.dataset.fxbg; if (el._fx && el._fx.id === id) return;
-    if (el._fx) el._fx.destroy(); el._fx = PFX.SC[id] ? new PFX.Stage(el, id) : null;
+    if (el._fx) el._fx.destroy(); el._fx = PFX.SC[id] ? new PFX.Stage(el, id) : null; el.classList.toggle("fxon", !!el._fx);
   });
   document.querySelectorAll("[data-fxfr]").forEach((el) => {
     const id = el.dataset.fxfr; if (el._ring !== undefined && el._rid === id) return;
@@ -4585,8 +4596,8 @@ function renderProfile() {
 }
 // ---------- шторки профиля ----------
 function pfItemPv(it, pid) {
-  if (it.cat === "bg") return '<div class="pv pbg-' + it.id + '">' + pfBgInner(it.id) + "</div>";
-  if (it.cat === "fr") return '<div class="pv"><div class="pfavw sm"><span class="pfav">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="">' : esc(pname(pid)[0])) + '</span><span class="pfr pfr-' + it.id + '"></span></div></div>';
+  if (it.cat === "bg") return '<div class="pv pbg-' + it.id + '" data-fxbg="' + it.id + '" data-fxsm="1">' + pfBgInner(it.id) + "</div>";
+  if (it.cat === "fr") return '<div class="pv"><div class="pfavw sm" data-fxfr="' + it.id + '"><span class="pfav">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="">' : esc(pname(pid)[0])) + "</span></div></div>";
   return '<div class="pv">' + pfLvl(profile(pid).li.L, it.id, true) + "</div>";
 }
 function renderPf() {
