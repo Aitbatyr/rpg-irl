@@ -1336,7 +1336,7 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .gmsg .b{background:rgba(255,255,255,.03);border:1px solid var(--line-soft);padding:7px 10px;max-width:min(80%,520px);min-width:0}
 .gmsg .h{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}.gmsg .h b{color:var(--fg)}
 .gmsg p{margin:2px 0 0;font-size:14px;overflow-wrap:anywhere;white-space:pre-wrap}
-.gmsg.me{flex-direction:row-reverse}.gmsg.me .b{background:rgba(94,200,255,.1);border-color:var(--line)}.gmsg.me .h{justify-content:flex-end}
+.gmsg.me{flex-direction:row-reverse}.gmsg.me .b{background:rgba(94,200,255,.1);border-color:var(--line)}.gmsg .h .gdel{margin-left:auto;padding-left:8px}.gmsg .gtm{white-space:nowrap;flex:none}.gmsg .h b{white-space:nowrap}
 .gmsg.sys{justify-content:center}.gmsg.sys p{font-size:12px;color:var(--muted);text-align:center;margin:0;border:1px dashed var(--line-soft);padding:4px 10px}
 .gday{align-self:center;font:700 10px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:4px 0}
 .gdel{background:none;border:0;color:var(--dim);cursor:pointer;font-size:14px;line-height:1;padding:0 2px;opacity:.6}.gdel:hover{color:var(--bad);opacity:1}
@@ -2046,7 +2046,7 @@ const NEWS = [
     "Окно друга: сверху широкая кнопка «Профиль» (открыт по умолчанию), под ней «Квесты» и «Сюжет». Квесты с кнопками «Оспорить» в один клик.",
     "Обсуждения: у каждого кнопка «открыть →». Она ведёт к самой вещи (квест, этап, запись в дневнике или стена, свои или друга) и подсвечивает её.",
     "Управление группой: действия с участником (помощник, передать лидерство, исключить) спрятаны под кнопку «⋯», список стал компактнее.",
-    "В чате у своих сообщений теперь твоё имя вместо «Ты».",
+    "В чате у своих сообщений теперь твоё имя вместо «Ты», шапка сообщения прижата влево без пустого места.",
     "Настройки: убран отдельный блок «Аккаунт» (почта и «Выйти» есть внизу страницы). Итоги сезона откроются всем одновременно 31 декабря в 18:00.",
   ] },
   { v: 28, date: "2026-11-22", title: "Группы", items: [
@@ -5636,7 +5636,7 @@ function renderChat() {
       const ava = cont ? '<span class="gsp"></span>' : '<div class="pfavw gcav"' + (eq.fr !== "none" ? ' data-fxfr="' + esc(eq.fr) + '"' : "") + '><span class="pfav">' + (a ? '<img src="' + esc(blobUrl(a)) + '" alt="">' : esc(((inG ? pname(m.pid) : m.n) || "?")[0])) + "</span>" + (eq.hat !== "none" ? pfHatHtml(eq.hat, "c" + m.id) : "") + "</div>";
       const who = inG ? pname(m.pid) : m.n || (mine ? "Ты" : "Бывший участник");
       return sep + '<div class="gmsg' + (mine ? " me" : "") + (cont ? " cont" : "") + '">' + ava + '<div class="b">' +
-        '<div class="h">' + (cont ? "" : "<b>" + esc(who) + "</b>" + (inG ? pfLvl(profile(m.pid).li.L, eq.bd) : "") + (r ? '<span class="grl ' + r + '">' + esc(G_ROLE[r]) + "</span>" : "") + " · ") + esc(dTm(m.at)) +
+        '<div class="h">' + (cont ? "" : "<b>" + esc(who) + "</b>" + (inG ? pfLvl(profile(m.pid).li.L, eq.bd) : "") + (r ? '<span class="grl ' + r + '">' + esc(G_ROLE[r]) + "</span>" : "")) + '<span class="gtm">' + (cont ? "" : "· ") + esc(dTm(m.at)) + "</span>" +
         (del ? '<button type="button" class="gdel" data-act="gcdel" data-id="' + esc(m.id) + '" title="Удалить сообщение" aria-label="Удалить сообщение">×</button>' : "") + "</div><p>" + esc(m.t) + "</p></div></div>";
     }).join("");
   if (lastHtml.gChat !== html) { setHtml("gChat", html); pfMountFx(); if (near || gChatBottom) { box.scrollTop = box.scrollHeight; gChatBottom = false; } }
