@@ -5671,7 +5671,7 @@ async function groupSubmit(e) {
     const inp = $("gChatIn"), t = (inp.value || "").trim().slice(0, 500);
     if (!t || !gid() || !uid || !canWrite) return true;
     inp.value = ""; gChatBottom = true;
-    try { await db.doc("g/" + gid() + "/chat/" + now().toString(36) + Math.random().toString(36).slice(2, 7)).set({ by: uid, t }); }
+    try { await db.doc("g/" + gid() + "/chat/" + Math.round(now()).toString(36) + Math.random().toString(36).slice(2, 7)).set({ by: uid, t }); }
     catch (err) { inp.value = t; fail(err); }
     return true;
   }
@@ -7176,7 +7176,7 @@ function syncSubs() {
       prefs = snap.exists ? { ...snap.data() } : {}; prefsLoaded = true;
       renderTabs(); renderGuide(); renderMyBugs(); if (tab === "more") markSeen(); touchSeen();
       if (tab === "party" && cmtBase == null) cmtBase = num(prefs.cmtSeen);
-      lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderStatus(); renderMigr(); renderSmig(); renderDiary(); renderProfile();
+      lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderGroup(); renderStatus(); renderMigr(); renderSmig(); renderDiary(); renderProfile();
       if (!prefs.tourDone && !tourAuto && me) { tourAuto = true; setTimeout(tourWhenFree, 900); }
     }, onErr);
   }
