@@ -216,6 +216,14 @@
       sb.from("client_errors").insert({ uid: account.uid, ver: Number(o.ver) || null, msg, stack: String(o.stack || "").slice(0, 2000), ua: navigator.userAgent.slice(0, 300), url: (location.hash || "").slice(0, 40) }).then(() => {}, () => {});
     } catch {}
   };
+  // v28: функция sys на сервере (группы, покупки, награды). Ответ: { ok, error?, ... }
+  window.SISTEMA_FN = async (body) => {
+    try {
+      const { data, error } = await sb.functions.invoke("sys", { body });
+      if (error) { let m = ""; try { const j = await error.context.json(); m = j && j.error; } catch {} return { ok: false, error: m || "Нет связи с сервером. Попробуй ещё раз." }; }
+      return data || { ok: false, error: "Пустой ответ сервера." };
+    } catch { return { ok: false, error: "Нет связи с сервером. Попробуй ещё раз." }; }
+  };
   window.claude = Object.freeze({
     use: async (name) => {
       await ready;
@@ -319,25 +327,16 @@
     document.getElementById("authOut").onclick = async () => { try { await window.SISTEMA_PUSH.disable(); } catch {} await sb.auth.signOut(); location.reload(); };
   }
 
-  // если владелец привязал этот вход к старому профилю, перезагрузиться
-  // пока игрок не в пати, база не отдаёт ему чужие данные. Как только его приняли, перезагрузиться,
-  // чтобы сайт не считал «пустые» данные настоящими
-  async function isMemberNow() {
-    if (account.admin) return true;
-    const { data } = await sb.from("docs").select("data").eq("path", "roster/main").maybeSingle();
-    return !!(data && data.data && Object.values(data.data).includes(account.uid));
-  }
+  // если владелец привязал этот вход к старому профилю, перезагрузиться.
+  // v28: вступление в группу сайт ловит сам (живые обновления pl/{uid}), перезагрузка не нужна
   function watchBinding() {
-    let wasMember = null;
-    isMemberNow().then((m) => (wasMember = m)).catch(() => {});
     const t = setInterval(async () => {
       if (document.hidden) return; // вкладка в фоне: не дёргаем базу зря
       try {
         const { data } = await sb.from("accounts").select("uid,admin").eq("auth_id", account.auth_id).maybeSingle();
         if (data && (data.uid !== account.uid || data.admin !== account.admin)) { location.reload(); return; }
-        if (wasMember === false && (await isMemberNow())) location.reload();
       } catch {}
-    }, 15000);
+    }, 60000);
     setTimeout(() => clearInterval(t), 6 * 3600e3);
   }
 

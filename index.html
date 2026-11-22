@@ -1273,13 +1273,84 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .pbg-autumn{background:linear-gradient(180deg,#f5c37a,#e8955a 60%,#7a3b1e)}
 .pbg-peaks{background:linear-gradient(180deg,#3a2a7a,#d96a8a 45%,#ffb07a 75%,#2c1a45)}
 .pbg-tunnel{background:radial-gradient(30% 30% at 50% 50%,rgba(140,220,255,.4),transparent 70%),#05030f}
+
+/* ---------- v28: группы ---------- */
+.gemb{width:var(--s,56px);height:calc(var(--s,56px)*1.12);display:inline-grid;place-items:center;font-size:calc(var(--s,56px)*.46);line-height:1;flex:none;position:relative;filter:drop-shadow(0 0 8px var(--ec))}
+.gemb::before{content:"";position:absolute;inset:0;background:linear-gradient(160deg,var(--ec),rgba(6,10,20,.9));clip-path:polygon(50% 0,100% 14%,100% 58%,50% 100%,0 58%,0 14%)}
+.gemb::after{content:"";position:absolute;inset:2px;background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(6,10,20,.55));clip-path:polygon(50% 0,100% 14%,100% 58%,50% 100%,0 58%,0 14%)}
+.gemb>span{position:relative;z-index:1}
+.gtabe{display:inline-flex}.gtabe[hidden]{display:none}.gtabe .gemb{filter:drop-shadow(0 0 4px var(--ec))}
+.panel.gtop{display:flex;align-items:center;gap:14px;padding:12px 16px}
+.gtop .t{flex:1;min-width:0}
+.gtop h2{margin:0;font:800 22px/1.15 var(--f-display);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gtop .t span{font-size:13px;color:var(--muted)}
+.gear{position:relative;border:1px solid var(--line);background:rgba(94,200,255,.08);padding:9px 12px;font:700 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sys);cursor:pointer;flex:none;transition:background .2s,box-shadow .2s}
+.gear:hover{background:rgba(94,200,255,.14);box-shadow:0 0 14px rgba(94,200,255,.18)}
+.gear .bd{position:absolute;top:-8px;right:-8px;min-width:18px;height:18px;border-radius:9px;background:var(--gold);color:#1a1200;font:700 10px/18px var(--f-mono);padding:0 5px;letter-spacing:0}
+.gseg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel)}
+.gseg[hidden]{display:none}
+.gseg button{background:none;border:0;border-right:1px solid var(--line-soft);padding:11px 4px;font:700 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;transition:background .2s,color .2s}
+.gseg button:last-child{border-right:0}
+.gseg button:hover{color:var(--fg)}
+.gseg button[aria-pressed=true]{background:rgba(94,200,255,.14);color:var(--fg);box-shadow:inset 0 -2px 0 var(--sys)}
+.gseg .n{display:inline-block;min-width:16px;height:16px;border-radius:8px;background:var(--gold);color:#1a1200;font:700 10px/16px var(--f-mono);padding:0 4px;letter-spacing:0}
+@media(max-width:420px){.gseg button{font-size:9.5px;letter-spacing:.02em;padding:11px 2px}}
+.gsub{display:flex;flex-direction:column;gap:inherit}.gsub[hidden]{display:none}
+.tabp[data-tab=party]>.gsub{gap:18px}
+.grole{font:700 10px var(--f-mono);letter-spacing:.04em;padding:2px 6px;border:1px solid currentColor;white-space:nowrap}
+.grole.lead{color:var(--gold)}.grole.helper{color:var(--story)}
+.pc .grole{margin-left:2px;padding:1px 4px}
+.ghero{text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+.ghero h2{margin:4px 0 0;font:800 24px var(--f-display)}
+.ghero>p{margin:0;color:var(--muted);max-width:520px}
+.gcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;width:100%;margin-top:6px;text-align:left}
+.gcard{border:1px solid var(--line-soft);background:rgba(255,255,255,.025);padding:14px;display:flex;flex-direction:column;gap:8px}
+.gcard b{font:800 17px var(--f-display)}
+.gcard .btn{align-self:flex-start}
+.gjf{display:flex;gap:8px}.gjf input{flex:1;min-width:0}
+.gpend{border:1px solid rgba(255,207,92,.4);background:rgba(255,207,92,.06);padding:12px 14px;width:100%;text-align:left}
+.gpend .acts{margin-top:8px}
+.gchat{display:flex;flex-direction:column;gap:10px;max-height:min(56vh,560px);overflow-y:auto;padding-right:4px;overscroll-behavior:contain}
+.gmsg{display:flex;gap:10px;align-items:flex-start}
+.gmsg .av{flex:none}
+.gmsg .b{background:rgba(255,255,255,.03);border:1px solid var(--line-soft);padding:7px 10px;max-width:min(80%,520px);min-width:0}
+.gmsg .h{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}.gmsg .h b{color:var(--fg)}
+.gmsg p{margin:2px 0 0;font-size:14px;overflow-wrap:anywhere;white-space:pre-wrap}
+.gmsg.me{flex-direction:row-reverse}.gmsg.me .b{background:rgba(94,200,255,.1);border-color:var(--line)}.gmsg.me .h{justify-content:flex-end}
+.gmsg.sys{justify-content:center}.gmsg.sys p{font-size:12px;color:var(--muted);text-align:center;margin:0;border:1px dashed var(--line-soft);padding:4px 10px}
+.gday{align-self:center;font:700 10px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:4px 0}
+.gdel{background:none;border:0;color:var(--dim);cursor:pointer;font-size:14px;line-height:1;padding:0 2px;opacity:.6}.gdel:hover{color:var(--bad);opacity:1}
+.gcin{display:flex;gap:8px;margin-top:12px}.gcin input{flex:1;min-width:0}
+.gbox .gcardh{display:flex;gap:14px;align-items:center}
+.gbox .gnm{font:800 20px var(--f-display)}
+.gsec{border-top:1px solid var(--line-soft);padding-top:14px;margin-top:6px;display:flex;flex-direction:column;gap:8px}
+.gsec h3{margin:0;font:700 11px var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--sys)}
+.gsec .hint,.gbox .hint{margin:0}
+.ginv{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ginv code{flex:1;min-width:180px;font:600 12.5px var(--f-mono);background:var(--bg2);border:1px solid var(--line-soft);padding:9px 11px;color:#7cf3ff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.greq{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:10px 12px;border:1px solid rgba(255,207,92,.35);background:rgba(255,207,92,.05)}
+.greq .t{flex:1 1 170px;min-width:0}.greq .t span{display:block;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.grow{display:flex;align-items:center;gap:8px 10px;padding:8px 0;border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
+.grow:last-of-type{border-bottom:0}
+.grow .t{flex:1 1 150px;min-width:0}
+.gfld{display:flex;flex-direction:column;gap:6px}
+.gfld label{font:600 10.5px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.gfld input,.gfld textarea{width:100%;flex:none}
+#gOv{z-index:56}
+.gbox .ph{margin-bottom:2px;flex-wrap:nowrap}.gbox .ph h2.ptitle{font-size:13px;margin:0;line-height:1.4}
+.gembs{display:flex;flex-wrap:wrap;gap:4px}
+.gembs button{background:none;border:1px solid transparent;padding:3px;cursor:pointer}
+.gembs button[aria-pressed=true]{border-color:var(--sys);background:rgba(94,200,255,.1)}
+.gcols{display:flex;gap:10px;flex-wrap:wrap}
+.gcols button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
+.gcols button[aria-pressed=true]{border-color:#fff;box-shadow:0 0 12px currentColor}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
 <body>
 <script src="vendor/supabase.js?v=393545de"></script>
 <script src="config.js?v=e31fa54b"></script>
-<script src="shim.js?v=953f98ed"></script>
+<script src="shim.js?v=b963d97c"></script>
 
 
 <div id="bg" aria-hidden="true"><div class="tint"></div><div class="g1"></div><div class="g2"></div><div class="g3"></div><div class="g4"></div><div class="grid"></div><canvas id="bgc"></canvas></div>
@@ -1303,7 +1374,7 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
     <button type="button" class="tab" data-act="tab" data-t="today" id="tab-today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.5l2.7 2.5L16 9.5"/></svg><span class="tl">Сегодня</span></button>
     <button type="button" class="tab" data-act="tab" data-t="story" id="tab-story"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg><span class="tl">Сюжет</span></button>
     <button type="button" class="tab" data-act="tab" data-t="diary" id="tab-diary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h11a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M8 3v18"/><path d="M11 8h4"/></svg><span class="tl">Дневник</span><span class="badge dbadge" id="diaryBadge" hidden></span></button>
-    <button type="button" class="tab" data-act="tab" data-t="party" id="tab-party"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.6 2.7-6.2 6-6.2s6 2.6 6 6.2"/><circle cx="16.8" cy="9" r="2.6"/><path d="M15.6 14.1c.4-.1.8-.1 1.2-.1 2.6 0 4.6 2.2 4.6 5.2"/></svg><span class="tl">Пати</span><span class="badge" id="partyBadge" hidden></span></button>
+    <button type="button" class="tab" data-act="tab" data-t="party" id="tab-party"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.6 2.7-6.2 6-6.2s6 2.6 6 6.2"/><circle cx="16.8" cy="9" r="2.6"/><path d="M15.6 14.1c.4-.1.8-.1 1.2-.1 2.6 0 4.6 2.2 4.6 5.2"/></svg><span class="gtabe" id="gTabEmb" hidden></span><span class="tl">Группа</span><span class="badge" id="partyBadge" hidden></span></button>
     <button type="button" class="tab" data-act="tab" data-t="status" id="tab-status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/></svg><span class="tl">Профиль</span><span class="dot" id="moreDot" hidden></span></button>
   </nav>
 
@@ -1443,17 +1514,12 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 
   <!-- ===== ПАТИ ===== -->
   <div class="tabp" data-tab="party" hidden>
+    <div id="gTop"></div>
+    <div class="gseg" id="gSeg" role="group" aria-label="Раздел группы" hidden></div>
+    <div class="gsub" data-sub="mem" hidden>
     <section class="panel" aria-labelledby="pT">
-      <div class="ph"><h2 class="ptitle" id="pT">Пати</h2><span class="sub">Нажми на друга, чтобы открыть его профиль</span></div>
+      <div class="ph"><h2 class="ptitle" id="pT">Участники</h2><span class="sub">Нажми на друга, чтобы открыть его профиль</span></div>
       <div class="party" id="party"></div>
-    </section>
-    <section class="panel alert" id="verifyPanel" hidden aria-labelledby="vT">
-      <div class="ph"><h2 class="ptitle" id="vT">Запрос подтверждения</h2><span class="sub" id="vCount"></span></div>
-      <div id="verify" style="display:flex;flex-direction:column;gap:10px"></div>
-    </section>
-    <section class="panel" id="talkPanel" hidden aria-labelledby="tkT">
-      <details class="pfold" data-key="st:talk"><summary class="ph"><h2 class="ptitle" id="tkT">💬 Обсуждения</h2><span class="sub" id="talkSub"></span></summary>
-      <div id="talk" style="display:flex;flex-direction:column;gap:10px"></div></details>
     </section>
     <section class="panel" aria-labelledby="wkT">
       <div class="ph"><h2 class="ptitle" id="wkT">Неделя</h2><span class="sub" id="wkSub"></span></div>
@@ -1463,8 +1529,30 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
       <div class="ph"><h2 class="ptitle" id="seT">Итоги сезона 1</h2><span class="sub">15 октября · 31 декабря</span></div>
       <div id="season"></div>
     </section>
+    </div>
+    <div class="gsub" data-sub="chat" hidden>
+    <section class="panel" aria-labelledby="gcT">
+      <div class="ph"><h2 class="ptitle" id="gcT">Чат группы</h2><span class="sub">последние 2 недели</span></div>
+      <div class="gchat" id="gChat"></div>
+      <form class="gcin" id="gChatForm" autocomplete="off"><input type="text" id="gChatIn" maxlength="500" placeholder="Сообщение группе…" aria-label="Сообщение группе"><button class="btn sm" type="submit">Отправить</button></form>
+    </section>
+    </div>
+    <div class="gsub" data-sub="ver" hidden>
+    <section class="panel alert" id="verifyPanel" hidden aria-labelledby="vT">
+      <div class="ph"><h2 class="ptitle" id="vT">Запрос подтверждения</h2><span class="sub" id="vCount"></span></div>
+      <div id="verify" style="display:flex;flex-direction:column;gap:10px"></div>
+    </section>
+    <section class="panel" id="verEmpty"><p class="hint" style="margin:0">Сейчас проверять нечего. Когда друг отправит крупный квест на проверку или кто-то оспорит квест, он появится здесь.</p></section>
+    </div>
+    <div class="gsub" data-sub="talk" hidden>
+    <section class="panel" id="talkPanel" hidden aria-labelledby="tkT">
+      <div class="ph"><h2 class="ptitle" id="tkT">💬 Обсуждения</h2><span class="sub" id="talkSub"></span></div>
+      <div id="talk" style="display:flex;flex-direction:column;gap:10px"></div>
+    </section>
+    <section class="panel" id="talkEmpty"><p class="hint" style="margin:0">Обсуждений пока нет. Комментарии к твоим квестам, дневнику и стене профиля собираются здесь.</p></section>
+    </div>
     <section class="panel" id="adminPanel" hidden aria-labelledby="aT">
-      <div class="ph"><h2 class="ptitle" id="aT">Управление пати</h2><span class="sub">Видно только владельцу</span></div>
+      <div class="ph"><h2 class="ptitle" id="aT">Сообщения об ошибках</h2><span class="sub">Видно только владельцу сайта</span></div>
       <div id="admin" style="display:flex;flex-direction:column;gap:10px"></div>
     </section>
   </div>
@@ -1554,6 +1642,7 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
       <div class="acts"><button type="button" class="btn ghost" data-act="smiglater">Позже</button><button type="button" class="btn" data-act="smigsave" id="smigSave" style="--sys:var(--story)">Перевести все</button></div></div>
   </div>
 </div>
+<div id="gOv" class="ov sheet" hidden><div class="panel sheetp gbox" role="dialog" aria-modal="true" aria-label="Группа" id="gBox"></div></div>
 <div id="pfOv" class="ov sheet" hidden><div class="panel sheetp" role="dialog" aria-modal="true" aria-label="Профиль" id="pfBox"></div></div>
 <div id="friendOv" class="ov sheet" hidden>
   <div class="panel sheetp" role="dialog" aria-modal="true" aria-labelledby="fName">
@@ -1576,7 +1665,7 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 <div id="pickOv" class="ov" hidden>
   <div class="panel">
     <div class="eyebrow">[ Система ]</div>
-    <h2>Идентификация игрока</h2>
+    <h2>Добро пожаловать</h2>
     <div id="pickBody"></div>
   </div>
 </div>
@@ -1661,8 +1750,8 @@ const sinceSix = () => Math.floor(((now() + TZ) % 864e5) / 6e4) - 360; // мин
 function oddDay(pid, d, p) {
   const doneMin = (tasksBy[pid] || []).filter((t) => t.date === d && isNewQ(t) && countsTask(t)).reduce((a, t) => a + t.m, 0);
   if (doneMin > ODD_MIN) return "больше 10 ч задач за день";
-  const x = p.xpByDay[d] || 0;
-  let sum = 0, n = 0; for (let i = 1; i <= 14; i++) { const dd = addDays(d, -i); if (dd < joinedOf(pid)) break; sum += p.xpByDay[dd] || 0; n++; }
+  const x = p.allByDay[d] || 0;
+  let sum = 0, n = 0; for (let i = 1; i <= 14; i++) { const dd = addDays(d, -i); if (dd < joinedOf(pid)) break; sum += p.allByDay[dd] || 0; n++; }
   const avg = n >= 3 ? sum / n : 0;
   if (avg >= 10 && x >= 100 && x >= avg * 2) return "опыт вдвое выше обычного";
   return "";
@@ -1817,6 +1906,10 @@ const votesBy = Object.fromEntries(PLAYERS.map((p) => [p.id, []]));
 const loadedBy = {}, storyLoadedBy = {}, defBy = {};
 const sealsBy = Object.fromEntries(PLAYERS.map((p) => [p.id, {}]));
 let rosterMain = {}, rosterMeta = null, metaLoaded = false;
+// v28: данные участника в группе от сервера: gAt (когда вступил, мс), carry (опыт из прошлых групп), cach (ачивки, уже учтённые в carry)
+let gm = {};
+const setGm = (o) => { gm = o && typeof o === "object" ? o : {}; };
+const gMeta = (pid) => { const g = gm[pid] || {}; return { gAt: num(g.gAt), carry: Math.max(0, Math.round(num(g.carry))), cach: Array.isArray(g.cach) ? g.cach : [] }; };
 function ensureSlots() {
   for (const p of PLAYERS) {
     if (!(p.id in roster)) roster[p.id] = null;
@@ -1853,7 +1946,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 27;
+const APP_VERSION = 28;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -1894,6 +1987,13 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 28, date: "2026-11-22", title: "Группы", items: [
+    "Пати стала группой «Система». Вкладка теперь называется «Группа»: сверху шапка с эмблемой, ниже Участники, Чат, Проверка и Обсуждения.",
+    "Любой может создать свою группу и стать лидером. Друзья вступают по ссылке-приглашению, лидер или помощник принимает заявку. Порядок в группе держат лидер и помощники, владелец сайта больше не подтверждает каждого.",
+    "Чат группы: переписка за последние 2 недели, системные сообщения о вступлении и ролях.",
+    "Опыт на сервере: время создания и выполнения квестов ставит сервер, покупки в магазине и награды проводит сервер и сам считает очки. Отметить квест задним числом или дописать себе фон через API больше нельзя.",
+    "Опыт в группе отдельно от общего: общий опыт и уровень идут с тобой в любую группу, а неделя, места и итоги в группе считаются с момента вступления. Накрутка в одной группе в другую не переносится.",
+  ] },
   { v: 27, date: "2026-11-22", title: "Уборы и цвет сайта", items: [
     "Новый раздел магазина «Уборы»: 10 головных уборов поверх аватарки. Колпак со снежинками, кошачьи ушки (иногда дёргаются), цилиндр, ковбойская шляпа, наушники с бегущим звуком, рожки с дымком, шляпа волшебника со звёздами. Трофеи: нимб за «Идеальный день», шлем викинга за «Железную волю», корона за «Легенду».",
     "Ещё 6 живых фонов: осенний лес, подводный мир, горы на закате, неоновый ливень, вулкан, кибер-туннель.",
@@ -2330,6 +2430,7 @@ function sealInfo(pid) {
 function levelInfo(xp) { let L = 1, need = 50, acc = 0; while (xp >= acc + need) { acc += need; L++; need = 50 + 25 * (L - 1); } return { L, into: xp - acc, need }; }
 function hunter(L) { return L >= 30 ? "S" : L >= 20 ? "A" : L >= 15 ? "B" : L >= 10 ? "C" : L >= 5 ? "D" : "E"; }
 
+if (window.__MOCK) window.__sysProfile = (pid) => profile(pid); // только тесты: сверка с сервером
 function profile(pid) {
   if (profCache.has(pid)) return profCache.get(pid);
   const r = computeProfile(pid);
@@ -2356,8 +2457,9 @@ function computeProfile(pid, sealMode) {
   }
   ev.sort((a, b) => a.at - b.at);
   const statByDay = {};
-  const award = new Map(), sx = Object.fromEntries(STATS.map((s) => [s.k, 0])), xpByDay = {}, smallByDay = {}, doneDays = new Set();
-  let xp = 0;
+  const award = new Map(), sx = Object.fromEntries(STATS.map((s) => [s.k, 0])), xpByDay = {}, allByDay = {}, smallByDay = {}, doneDays = new Set();
+  let xp = 0, gxp = 0;
+  const G = gMeta(pid);
   const sealed = sealInfo(pid), seals = sealed.caps, rawSmall = {}, tampered = new Set();
   for (const d in sealed.cnt) if (ts.filter((t) => t.date === d).length < sealed.cnt[d]) tampered.add(d);
   for (const e of ev) {
@@ -2371,7 +2473,8 @@ function computeProfile(pid, sealMode) {
     }
     award.set(e.key, g); xp += g; sx[e.stat] += g;
     const sd = (statByDay[e.day] = statByDay[e.day] || {}); sd[e.stat] = (sd[e.stat] || 0) + g;
-    xpByDay[e.day] = (xpByDay[e.day] || 0) + g; doneDays.add(e.day);
+    allByDay[e.day] = (allByDay[e.day] || 0) + g; doneDays.add(e.day);
+    if (num(e.at) >= G.gAt) { gxp += g; xpByDay[e.day] = (xpByDay[e.day] || 0) + g; } // v28: опыт в этой группе (с момента вступления)
   }
   // выходные не рвут серию и не считаются в неё
   let streak = 0, d = today();
@@ -2413,7 +2516,12 @@ function computeProfile(pid, sealMode) {
   const doneTasks = ts.filter(countsTask).sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
   if (doneTasks.length >= 100) setA("q100", doneTasks[99].date);
   let achXp = 0;
-  for (const a of ACH) if (ach[a.k]) { achXp += a.xp; xp += a.xp; xpByDay[ach[a.k]] = (xpByDay[ach[a.k]] || 0) + a.xp; }
+  for (const a of ACH) if (ach[a.k]) {
+    achXp += a.xp; xp += a.xp; allByDay[ach[a.k]] = (allByDay[ach[a.k]] || 0) + a.xp;
+    if (!G.cach.includes(a.k)) { gxp += a.xp; xpByDay[ach[a.k]] = (xpByDay[ach[a.k]] || 0) + a.xp; }
+  }
+  // v28: общий опыт = перенесённый из прошлых групп (снимок сервера при переходе) + опыт в этой группе. xpHere: всё, что видно в этой группе
+  const xpHere = xp; xp = G.carry + gxp;
   let week = 0; for (let i = 0; i < 7; i++) week += xpByDay[addDays(today(), -i)] || 0;
   let seasonXp = 0; for (const k in xpByDay) if (k <= LAST_DAY) seasonXp += xpByDay[k];
   const td = ts.filter((t) => t.date === today());
@@ -2427,7 +2535,7 @@ function computeProfile(pid, sealMode) {
   const endD = today() < LAST_DAY ? today() : LAST_DAY, j0 = joinedOf(pid);
   const daysIn = Math.max(1, Math.round((toUTC(endD) - toUTC(j0)) / 864e5) + 1);
   const perDay = Math.round(seasonXp / daysIn);
-  return { statByDay, xp, li: levelInfo(xp), stats, streak, best, bestIn, td, tdDone, cls, xpByDay, smallByDay, tampered, pending, award, activeStories, ach, achXp, week, seasonXp, storiesDone, perDay, daysIn, smallToday: smallByDay[today()] || 0, todayXp: xpByDay[today()] || 0 };
+  return { statByDay, xp, gxp, xpHere, carry: G.carry, allByDay, li: levelInfo(xp), stats, streak, best, bestIn, td, tdDone, cls, xpByDay, smallByDay, tampered, pending, award, activeStories, ach, achXp, week, seasonXp, storiesDone, perDay, daysIn, smallToday: smallByDay[today()] || 0, todayXp: xpByDay[today()] || 0 };
 }
 
 // ---------- render ----------
@@ -2701,7 +2809,7 @@ function renderTalk() {
   const un = unreadCmts();
   $("talkSub").innerHTML = un ? '<b class="tnew">' + un + " " + plCmt(un) + "</b>" : plDn(out.length, "обсуждение", "обсуждения", "обсуждений");
   setHtml("talk", out.slice(0, 12).map((o) => '<div class="vi"><p class="sub">' + (o.ik === "wall" ? (o.owner === me ? "Твоя стена" : "Стена · <b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b>") + "</p>" : (o.owner === me ? "Твой" : "<b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b> ·") + " " + (o.ik === "step" ? "этап" : o.ik === "story" ? "сюжетный квест" : o.ik === "diary" ? "запись в дневнике" : "квест") + " «" + esc(o.ti.title) + "»</p>") + threadHtml(o.ik, o.owner, o.id, o.ti.open, "t") + "</div>").join(""));
-  const tOpen = !!document.querySelector('details[data-key="st:talk"][open]');
+  const tOpen = gSub === "talk";
   if (tab === "party" && un > 0 && tOpen && !document.hidden) { writePrefs({ cmtSeen: now() }); $("talkSub").textContent = plDn(out.length, "обсуждение", "обсуждения", "обсуждений"); renderBadges(); }
 }
 function droppedHtml(pid) {
@@ -3838,7 +3946,7 @@ function yrData() {
     const pid = pl.id, pr = profile(pid), ss = (storiesBy[pid] || []).filter((s) => !(num(s.createdAt) > endMs));
     const ts = (tasksBy[pid] || []).filter((t) => t && t.date <= LAST_DAY && !t.moved && t.date <= today());
     const done = ts.filter((t) => t.done && !flagOf(t) && taskState(t) !== "rejected"), failed = ts.filter((t) => t.date < today() && !t.done && !isOff(pid, t.date));
-    const xpBy = {}; for (const k in pr.xpByDay) if (k <= LAST_DAY && pr.xpByDay[k] > 0) xpBy[k] = pr.xpByDay[k];
+    const xpBy = {}; for (const k in pr.allByDay) if (k <= LAST_DAY && pr.allByDay[k] > 0) xpBy[k] = pr.allByDay[k];
     const months = {}; for (const k in xpBy) months[k.slice(0, 7)] = (months[k.slice(0, 7)] || 0) + xpBy[k];
     let bestDay = null; for (const k in xpBy) if (!bestDay || xpBy[k] > bestDay.xp) bestDay = { d: k, xp: xpBy[k] };
     const cnt = (list) => { const m = {}; for (const t of list) { const k = norm(t.title); if (k) (m[k] = m[k] || { t: t.title, n: 0 }).n++; } return Object.values(m).sort((a, b) => b.n - a.n).slice(0, 3); };
@@ -3907,7 +4015,7 @@ function yrSlides(p) {
     (p.first ? '<div class="y-card"><div class="y-row"><span>Первый квест</span><b>' + esc(p.first.t) + '</b></div><div class="y-row"><span>Дата</span><b>' + yrDl(p.first.d) + "</b></div></div>" : "") + '<div class="y-hint">Нажимай справа, чтобы листать. Слева: назад.</div>' });
 
   S.push({ g: [c, "#ffcf5c"], h: '<div class="y-lab">Опыт за сезон</div><div class="y-big" data-count="' + p.xp + '">0<small>XP</small></div><div class="y-sub">Уровень <b>' + p.level + "</b> · класс <b>" + esc(p.cls) + "</b></div>" +
-    '<div class="y-4"><div class="y-s4" style="--c:var(--gold)"><b>' + (MEDALS[place - 1] ? MEDALS[place - 1] + " " : "") + place + "</b><span>место в пати из " + P.length + '</span></div><div class="y-s4"><b>' + p.perDay + "</b><span>XP в среднем за день</span></div></div>" });
+    '<div class="y-4"><div class="y-s4" style="--c:var(--gold)"><b>' + (MEDALS[place - 1] ? MEDALS[place - 1] + " " : "") + place + "</b><span>место в группе из " + P.length + '</span></div><div class="y-s4"><b>' + p.perDay + "</b><span>XP в среднем за день</span></div></div>" });
 
   if (months.length) S.push({ g: ["#5ec8ff", c], h: '<div class="y-lab">По месяцам</div><div class="y-h">Лучший месяц: ' + YR_MONN[Number(bestM.slice(5)) - 1].toLowerCase() + "</div>" +
     '<div class="y-cols">' + months.map((m) => { const v = p.months[m] || 0, fut = m > today().slice(0, 7); return '<div class="y-col' + (m === bestM ? " hi" : "") + '"><span class="v">' + (fut ? "впереди" : "+" + v) + '</span><span class="b' + (fut ? " fut" : "") + '" data-h="' + (fut ? 40 : Math.max(4, Math.round((v / mx) * 100))) + '"></span><span class="n">' + YR_MONN[Number(m.slice(5)) - 1] + "</span></div>"; }).join("") + "</div>" +
@@ -3944,17 +4052,17 @@ function yrSlides(p) {
     '<div class="y-achs">' + ACH.map((a) => { const at = got.get(a.k); return '<div class="y-ach' + (at ? " on" : "") + '"><b>' + (at ? "🏅 " : "🔒 ") + esc(a.n) + "</b><span>" + (at ? yrDl(at) : "не открыта") + "</span></div>"; }).join("") + "</div>" });
 
   const ww = yrWeeks(p);
-  S.push({ g: ["#5ec8ff", "#49e3a0"], h: '<div class="y-lab">В пати</div><div class="y-h">' + (ww ? yrPl(ww, "неделю", "недели", "недель") + " первое место" : "Первое место за неделю ещё впереди") + "</div>" +
+  S.push({ g: ["#5ec8ff", "#49e3a0"], h: '<div class="y-lab">В группе</div><div class="y-h">' + (ww ? yrPl(ww, "неделю", "недели", "недель") + " первое место" : "Первое место за неделю ещё впереди") + "</div>" +
     '<div class="y-4"><div class="y-s4" style="--c:var(--ok)"><b>' + p.votes.yes + '</b><span>✅ раз подтвердил друзей</span></div><div class="y-s4" style="--c:var(--bad)"><b>' + p.votes.no + '</b><span>❌ раз сказал «нет»</span></div><div class="y-s4" style="--c:var(--gold)"><b>' + p.votes.disputes + '</b><span>⚔ споров начал</span></div><div class="y-s4" style="--c:var(--sys)"><b>' + p.votes.comments + "</b><span>💬 комментариев</span></div></div>" });
 
   const myN = YR_NOMS.filter((n) => yrWin(n).includes(p)), who = (x) => (x.id === me ? "Ты" : x.name);
-  S.push({ g: ["#ffcf5c", "#b48cff"], h: '<div class="y-lab" style="--c:var(--gold)">Номинации пати</div><div class="y-h">' + (myN.length ? (mine ? "Твоих номинаций: " : "Номинаций у " + esc(p.name) + ": ") + myN.length : "В этот раз без номинаций") + "</div>" +
+  S.push({ g: ["#ffcf5c", "#b48cff"], h: '<div class="y-lab" style="--c:var(--gold)">Номинации группы</div><div class="y-h">' + (myN.length ? (mine ? "Твоих номинаций: " : "Номинаций у " + esc(p.name) + ": ") + myN.length : "В этот раз без номинаций") + "</div>" +
     YR_NOMS.map((n) => { const w = yrWin(n); if (!w.length) return ""; return '<div class="y-nom' + (w.includes(p) ? " me" : "") + '"><span class="e">' + n.e + '</span><span class="t" title="' + n.d + '"><b>' + n.t + '</b></span><span class="w">' + w.map((x) => esc(who(x))).join(", ") + "<br><small>" + n.f(n.v(w[0])) + "</small></span></div>"; }).join("") });
 
   S.push({ g: [c, "#ffcf5c"], final: true, h: '<div class="y-lab">Сезон в одной карточке</div><div class="y-final"><div class="y-fh">' + yrAva(p, 46) + "<div><b>" + esc(p.name) + "</b><span>Система · Сезон 1 · " + esc(p.cls) + "</span></div></div>" +
     '<div class="y-fg"><div><b>' + p.xp + "</b><span>XP</span></div><div><b>" + p.level + "</b><span>уровень</span></div><div><b>" + place + " из " + P.length + "</b><span>место</span></div><div><b>" + pc + "%</b><span>выполнено</span></div><div><b>" + p.best + "</b><span>лучшая серия</span></div><div><b>" + p.achs.length + "/" + ACH.length + "</b><span>ачивки</span></div></div>" +
     '<div class="y-fm">' + (p.topDone[0] ? "Главный квест: <b>" + esc(p.topDone[0].t) + "</b><br>" : "") + (myN.length ? "Номинации: <b>" + myN.map((n) => n.e + " " + n.t).join(", ") + "</b>" : "") + "</div></div>" +
-    '<div class="y-btns"><button class="btn" type="button" data-act="yragain">↺ Ещё раз</button><button class="btn ghost" type="button" data-act="yrhome">Итоги друзей</button><button class="btn ghost" type="button" data-act="yrtbl">📊 Таблица пати</button></div>' });
+    '<div class="y-btns"><button class="btn" type="button" data-act="yragain">↺ Ещё раз</button><button class="btn ghost" type="button" data-act="yrhome">Итоги друзей</button><button class="btn ghost" type="button" data-act="yrtbl">📊 Таблица группы</button></div>' });
   return S;
 }
 function yrHomeHtml() {
@@ -3962,13 +4070,13 @@ function yrHomeHtml() {
   return '<div class="y-homebox"><button type="button" class="y-x" data-act="yrclose" aria-label="Закрыть">×</button><div class="y-kick">Система · Сезон 1</div><h2 class="y-title">Итоги сезона</h2><p class="y-sub">15 октября · 31 декабря. Чей сезон смотрим?</p>' +
     (yrReady() ? "" : '<p class="y-prev">Предпросмотр: видно только владельцу. Для всех итоги откроются 31 декабря в 18:00.</p>') +
     '<div class="y-who">' + P.map((p) => '<button type="button" data-act="yropen" data-p="' + esc(p.id) + '">' + yrAva(p, 38) + "<b>" + esc(p.id === me ? "Мои итоги" : p.name) + '</b><span class="m">ур. ' + p.level + " · " + p.xp + " XP</span></button>").join("") + "</div>" +
-    '<button class="btn ghost" type="button" data-act="yrtbl" style="margin-top:16px">📊 Таблица пати</button></div>';
+    '<button class="btn ghost" type="button" data-act="yrtbl" style="margin-top:16px">📊 Таблица группы</button></div>';
 }
 function yrTblHtml() {
   const P = yr.D.players;
   const cols = [["XP", (p) => p.xp], ["Ур.", (p) => p.level], ["Выполнено", yrPct, "%"], ["Серия", (p) => p.best], ["Часы", (p) => p.mins, "", yrHrs], ["Ачивки", (p) => p.achs.length], ["Недель 🥇", yrWeeks], ["Сюжеты", yrOkStories]];
   const rows = [...P].sort((a, b) => b.xp - a.xp);
-  return '<div class="y-tb" role="dialog" aria-modal="true" aria-label="Таблица пати"><div class="y-tbh"><b>Таблица пати</b><button type="button" class="y-x" data-act="yrtclose" aria-label="Закрыть">×</button></div><div class="y-sub">Золотом: лучший в столбце. Сезон 1' + (today() < LAST_DAY ? ", данные на " + yrDl(today()) : "") + '.</div><div class="tscroll"><table><thead><tr><th>Игрок</th>' + cols.map((c) => "<th>" + c[0] + "</th>").join("") + "</tr></thead><tbody>" +
+  return '<div class="y-tb" role="dialog" aria-modal="true" aria-label="Таблица группы"><div class="y-tbh"><b>Таблица группы</b><button type="button" class="y-x" data-act="yrtclose" aria-label="Закрыть">×</button></div><div class="y-sub">Золотом: лучший в столбце. Сезон 1' + (today() < LAST_DAY ? ", данные на " + yrDl(today()) : "") + '.</div><div class="tscroll"><table><thead><tr><th>Игрок</th>' + cols.map((c) => "<th>" + c[0] + "</th>").join("") + "</tr></thead><tbody>" +
     rows.map((p, i) => "<tr><td>" + (MEDALS[i] || "") + " " + esc(p.name) + "</td>" + cols.map((c) => { const v = c[1](p), m = Math.max(...P.map(c[1])); return '<td class="' + (v === m && v > 0 ? "lead" : "") + '">' + (c[3] ? c[3](v) : v) + (c[2] || "") + "</td>"; }).join("") + "</tr>").join("") + "</tbody></table></div></div>";
 }
 function yrShow() {
@@ -4891,9 +4999,15 @@ async function pfAct(b, act) {
     const k = b.dataset.k, it = PF_ITEM[k];
     if (!it || it.tr || !it.p || !canWrite || pfHas(me, k)) return true;
     if (pfPoints(me) < it.p) { toast("Не хватает очков: нужно " + it.p + ", у тебя " + pfPoints(me) + "."); return true; }
-    const pr = profOf(me);
-    pfSaveProf({ own: [...pr.own, k], eq: { ...pr.eq, [it.cat]: it.id } }); if (pf.try) delete pf.try[it.cat];
-    toast("Куплено: " + it.n + ". Опыт и уровень не изменились.");
+    // v28: покупку проводит сервер: он сам считает очки и записывает вещь. Здесь только показываем сразу, не дожидаясь обновления
+    b.disabled = true;
+    const r = await gCall({ a: "buy", k });
+    if (r) {
+      const cur = prefs.prof && typeof prefs.prof === "object" ? prefs.prof : {};
+      prefs = { ...prefs, prof: { ...cur, own: [...new Set([...(Array.isArray(cur.own) ? cur.own : []), k])], eq: { ...(cur.eq || {}), [it.cat]: it.id } } };
+      if (pf && pf.try) delete pf.try[it.cat];
+      toast("Куплено: " + it.n + ". Опыт и уровень не изменились."); renderProfile();
+    }
     renderPf(); return true;
   }
   if (act === "pfequip") { const k = b.dataset.k, it = PF_ITEM[k]; if (!it || !pfHas(me, k)) return true; const pr = profOf(me); pfSaveProf({ eq: { ...pr.eq, [it.cat]: it.id } }); if (pf.try) delete pf.try[it.cat]; renderPf(); return true; }
@@ -4912,9 +5026,10 @@ async function pfAct(b, act) {
     if (pfPoints(me) < PF_AWARD_COST) { toast("Не хватает очков: награда стоит " + PF_AWARD_COST + "."); return true; }
     b.disabled = true;
     try {
-      await db.doc("v/" + uid + "/votes/" + to + "__aw-" + today()).set({ kind: "award", owner: to, task: "aw-" + today(), e, day: today(), at: now() });
-      toast("Награда " + e + " ушла " + pname(to) + ". −" + PF_AWARD_COST + " очков.");
-      pf = null; renderPf();
+      // v28: награду выдаёт сервер (проверяет очки и «одну в день»)
+      const r = await gCall({ a: "award", to, e });
+      if (r) { toast("Награда " + e + " ушла " + pname(to) + ". −" + PF_AWARD_COST + " очков."); pf = null; renderPf(); }
+      else b.disabled = false;
     } catch (err) { fail(err); }
     return true;
   }
@@ -4977,7 +5092,7 @@ function renderWarn() {
   if (box) {
     const show = !!sg && sg.m !== STEPS_MIN[selT];
     box.hidden = !show;
-    if (show) box.innerHTML = "У пати похожие квесты обычно на <b>" + (sg.m ? fmtMin(sg.m) : "без времени") + "</b> (" + esc(sg.ex) + (sg.exN > 1 ? " ×" + sg.exN : "") + ', ' + sg.n + " из " + sg.tot + ') <button type="button" class="btn sm ghost" data-act="settime" data-i="' + STEPS_MIN.indexOf(sg.m) + '">Поставить</button>';
+    if (show) box.innerHTML = "В группе похожие квесты обычно на <b>" + (sg.m ? fmtMin(sg.m) : "без времени") + "</b> (" + esc(sg.ex) + (sg.exN > 1 ? " ×" + sg.exN : "") + ', ' + sg.n + " из " + sg.tot + ') <button type="button" class="btn sm ghost" data-act="settime" data-i="' + STEPS_MIN.indexOf(sg.m) + '">Поставить</button>';
   }
   $("qProofRow").hidden = true;
   $("qWarn").hidden = true;
@@ -5097,7 +5212,7 @@ function renderVerify() {
 function renderWeek() {
   const rows = activePlayers().map((pl) => ({ pl, p: profile(pl.id) })).sort((a, b) => b.p.week - a.p.week);
   $("wkSub").textContent = nice(addDays(today(), -6)) + " — " + nice(today());
-  if (!rows.length) { setHtml("week", '<div class="empty">Пока никого нет в пати.</div>'); return; }
+  if (!rows.length) { setHtml("week", '<div class="empty">Пока никого нет в группе.</div>'); return; }
   const max = Math.max(1, rows[0].p.week);
   let place = 0, prevXp = null;
   setHtml("week", rows.map(({ pl, p }, i) => {
@@ -5145,7 +5260,7 @@ const GUIDE = [
   { id: "s-quest", l: 1, t: "Добавить и выполнить квест", b: "<p>На вкладке <b>«Сегодня»</b> напиши квест в поле «Новый квест…». Под полем откроются три ползунка: <b>время</b>, <b>сложность</b> и <b>«нравится»</b>. Опыт видно сразу крупной цифрой. Нажми <b>«Принять»</b>.</p><p>Плашки под полем: <b>характеристика</b> (что качаешь), <b>опыт</b> (ползунки), <b>повтор</b> и ⏰.</p><p>Характеристики: <b>СИЛ</b> (тело: спорт, сон, питание), <b>ИНТ</b> (разум: учёба, книги), <b>ВОЛ</b> (воля: режим, привычки), <b>ХАР</b> (харизма: люди, общение), <b>ТВР</b> (творчество: музыка, проекты), <b>ФИН</b> (достаток: работа, деньги).</p><p>Сделал — поставь галочку слева от квеста. Опыт начислится сразу, «+XP» улетит в полоску опыта.</p><p><b>Порядок</b>: зажми точки ⠿ слева от квеста и перетащи вверх или вниз (с клавиатуры: стрелки). Порядок повторов запоминается на все дни.</p>", v: 20 },
   { id: "s-ranks", l: 1, t: "Как считается опыт", b: "<p><b>Время</b>: 20 XP за час средней задачи. После 3 часов каждый следующий час идёт за половину (8 часов = 5,5 «часа»).</p><p><b>Сложность</b>: лёгкий ×0,5, средний ×1, сложный ×1,5.</p><p><b>«Нравится»</b>: 👎 +30% (за дисциплину, делать нелюбимое труднее), — +15%, 👍 без бонуса.</p><p>Примеры: час английского, средний, — = <b>23 XP</b>. Тренировка 2 часа, сложный, 👍 = <b>60 XP</b>. Уборка 30 минут, лёгкий, 👎 = <b>7 XP</b>.</p><p><b>ПРИВЫЧКА</b> (ползунок времени на «без времени», зелёная метка): лёгкий 3, средний 5, сложный 10 XP, с тем же бонусом за 👎 или —. Не больше 5 привычек в день. С временем квест становится <b>ЗАДАЧЕЙ</b> (голубая метка).</p><p>У дня <b>16 часов</b>: сумма времени сегодняшних квестов не больше 16 ч, ползунок упирается в остаток. Букв у квестов нет, буква осталась только у ранга охотника.</p><p><b>Старые квесты с буквой</b> переводятся в окне «Новая система опыта»: оно всплывает при первом входе после обновления, а потом открывается с плашки на «Сегодня». Выполненные квесты не меняются.</p>", v: 19 },
   { id: "s-login", l: 1, t: "Вход, выход и телефон", b: "<p>Сайт: <b>aitbatyr.github.io/rpg-irl</b>. Первый раз нажми «Создать аккаунт» (почта и пароль от 6 символов), дальше просто «Войти». Почта и кнопка «Выйти» в ⚙ Настройках → «Аккаунт» и внизу страницы. Забыл пароль: «Забыл пароль» на экране входа, ссылка придёт на почту.</p><p>На телефоне открой сайт в Chrome → меню ⋮ → <b>«Добавить на главный экран»</b>. Появится иконка, сайт будет открываться как приложение.</p>", v: 12 },
-  { id: "s-tabs", l: 1, t: "Вкладки", b: "<p>Внизу 5 вкладок. <b>Сегодня</b>: квесты дня и полоска статуса. <b>Сюжет</b>: цели на недели. <b>Дневник</b>: записи о дне, скрытые или открытые друзьям, и лента друзей. <b>Пати</b>: друзья, неделя, проверка квестов. <b>Профиль</b>: твоя шапка с фоном и рамкой, витрины, итоги недели, характеристики, ачивки и карта активности.</p><p>Шестерёнка ⚙ в профиле открывает <b>Настройки</b>: изменить профиль и магазин, итоги сезона, уведомления, оформление, что нового, гайд, баги и аккаунт. После обновления на «Профиле» и шестерёнке горит точка, а в гайде синей точкой отмечены непрочитанные и изменённые разделы.</p>", v: 25 },
+  { id: "s-tabs", l: 1, t: "Вкладки", b: "<p>Внизу 5 вкладок. <b>Сегодня</b>: квесты дня и полоска статуса. <b>Сюжет</b>: цели на недели. <b>Дневник</b>: записи о дне, скрытые или открытые друзьям, и лента друзей. <b>Группа</b>: друзья, неделя, чат, проверка квестов и обсуждения. <b>Профиль</b>: твоя шапка с фоном и рамкой, витрины, итоги недели, характеристики, ачивки и карта активности.</p><p>Шестерёнка ⚙ в профиле открывает <b>Настройки</b>: изменить профиль и магазин, итоги сезона, уведомления, оформление, что нового, гайд, баги и аккаунт. После обновления на «Профиле» и шестерёнке горит точка, а в гайде синей точкой отмечены непрочитанные и изменённые разделы.</p>", v: 28 },
   { id: "s-midnight", l: 1, t: "Полночь и провалы", b: "<p>В 00:00 по времени сервера (UTC+5) день закрывается. Невыполненные квесты становятся <b>проваленными</b> и видны внизу вкладки «Сегодня» и на карте активности.</p><p>Обычный проваленный квест можно перенести на сегодня кнопкой «На сегодня».</p>", v: 17 },
   // ---------- 2 · Основы ----------
   { id: "b-repeat", l: 2, t: "Повторяющиеся квесты", b: "<p>В плашке «повтор» выбери: <b>каждый день</b>, <b>каждые N дней</b> (2–30) или <b>по дням недели</b>. Квест сам появляется в нужные дни, когда открываешь сайт. Повторять можно только E, D, C.</p><p>Список повторов — внизу «Сегодня» в строке «Повторяющиеся квесты». Там ✎ — изменить, × — больше не повторять.</p><p>У каждого повтора видно, как он идёт: «18 из 25 · 72%», то есть в скольких днях по расписанию он выполнен. Ниже 40% подсвечивается красным с подсказкой: может, делать реже или меньше. Друзья видят твои повторы в твоём профиле.</p>", v: 13 },
@@ -5170,15 +5285,15 @@ const GUIDE = [
   { id: "d-seal", l: 3, t: "Печать дня", b: "<p>Когда друг открывает сайт, его браузер запоминает итоги твоих прошедших дней: опыт с мелочи и число квестов. Если прошлый день потом изменился (больше опыта или меньше квестов), лишний опыт не засчитается, а на карте активности у дня появится красный уголок «⚠ день правили задним числом».</p><p>Квесты, по которым идёт спор, печать учитывает как засчитанные, так что «да» после печати не даёт ⚠.</p>", v: 17 },
   { id: "d-flags", l: 3, t: "Пометки ⚠ и что не засчитывается", b: "<p>⚠ «создан задним числом», «отмечен после своего дня», «дата из будущего» — квест не даёт опыта. ⚠ у крупного квеста на проверке «квест за прошлую дату» — подсказка друзьям быть внимательнее.</p><p>Голоса привязаны к названию и рангу: если поменять квест после голосования, голоса обнуляются.</p>" },
   { id: "d-pace", l: 3, t: "Срок, продление и закрытие сюжета", b: "<p>Срок задаётся при создании и потом не меняется. Если срок вышел, а шаги не все сделаны, остаются две кнопки: <b>«Продлить»</b> (на неделю или на 2 недели, не позже 31 декабря) или <b>«Закрыть без бонуса»</b> (опыт за сделанные шаги остаётся).</p><p>Продлевать можно сколько угодно. Каждое продление уменьшает вдвое бонус только за <b>уже сделанные</b> шаги, за оставшиеся бонус полный. Поэтому бросить и создать квест заново невыгодно: за сделанное бонуса не будет совсем. Цифры видны в карточке. После срока шаги менять и убирать нельзя.</p><p>Пока ни один друг не проголосовал, квест можно «Вернуть с проверки», чтобы добавить шаги. Если друзья не засчитали: «Отправить снова» или «Вернуть в работу». Удалить квест можно, пока в нём нет сделанных шагов.</p><p>Старые квесты (с буквами B, A, S) переводятся окном «Сюжет по новым правилам»: сделанные этапы остаются по 10 XP, остальным ставишь день и время.</p>", v: 22 },
-  { id: "d-rankhint", l: 3, t: "Подсказка времени", b: "<p>Когда пишешь название, сайт ищет похожие квесты в истории пати и подсказывает, сколько времени для них обычно ставят, например «обычно на 30 мин (Английский ×12)», с кнопкой «Поставить». Подсказка ничего не запрещает.</p>", v: 18 },
-  { id: "d-join", l: 3, t: "Новые игроки и архив", b: "<p>В пати может быть до 12 активных игроков. Новичок получает ссылку на сайт, создаёт аккаунт, пишет своё имя, владелец подтверждает. Если это кто-то из старых игроков, владелец нажимает «Это … (старый профиль)», и вход привязывается к его профилю со всем опытом. Новичок начинает с нуля, поэтому для честного сравнения есть «Неделя» и средний опыт в день.</p><p>Неактивных владелец может отправить в архив: они пропадают из недели, проверок и голосований, а их данные сохраняются. Вернуть можно в любой момент.</p>", v: 13 },
-  { id: "d-party", l: 3, t: "Пати и профиль друга", b: "<p>Нажми на друга во вкладке «Пати» — откроется окно с его квестами, сюжетом, характеристиками и картой активности. Там же кнопки «Оспорить». Если друг сегодня не открывал сайт, на карточке будет «сегодня не заходил», а в его окне кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление, что ты напоминаешь. Одному другу раз в день.</p><p><b>Зелёная точка</b> у имени значит, что сайт у друга открыт прямо сейчас. Закрыл вкладку, точка погасла. Если друга нет, на карточке видно последнее посещение: «был 20 мин назад», «был вчера в 22:14». Время точное примерно до 10 минут.</p><p>Состояние друга как в Steam: <b style=\"color:var(--ok)\">● онлайн</b> сайт открыт на экране, <b style=\"color:var(--gold)\">● отошёл</b> сайт открыт, но свёрнут или 5 минут без действий, без точки «был …» значит не в сети.</p>", v: 22 },
+  { id: "d-rankhint", l: 3, t: "Подсказка времени", b: "<p>Когда пишешь название, сайт ищет похожие квесты в истории группы и подсказывает, сколько времени для них обычно ставят, например «обычно на 30 мин (Английский ×12)», с кнопкой «Поставить». Подсказка ничего не запрещает.</p>", v: 18 },
+  { id: "d-join", l: 3, t: "Группы: создать, вступить, роли", b: "<p>В Системе играют <b>группами</b>. Любой может создать группу и стать её <b>лидером</b>. Лидер зовёт друзей и знакомых по <b>ссылке-приглашению</b> (⚙ Управление → Пригласить): друг открывает ссылку, называет себя и отправляет заявку, а лидер или помощник её принимает. Новая ссылка отключает старую.</p><p>Роли: <b>👑 Лидер</b> может всё (роли, оформление, передать лидерство), <b>⭐ Помощник</b> принимает заявки и исключает участников, проверяют квесты все. Игрок бывает только в одной группе. Лидер выходит, только когда передал лидерство. Группы друг друга не видят и не соревнуются.</p><p>Опыт двух видов. <b>Общий</b> идёт с тобой в любую группу. <b>Опыт в группе</b> считается с момента вступления: по нему неделя, места и итоги, поэтому накрутить опыт в одной группе и прийти с ним в другую бесполезно.</p>", v: 28 },
+  { id: "d-party", l: 3, t: "Группа и профиль друга", b: "<p>Во вкладке «Группа» сверху шапка группы и ⚙, ниже переключатель: <b>Участники</b> (карточки и неделя), <b>Чат</b> (переписка группы за 2 недели, сообщение можно удалить, лидер и помощники удаляют любые), <b>Проверка</b> (квесты друзей ждут твоего голоса) и <b>Обсуждения</b>.</p><p>Нажми на друга, откроется окно с его квестами, сюжетом, характеристиками и картой активности. Там же кнопки «Оспорить». Если друг сегодня не открывал сайт, на карточке будет «сегодня не заходил», а в его окне кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление. Одному другу раз в день.</p><p>Состояние друга как в Steam: <b style=\"color:var(--ok)\">● онлайн</b> сайт открыт на экране, <b style=\"color:var(--gold)\">● отошёл</b> сайт открыт, но свёрнут или 5 минут без действий, без точки «был …» значит не в сети.</p>", v: 28 },
   { id: "b-v17", l: 2, t: "Выходной, напоминания, карта активности", b: "<p><b>Выходной</b>: 2 дня в месяц. На «Сегодня» под полоской дня: «взять сегодня» (только пока ничего не отмечено), «на завтра» или «выбрать день»: календарь на этот и следующий месяц, можно взять любой день вперёд. Лимит считается по месяцу самого дня. Запланированные выходные видны списком, × отменяет (пока день не начался). Задним числом нельзя. В выходной повторы не создаются, провалов нет, серия не сгорает, опыт за сделанное засчитывается. Отменить можно в тот же день.</p><p><b>Напоминание</b>: плашка «⏰» при создании квеста или ⏰ в строке квеста. Придёт уведомление в это время, если квест не отмечен (точность около 5 минут). У повтора время сохраняется на все дни. Нужны включённые уведомления.</p><p><b>Карта активности</b> в «Статусе» и в профиле друга: квадратик на день, яркость по числу выполненных квестов (1–2, 3–4, 5–6, 7+). Золотая рамка: закрыты все квесты дня (от трёх). Серый с 🌙: выходной. Красный уголок: день правили задним числом. Наведи или нажми на квадратик, чтобы увидеть подробности.</p><p><b>Живой фон</b> меняет цвет по рангу охотника, ночью звёзды, в декабре снег. Выключить: «Ещё → Оформление».</p>", v: 20 },
   { id: "b-push", l: 2, t: "Уведомления", b: "<p>⚙ Настройки (шестерёнка в «Профиле») → <b>«Уведомления»</b> → «Включить уведомления» и разреши их в браузере. Настройка на каждом устройстве своя.</p><p>Что приходит: <b>друг ждёт твоего голоса</b>; <b>твой квест оспорили</b> или по нему проголосовали; <b>новый комментарий</b> в обсуждении, где ты участвуешь; <b>в 21:00</b> напоминание, если квесты дня не закрыты или ты сегодня не заходил; <b>друг тебя «пнул»</b>; <b>в понедельник в 9:00</b> итоги недели готовы. Любой тип можно выключить галочкой. «Прислать тестовое» проверяет, что всё работает.</p><p>На iPhone уведомления работают, только если сайт добавлен на экран «Домой» и открыт с иконки. На Android надёжнее всего через Chrome.</p>", v: 16 },
   { id: "b-week", l: 2, t: "Итоги недели и аватарка", b: "<p><b>Итоги недели</b>: каждый понедельник во вкладке «Профиль» карточка за прошлую неделю (пн–вс): опыт, место в пати, выполнено и провалено, процент повторов, лучший день и какие характеристики выросли. Ниже «Прошлые недели»: по строке на неделю (даты, опыт, место, полоска выполнено/провалено), нажатие раскрывает итоги целиком. Пока не посмотрел свежие итоги, на «Сегодня» висит плашка, а в понедельник в 9:00 приходит уведомление.</p><p><b>Аватарка</b>: во вкладке «Профиль» нажми на кружок со своей буквой (📷) и выбери картинку. Под именем: «открыть аватарку» и «убрать».</p><p>Чужую аватарку можно открыть на весь экран: нажми на неё в пати, в профиле друга или в обсуждении. Закрыть: нажатие по экрану или «Закрыть ×».</p>", v: 16 },
-  { id: "d-season", l: 3, t: "Итоги сезона", b: "<p>1 января во вкладке «Пати» откроются итоги сезона 1: победитель, опыт, уровень, лучшая серия, сюжетные квесты и ачивки каждого. Сезон 2 настроим вместе.</p>" },
+  { id: "d-season", l: 3, t: "Итоги сезона", b: "<p>1 января во вкладке «Группа» откроются итоги сезона 1: победитель, опыт, уровень, лучшая серия, сюжетные квесты и ачивки каждого. Сезон 2 настроим вместе.</p>" },
   { id: "d-bugs", l: 3, t: "Сообщения о багах", b: "<p>⚙ Настройки → «Баг или пожелание» (или ссылка «Нашёл баг или есть пожелания?» внизу любой вкладки). Пожелания и идеи тоже сюда. Опиши, что случилось, можно приложить скриншот. Версия, вкладка, время и устройство добавятся сами.</p><p>Статусы: 🆕 Новое · 🔍 Проверяется · 🛠 В работе · ✅ Исправлено · ❎ Не баг · 🔁 Не воспроизводится · 📎 Дубликат · 💡 Идея. Ответ появится в «Мои сообщения», а на «Профиле» загорится точка. Неактуальное владелец может закрыть: оно помечается «закрыто».</p>", v: 20 },
-  { id: "d-data", l: 3, t: "Где хранятся данные и кто что видит", b: "<p>Сайт лежит на GitHub, а данные в базе Supabase. Правила доступа проверяет сама база, поэтому обойти их через браузер нельзя: каждый меняет только свои квесты, голоса и сообщения, а данные пати видят только её участники. Пока владелец не подтвердил вход, новичок видит только состав пати.</p><p>Каждую ночь в 01:30 делается резервная копия всей базы в закрытое хранилище, к ней можно вернуться на любой день. Ничего не удаляется насовсем: удалённые сюжетные квесты и старые расписания хранятся для итогов года.</p>", v: 12 },
+  { id: "d-data", l: 3, t: "Где хранятся данные и кто что видит", b: "<p>Сайт лежит на GitHub, а данные в базе Supabase. Правила доступа проверяет сама база, поэтому обойти их через браузер нельзя: каждый меняет только свои квесты, голоса и сообщения, а данные группы видят только её участники. Состав группы, заявки, покупки и награды меняет только сервер, время квестов тоже ставит сервер.</p><p>Каждую ночь в 01:30 делается резервная копия всей базы в закрытое хранилище, к ней можно вернуться на любой день. Ничего не удаляется насовсем: удалённые сюжетные квесты и старые расписания хранятся для итогов года.</p>", v: 28 },
 ];
 
 // раздел прочитан, если открыт в его текущей версии (старые отметки без версии действуют для разделов до v12)
@@ -5246,7 +5361,7 @@ const TOUR = [
   { sel: "#qPlaques", t: "Характеристика, опыт, повтор", x: "Опыт решают три ползунка: время, сложность и «нравится». Час средней задачи = 20 XP, за нелюбимое +30%. Повтор — чтобы квест появлялся сам." },
   { sel: "#quests", t: "Список дня", x: "Сделал — ставь галочку слева. Не успел до полуночи — квест станет проваленным. Нажми на название, чтобы поправить квест." },
   { sel: "#strip", t: "Твой статус", x: "Ранг охотника, уровень, опыт, серия дней и сколько опыта набрано сегодня." },
-  { sel: "#tabs", t: "Вкладки", x: "Сюжет: цели на недели. Дневник: записи о дне, свои и друзей. Пати: друзья и проверка. Профиль: твоя шапка, витрины, характеристики и ачивки, а шестерёнка ⚙ в нём открывает настройки, гайд и баги." },
+  { sel: "#tabs", t: "Вкладки", x: "Сюжет: цели на недели. Дневник: записи о дне, свои и друзей. Группа: друзья, чат и проверка. Профиль: твоя шапка, витрины, характеристики и ачивки, а шестерёнка ⚙ в нём открывает настройки, гайд и баги." },
 ];
 function startTour() {
   if (!me) return;
@@ -5272,22 +5387,283 @@ function showTourStep() {
   }, 260);
 }
 function renderParty() {
-  const archived = PLAYERS.filter((p) => roster[p.id] && p.archived);
-  setHtml("party", activePlayers().concat(PLAYERS.filter((p) => !roster[p.id] && !p.archived && BASE_PLAYERS.some((b) => b.id === p.id))).map((pl) => {
+  const archived = [];
+  setHtml("party", activePlayers().map((pl) => {
     const p = profile(pl.id); const hr = hunter(p.li.L); const bound = !!roster[pl.id];
     return '<button class="pc" data-act="view" data-p="' + pl.id + '" aria-current="' + (friendId === pl.id) + '">' +
-      '<div class="top1">' + avaHtml(pl.id, "sm") + '<span class="rank r-' + hr + '">' + hr + '</span><span class="nm">' + esc(pl.name) + " " + onDot(pl.id) + "</span>" + (pl.id === me ? '<span class="you">ТЫ</span>' : "") + '<span class="lv">LV <b>' + p.li.L + "</b></span></div>" +
+      '<div class="top1">' + avaHtml(pl.id, "sm") + '<span class="rank r-' + hr + '">' + hr + '</span><span class="nm">' + esc(pl.name) + " " + onDot(pl.id) + "</span>" + (pl.role === "lead" || pl.role === "helper" ? '<span class="grole ' + pl.role + '" title="' + G_ROLE[pl.role] + '">' + G_ROLE[pl.role].split(" ")[0] + "</span>" : "") + (pl.id === me ? '<span class="you">ТЫ</span>' : "") + '<span class="lv">LV <b>' + p.li.L + "</b></span></div>" +
       '<div class="bar"><i style="width:' + ((p.li.into / p.li.need) * 100).toFixed(1) + '%"></i></div>' +
       (bound
         ? '<div class="row2"><span>' + p.xp + " XP</span>" + (isOff(pl.id, today()) ? '<span style="color:var(--muted)">🌙 выходной</span>' : pl.id !== me && seenDay(pl.id) !== today() ? '<span style="color:var(--gold)">сегодня не заходил</span>' : "<span>сегодня " + p.tdDone + "/" + p.td.length + "</span>") + "<span>серия " + p.streak + "</span></div>" +
           (() => { const o = oddDay(pl.id, today(), p); return o ? '<div class="row2"><span class="odd">⚠ необычно много: ' + esc(o) + "</span></div>" : ""; })() +
           '<div class="row2"><span>' + esc(p.cls) + " · сюжетных " + p.activeStories + "</span>" + (p.pending ? '<span style="color:var(--gold)">на проверке: ' + p.pending + "</span>" : "<span></span>") + "</div>" +
           (pl.id !== me ? '<div class="row2"><span' + (isHere(pl.id) ? ' style="color:var(--ok)"' : isAway(pl.id) ? ' style="color:var(--gold)"' : "") + ">" + esc(lastSeenTxt(pl.id)) + "</span></div>" : "") +
-          '<div class="row2"><span>~' + p.perDay + " XP в день" + (joinedOf(pl.id) > SEASON_START ? ' · <span style="color:var(--sys)">в игре с ' + nice(joinedOf(pl.id)) + "</span>" : "") + "</span></div>"
+          '<div class="row2"><span>~' + p.perDay + " XP в день" + (joinedOf(pl.id) > SEASON_START ? ' · <span style="color:var(--sys)">в группе с ' + nice(joinedOf(pl.id)) + "</span>" : "") + "</span>" + (p.carry ? '<span title="Опыт в этой группе. Общий опыт: ' + p.xp + ' XP">в группе ' + p.gxp + " XP</span>" : "") + "</div>"
         : '<div class="row2"><span>Не вошёл в систему</span></div>') + "</button>";
   }).join("") + (archived.length ? '<div class="arch hint">В архиве: ' + archived.map((p) => esc(p.name)).join(", ") + "</div>" : ""));
 }
 
+// ---------- v28: группы ----------
+// Пати стала группой. Кто в группе, роли и заявки хранит сервер (pl/{uid}, g/{gid}/...), меняет их функция sys.
+// Игрок в одной группе. Вступление: ссылка-приглашение + одобрение лидера или помощника. Чат группы.
+// Опыт: общий (с собой в любую группу) и опыт в группе (с момента вступления): неделя, места и итоги только по нему.
+const G_EMB = ["⚡", "🐺", "🦅", "🐉", "🔥", "🌙", "🦁", "🗡️", "🛡️", "⭐", "🌊", "🌿", "🎧", "📚", "🏔️", "🚀"];
+const G_COL = ["#5ec8ff", "#ffcf5c", "#49e3a0", "#b48cff", "#ff5d73", "#ff9d4d", "#ff9ecf", "#7cf3ff"];
+const G_ROLE = { lead: "👑 Лидер", helper: "⭐ Помощник", member: "Участник" };
+const G_CHAT_DAYS = 14, G_MAX = 30;
+let myPl = null, plLoaded = false, gInfo = null, gidSub = undefined, gSubs = [], gChat = [], gReqs = [], gChatLoaded = false, gChatBottom = true;
+let gSub = ["mem", "chat", "ver", "talk"].includes(store.get("sys.gsub")) ? store.get("sys.gsub") : "mem";
+let gOv = null, gBusy = false, joinCode = null, gWasIn = null;
+{ const m = /^#join[=-]([A-Za-z0-9-]{4,24})$/.exec(location.hash || ""); if (m) { joinCode = m[1].toUpperCase().replace(/[^A-Z0-9]/g, ""); store.set("sys.join", joinCode); store.set("sys.tab", "party"); try { history.replaceState(null, "", location.pathname + location.search); } catch {} } else if (/^[A-Z0-9]{4,20}$/.test(store.get("sys.join") || "")) joinCode = store.get("sys.join"); }
+const gid = () => (myPl && typeof myPl.gid === "string" && myPl.gid ? myPl.gid : null);
+const inGroup = () => !!(gid() && gInfo && gInfo.members);
+const gRole = (pid) => (gInfo && gInfo.members && gInfo.members[pid] ? gInfo.members[pid].role : null);
+const gMod = () => ["lead", "helper"].includes(gRole(me));
+const gLead = () => gRole(me) === "lead";
+const gEmb = (e, c, s) => '<span class="gemb" style="--ec:' + esc(G_COL.includes(c) ? c : G_COL[0]) + (s ? ";--s:" + s + "px" : "") + '"><span>' + esc(G_EMB.includes(e) || e === "⚔️" ? e : G_EMB[0]) + "</span></span>";
+const gCode = (c) => String(c || "").replace(/^(.{4})(.+)$/, "$1-$2");
+const gLink = () => (gInfo && gInfo.inv ? location.origin + location.pathname + "#join=" + gInfo.inv : "");
+const gPl = (n) => plDn(n, "участник", "участника", "участников");
+const gChatUnread = () => (inGroup() ? gChat.filter((m) => m.by !== uid && m.at > num(prefs.chatSeen)).length : 0);
+const gReqN = () => (inGroup() && gMod() ? gReqs.length : 0);
+async function gCall(body, okMsg) {
+  if (gBusy) return null;
+  if (typeof window.SISTEMA_FN !== "function") { toast("Сервер недоступен. Обнови страницу."); return null; }
+  gBusy = true; renderGroup(); renderGOv(); renderIdentity();
+  try {
+    const r = await window.SISTEMA_FN(body);
+    if (!r || !r.ok) { toast((r && r.error) || "Не получилось. Попробуй ещё раз."); return null; }
+    if (okMsg) toast(okMsg);
+    return r;
+  } catch { toast("Нет связи с сервером. Попробуй ещё раз."); return null; }
+  finally { gBusy = false; renderGroup(); renderGOv(); renderIdentity(); }
+}
+// состав группы → игроки сайта (тот же PLAYERS/roster, что был у пати)
+function rebuildGroup() {
+  const ms = inGroup() ? gInfo.members : null, rank = { lead: 0, helper: 1, member: 2 };
+  const name = (v) => (typeof v === "string" && v.trim() ? v.trim().slice(0, 24) : "Игрок");
+  let list = [];
+  if (ms) list = Object.entries(ms).filter(([pid, m]) => /^[A-Za-z0-9_-]{1,40}$/.test(pid) && m && typeof m.uid === "string")
+    .map(([pid, m]) => ({ id: pid, name: name(m.name), joined: typeof m.joined === "string" && DATE_RE.test(m.joined) ? m.joined : SEASON_START, role: m.role, uid: m.uid, g: m }))
+    .sort((a, b) => (rank[a.role] ?? 3) - (rank[b.role] ?? 3) || (a.joined < b.joined ? -1 : a.joined > b.joined ? 1 : 0));
+  else if (myPl && typeof myPl.pid === "string") list = [{ id: myPl.pid, name: name(myPl.name), joined: typeof myPl.joined === "string" && DATE_RE.test(myPl.joined) ? myPl.joined : SEASON_START, role: null, uid, g: myPl }];
+  PLAYERS = list.map(({ id, name: n, joined, role }) => ({ id, name: n, joined, role }));
+  roster = Object.fromEntries(list.map((p) => [p.id, p.uid]));
+  setGm(Object.fromEntries(list.map((p) => [p.id, { gAt: p.g.gAt, carry: p.g.carry, cach: p.g.cach }])));
+  ensureSlots(); rosterLoaded = metaLoaded = claimsLoaded = true;
+  if (viewId && !PLAYERS.some((p) => p.id === viewId) && PLAYERS.length) viewId = PLAYERS[0].id;
+  if (friendId && !PLAYERS.some((p) => p.id === friendId)) friendId = null;
+  recomputeMe();
+  if (db) syncSubs();
+  renderAll(); renderGroup(); renderGOv();
+}
+function syncGroup() {
+  const g = gid();
+  if (g !== gidSub) {
+    gSubs.forEach((f) => f()); gSubs = []; gidSub = g; gInfo = null; gChat = []; gReqs = []; gChatLoaded = false; gChatBottom = true;
+    if (g && db) {
+      gSubs.push(db.doc("g/" + g + "/info").onSnapshot((s) => { gInfo = s.exists ? s.data() : null; rebuildGroup(); }, onErr));
+      gSubs.push(db.collection("g/" + g + "/chat").where("at", ">=", now() - G_CHAT_DAYS * 864e5).limit(400).onSnapshot((snap) => {
+        gChat = snap.docs.map((x) => ({ ...x.data(), id: x.id })).filter((m) => m && typeof m.t === "string" && typeof m.at === "number").sort((a, b) => a.at - b.at);
+        gChatLoaded = true; renderGroup(); renderBadges();
+      }, onErr));
+      gSubs.push(db.collection("g/" + g + "/req").limit(100).onSnapshot((snap) => {
+        gReqs = snap.docs.map((x) => ({ ...x.data(), uid: x.id })).filter((r) => typeof r.pid === "string").sort((a, b) => num(a.at) - num(b.at));
+        renderGroup(); renderGOv(); renderBadges();
+      }, onErr));
+      return;
+    }
+  }
+  if (!g) rebuildGroup();
+}
+function onPl(s) {
+  myPl = s.exists ? s.data() : null; plLoaded = true;
+  const now1 = !!gid();
+  if (gWasIn === false && now1) toast("Тебя приняли в группу! Добро пожаловать.");
+  if (gWasIn === true && !now1) toast("Ты больше не в группе. Опыт остался с тобой.");
+  gWasIn = now1;
+  syncGroup(); renderIdentity(); renderGroup();
+  if (myPl && joinCode && !gOv) gOpenJoin(joinCode);
+}
+// ---------- вкладка «Группа» ----------
+function renderGroup() {
+  const top = $("gTop"); if (!top) return;
+  const ic = $("gTabEmb"), sv = document.querySelector("#tab-party > svg");
+  if (ic && sv) { const on = inGroup(); ic.hidden = !on; sv.style.display = on ? "none" : ""; if (on) ic.innerHTML = gEmb(gInfo.emb, gInfo.col, 22); }
+  if (!inGroup()) {
+    $("gSeg").hidden = true; document.querySelectorAll(".gsub").forEach((el) => (el.hidden = true));
+    if (!plLoaded || (gid() && !gInfo)) { setHtml("gTop", '<section class="panel"><p class="hint">Загружаю группу…</p></section>'); return; }
+    if (!myPl) { setHtml("gTop", '<section class="panel ghero">' + gEmb("⚔️", G_COL[0], 64) + "<h2>Группы</h2><p>Сначала назови себя в Системе.</p></section>"); return; }
+    const p = me ? profile(me) : null;
+    const pend = myPl.req ? '<div class="gpend">⏳ Заявка в группу <b>«' + esc(myPl.reqName || "") + "»</b> отправлена. Ждём, когда лидер или помощник её примет." +
+      '<div class="acts"><button type="button" class="btn sm ghost" data-act="gcancel"' + (gBusy ? " disabled" : "") + ">Отменить заявку</button></div></div>" : "";
+    const rej = !myPl.req && myPl.rejected ? '<p class="hint" style="color:var(--gold)">Заявку в «' + esc(myPl.rejected) + "» отклонили. Можно попроситься в другую группу.</p>" : "";
+    setHtml("gTop", '<section class="panel ghero">' + gEmb("⚔️", G_COL[0], 64) + "<h2>Ты пока не в группе</h2>" +
+      "<p>В Системе играют группами: друзья и знакомые видят квесты друг друга и сами проверяют, что никто не врёт. Порядок держат лидер группы и его помощники.</p>" + pend + rej +
+      '<div class="gcards"><div class="gcard"><b>Создать группу</b><span class="hint">Ты станешь лидером: позовёшь друзей по ссылке и будешь следить за порядком.</span><button type="button" class="btn" data-act="gcreate"' + (myPl.req ? " disabled" : "") + ">Создать</button></div>" +
+      '<div class="gcard"><b>Вступить по ссылке</b><span class="hint">Попроси у лидера ссылку-приглашение и открой её. Или вставь её сюда.</span><form class="gjf" id="gJoinForm" autocomplete="off"><input type="text" id="gJoinIn" placeholder="Ссылка или код" aria-label="Ссылка или код приглашения"><button type="submit" class="btn ghost">Открыть</button></form></div></div>' +
+      (p ? '<p class="hint">Твой опыт: <b>' + p.xp + " XP</b>, уровень " + p.li.L + ". Он идёт с тобой в любую группу. Неделя и места в группе считаются с момента вступления.</p>" : "") + "</section>");
+    return;
+  }
+  const n = PLAYERS.length, r = gRole(me), rq = gReqN();
+  setHtml("gTop", '<section class="panel gtop">' + gEmb(gInfo.emb, gInfo.col, 46) + '<div class="t"><h2>' + esc(gInfo.name) + "</h2><span>" + gPl(n) + (r ? " · ты " + G_ROLE[r].replace(/^\S+ /, "").toLowerCase() : "") + "</span></div>" +
+    '<button type="button" class="gear" data-act="gmanage">⚙ ' + (gMod() ? "Управление" : "О группе") + (rq ? '<span class="bd">' + rq + "</span>" : "") + "</button></section>");
+  const cu = gChatUnread(), tu = unreadCmts();
+  setHtml("gSeg", [["mem", "Участники", ""], ["chat", "Чат", cu ? '<span class="n">' + (cu > 99 ? "99+" : cu) + "</span>" : ""], ["ver", "Проверка", verifyCount ? '<span class="n">' + verifyCount + "</span>" : ""], ["talk", "Обсуждения", tu ? '<span class="n">' + tu + "</span>" : ""]]
+    .map(([k, t, b]) => '<button type="button" data-act="gsub" data-s="' + k + '" aria-pressed="' + (gSub === k) + '">' + t + b + "</button>").join(""));
+  $("gSeg").hidden = false;
+  document.querySelectorAll(".gsub").forEach((el) => (el.hidden = el.dataset.sub !== gSub));
+  $("verEmpty").hidden = !$("verifyPanel").hidden;
+  $("talkEmpty").hidden = !$("talkPanel").hidden;
+  if (gSub === "chat") renderChat();
+}
+const chatTime = (at) => { const d = dayOf(at), t = dTm(at); return d === today() ? t : d === addDays(today(), -1) ? "вчера " + t : nice(d) + " " + t; };
+function renderChat() {
+  const box = $("gChat"); if (!box) return;
+  const near = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+  const html = !gChatLoaded ? '<p class="hint">Загружаю…</p>' : !gChat.length ? '<p class="hint">Здесь пока тихо. Напиши первым: договоритесь о целях на неделю.</p>' :
+    gChat.map((m, i) => {
+      const day = dayOf(m.at), sep = i === 0 || dayOf(gChat[i - 1].at) !== day ? '<div class="gday">' + esc(day === today() ? "Сегодня" : day === addDays(today(), -1) ? "Вчера" : nice(day)) + "</div>" : "";
+      if (m.sys) return sep + '<div class="gmsg sys"><p>' + esc(m.t) + "</p></div>";
+      const mine = m.by === uid, del = mine || gMod();
+      return sep + '<div class="gmsg' + (mine ? " me" : "") + '">' + avaHtml(m.pid, "sm") + '<div class="b"><div class="h"><b>' + esc(mine ? "Ты" : PLAYERS.some((p) => p.id === m.pid) ? pname(m.pid) : m.n || "Бывший участник") + "</b> · " + esc(dTm(m.at)) +
+        (del ? '<button type="button" class="gdel" data-act="gcdel" data-id="' + esc(m.id) + '" title="Удалить сообщение" aria-label="Удалить сообщение">×</button>' : "") + "</div><p>" + esc(m.t) + "</p></div></div>";
+    }).join("");
+  if (lastHtml.gChat !== html) { setHtml("gChat", html); if (near || gChatBottom) { box.scrollTop = box.scrollHeight; gChatBottom = false; } }
+  if (tab === "party" && gSub === "chat" && !document.hidden && gChat.length) {
+    const last = gChat[gChat.length - 1].at;
+    if (last > num(prefs.chatSeen)) { writePrefs({ chatSeen: last }); renderBadges(); setTimeout(renderGroup, 0); }
+  }
+}
+// ---------- шторка: управление, создание, вступление ----------
+function gOpenJoin(code) {
+  joinCode = null; store.set("sys.join", "");
+  gOv = { kind: "join", code, g: null, err: null, note: "" };
+  setTab("party"); renderGOv();
+  gCall({ a: "preview", code }).then((r) => { if (!gOv || gOv.kind !== "join") return; if (r) gOv.g = r.g; else gOv.err = "Ссылка не работает: её отключили или в ней ошибка. Попроси у лидера новую."; renderGOv(); });
+}
+function gPickers(emb, col) {
+  return '<div class="gfld"><label>Эмблема</label><div class="gembs">' + G_EMB.map((e) => '<button type="button" data-act="gemb" data-e="' + e + '" aria-pressed="' + (emb === e) + '" aria-label="Эмблема ' + e + '">' + gEmb(e, col, 34) + "</button>").join("") + "</div></div>" +
+    '<div class="gfld"><label>Цвет</label><div class="gcols">' + G_COL.map((c) => '<button type="button" data-act="gcol" data-c="' + c + '" aria-pressed="' + (col === c) + '" style="background:' + c + '" aria-label="Цвет"></button>').join("") + "</div></div>";
+}
+function renderGOv() {
+  const ov = $("gOv"); if (!ov) return;
+  if (!gOv) { if (!ov.hidden) hideOv(ov); return; }
+  const x = gOv, close = '<button type="button" class="btn sm ghost" data-act="gclose" style="margin-left:auto" aria-label="Закрыть">✕</button>', dis = gBusy ? " disabled" : "";
+  let h = "";
+  if (x.kind === "create") {
+    h = '<div class="ph"><h2 class="ptitle">Новая группа</h2>' + close + "</div>" +
+      '<div class="gfld"><label for="gNm">Название</label><input type="text" id="gNm" maxlength="30" value="' + esc(x.name) + '" placeholder="Например, «Утренние»"></div>' +
+      '<div class="gfld"><label for="gAb">Описание (необязательно)</label><textarea id="gAb" rows="2" maxlength="200" placeholder="Кто вы и зачем собрались">' + esc(x.about) + "</textarea></div>" +
+      gPickers(x.emb, x.col) + '<p class="hint">Ты станешь лидером. Друзей позовёшь по ссылке из ⚙ Управление.</p><div class="acts"><button type="button" class="btn" data-act="gdocreate"' + dis + ">Создать группу</button></div>";
+  } else if (x.kind === "join") {
+    h = '<div class="ph"><h2 class="ptitle">Приглашение в группу</h2>' + close + "</div>";
+    if (x.err) h += '<p class="hint" style="color:var(--gold)">' + esc(x.err) + "</p>";
+    else if (!x.g) h += '<p class="hint">Проверяю ссылку…</p>';
+    else {
+      const g = x.g;
+      h += '<div class="gcardh">' + gEmb(g.emb, g.col, 58) + '<div><b class="gnm">' + esc(g.name) + '</b><span class="hint" style="display:block">' + gPl(g.n) + (g.lead ? " · лидер " + esc(g.lead) : "") + "</span>" + (g.about ? '<p class="hint" style="margin:6px 0 0">' + esc(g.about) + "</p>" : "") + "</div></div>";
+      if (gid() === g.gid) h += '<p class="hint">Ты уже в этой группе.</p>';
+      else if (gid()) h += '<p class="hint" style="color:var(--gold)">Ты уже в группе «' + esc(gInfo ? gInfo.name : "") + "». В Системе можно быть только в одной группе: чтобы перейти, сначала выйди из своей (⚙ в шапке группы). Общий опыт перейдёт с тобой.</p>";
+      else h += '<div class="gfld"><label for="gNote">Пара слов лидеру (необязательно)</label><input type="text" id="gNote" maxlength="120" value="' + esc(x.note) + '" placeholder="Например, «Привет, я Данияр, друг Айтбатыра»"></div>' +
+        (myPl && myPl.req ? '<p class="hint">Прошлая заявка в «' + esc(myPl.reqName || "") + "» отменится.</p>" : "") +
+        '<div class="acts"><button type="button" class="btn" data-act="gdoreq"' + dis + ">Отправить заявку</button></div><p class=\"hint\">Лидер или помощник примет заявку, и группа откроется сама.</p>";
+    }
+  } else if (x.kind === "manage" && inGroup()) {
+    const r = gRole(me), lead = r === "lead", mod = gMod(), cf = x.cf || {};
+    h = '<div class="ph"><h2 class="ptitle">' + (mod ? "Управление группой" : "О группе") + "</h2>" + close + "</div>" +
+      '<div class="gcardh">' + gEmb(gInfo.emb, gInfo.col, 58) + '<div><b class="gnm">' + esc(gInfo.name) + '</b><span class="hint" style="display:block">' + gPl(PLAYERS.length) + "</span>" + (gInfo.about ? '<p class="hint" style="margin:6px 0 0">' + esc(gInfo.about) + "</p>" : "") + "</div></div>";
+    if (mod) {
+      h += '<div class="gsec"><h3>Пригласить</h3><div class="ginv"><code>' + esc(gLink()) + '</code><button type="button" class="btn sm" data-act="gcopy">Скопировать</button>' + (lead ? '<button type="button" class="btn sm ghost" data-act="gnewinv"' + dis + ">Новая ссылка</button>" : "") + "</div>" +
+        '<p class="hint">Код: <b>' + esc(gCode(gInfo.inv)) + "</b>. Друг откроет ссылку, назовёт себя и отправит заявку, а ты примешь её ниже." + (lead ? " «Новая ссылка» отключает старую." : "") + " В группе до " + G_MAX + " человек.</p></div>";
+      h += '<div class="gsec"><h3>Заявки · ' + gReqs.length + "</h3>" + (gReqs.length ? gReqs.map((q) => '<div class="greq"><div class="t"><b>' + esc(q.name) + "</b> · ур. " + num(q.L) + " · " + num(q.xp) + " XP" +
+        "<span>" + (q.note ? "«" + esc(q.note) + "» · " : "") + esc(chatTime(num(q.at))) + '</span></div><button type="button" class="btn sm ok" data-act="gok" data-u="' + esc(q.uid) + '"' + dis + '>Принять</button><button type="button" class="btn sm no" data-act="gno" data-u="' + esc(q.uid) + '"' + dis + ">Отклонить</button></div>").join("") : '<p class="hint">Новых заявок нет.</p>') +
+        (gReqs.length ? '<p class="hint">Опыт и уровень заявки посчитал сервер. Принимай тех, кого знаешь: в группе все проверяют квесты друг друга.</p>' : "") + "</div>";
+    }
+    h += '<div class="gsec"><h3>' + (mod ? "Участники и роли" : "Участники") + "</h3>" + PLAYERS.map((p) => {
+      const pr = gRole(p.id), b = [];
+      if (p.id !== me && mod) {
+        if (lead && pr === "member") b.push('<button type="button" class="btn sm ghost" data-act="grole" data-p="' + esc(p.id) + '" data-r="helper"' + dis + ">⭐ Помощник</button>");
+        if (lead && pr === "helper") b.push('<button type="button" class="btn sm ghost" data-act="grole" data-p="' + esc(p.id) + '" data-r="member"' + dis + ">Снять помощника</button>");
+        if (lead) b.push(cf.act === "glead" && cf.p === p.id ? '<button type="button" class="btn sm" data-act="glead" data-p="' + esc(p.id) + '"' + dis + ">Точно передать?</button>" : '<button type="button" class="btn sm ghost" data-act="gcf" data-a="glead" data-p="' + esc(p.id) + '">👑 Передать</button>');
+        if (lead || (r === "helper" && pr === "member")) b.push(cf.act === "gkick" && cf.p === p.id ? '<button type="button" class="btn sm no" data-act="gkick" data-p="' + esc(p.id) + '"' + dis + ">Точно исключить?</button>" : '<button type="button" class="btn sm no" data-act="gcf" data-a="gkick" data-p="' + esc(p.id) + '">Исключить</button>');
+      }
+      return '<div class="grow">' + avaHtml(p.id, "sm") + '<span class="t"><b>' + esc(p.name) + (p.id === me ? " (ты)" : "") + "</b> " + (pr && pr !== "member" ? '<span class="grole ' + pr + '">' + G_ROLE[pr] + "</span>" : '<span class="hint">участник</span>') + "</span>" + b.join("") + "</div>";
+    }).join("") + '<p class="hint"><b>Лидер</b>: всё. <b>Помощник</b>: принимает заявки и исключает участников. Проверяют квесты все.</p></div>';
+    if (lead) h += '<div class="gsec"><h3>Оформление</h3><div class="gfld"><label for="gNm">Название</label><input type="text" id="gNm" maxlength="30" value="' + esc(x.name) + '"></div>' +
+      '<div class="gfld"><label for="gAb">Описание</label><textarea id="gAb" rows="2" maxlength="200">' + esc(x.about) + "</textarea></div>" + gPickers(x.emb, x.col) +
+      '<div class="acts"><button type="button" class="btn" data-act="gsave"' + dis + ">Сохранить</button></div></div>";
+    const alone = PLAYERS.length <= 1;
+    h += '<div class="gsec"><h3>Выход</h3>' + (lead && !alone ? '<p class="hint">Лидер может выйти, когда передаст лидерство другому участнику.</p>' :
+      (cf.act === "gleave" ? '<button type="button" class="btn no" data-act="gleave"' + dis + ">" + (alone ? "Точно? Группа удалится вместе с чатом" : "Точно выйти?") + "</button>" : '<button type="button" class="btn no" data-act="gcf" data-a="gleave">' + (alone ? "Выйти и удалить группу" : "Выйти из группы") + "</button>") +
+      '<p class="hint">Общий опыт и уровень останутся с тобой. Опыт в группе начнётся заново в новой группе.</p>') + "</div>";
+  } else { gOv = null; hideOv(ov); return; }
+  const box = $("gBox"), a = document.activeElement, keep = a && box.contains(a) && a.id ? { id: a.id, s: a.selectionStart, e: a.selectionEnd } : null;
+  if (lastHtml.gBox !== h) { lastHtml.gBox = h; box.innerHTML = h; }
+  if (keep) { const n = $(keep.id); if (n) { try { n.focus({ preventScroll: true }); if (keep.s != null) n.setSelectionRange(keep.s, keep.e); } catch {} } }
+  showOv(ov);
+}
+const gVal = (id) => { const el = $(id); return el ? el.value : ""; };
+function gKeepForm() { if (!gOv) return; if ($("gNm")) gOv.name = gVal("gNm"); if ($("gAb")) gOv.about = gVal("gAb"); if ($("gNote")) gOv.note = gVal("gNote"); }
+async function groupAct(act, b) {
+  if (!/^g(manage|create|close|emb|col|docreate|doreq|cancel|copy|newinv|ok|no|role|lead|kick|leave|cf|save|sub|cdel)$/.test(act)) return false;
+  gKeepForm();
+  if (act === "gsub") { gSub = b.dataset.s; store.set("sys.gsub", gSub); if (gSub === "chat") gChatBottom = true; lastHtml.talk = null; renderTalk(); renderGroup(); renderBadges(); return true; }
+  if (act === "gmanage") { if (!inGroup()) return true; gOv = { kind: "manage", name: gInfo.name, about: gInfo.about || "", emb: gInfo.emb, col: gInfo.col }; renderGOv(); return true; }
+  if (act === "gcreate") { gOv = { kind: "create", name: "", about: "", emb: G_EMB[0], col: G_COL[0] }; renderGOv(); setTimeout(() => { const n = $("gNm"); if (n) n.focus(); }, 50); return true; }
+  if (act === "gclose") { gOv = null; renderGOv(); return true; }
+  if (act === "gemb") { if (gOv) gOv.emb = b.dataset.e; renderGOv(); return true; }
+  if (act === "gcol") { if (gOv) gOv.col = b.dataset.c; renderGOv(); return true; }
+  if (act === "gcf") { if (gOv) gOv.cf = { act: b.dataset.a, p: b.dataset.p }; renderGOv(); return true; }
+  if (act === "gcopy") { const l = gLink(); try { await navigator.clipboard.writeText(l); toast("Ссылка скопирована. Отправь её другу."); } catch { toast("Скопируй ссылку вручную: " + l); } return true; }
+  if (act === "gdocreate") { const r = await gCall({ a: "create", name: gOv.name, about: gOv.about, emb: gOv.emb, col: gOv.col }, "Группа создана. Ты лидер: позови друзей по ссылке."); if (r) { gOv = null; gSub = "mem"; renderGOv(); } return true; }
+  if (act === "gdoreq") { const r = await gCall({ a: "request", code: gOv.code, note: gOv.note }, "Заявка отправлена. Ждём, когда её примут."); if (r) { gOv = null; renderGOv(); } return true; }
+  if (act === "gcancel") { await gCall({ a: "cancel" }, "Заявка отменена."); return true; }
+  if (act === "gnewinv") { await gCall({ a: "invite" }, "Новая ссылка готова. Старая больше не работает."); return true; }
+  if (act === "gok") { await gCall({ a: "approve", uid: b.dataset.u }, "Принят в группу."); return true; }
+  if (act === "gno") { await gCall({ a: "reject", uid: b.dataset.u }, "Заявка отклонена."); return true; }
+  if (act === "grole") { await gCall({ a: "role", pid: b.dataset.p, role: b.dataset.r }, b.dataset.r === "helper" ? pname(b.dataset.p) + " теперь помощник." : "Роль снята."); return true; }
+  if (act === "glead") { if (gOv) gOv.cf = null; await gCall({ a: "lead", pid: b.dataset.p }, "Лидерство передано."); return true; }
+  if (act === "gkick") { if (gOv) gOv.cf = null; await gCall({ a: "kick", pid: b.dataset.p }, "Участник исключён."); return true; }
+  if (act === "gleave") { const r = await gCall({ a: "leave" }, "Ты вышел из группы."); if (r) { gOv = null; renderGOv(); } return true; }
+  if (act === "gsave") { await gCall({ a: "edit", name: gOv.name, about: gOv.about, emb: gOv.emb, col: gOv.col }, "Сохранено."); return true; }
+  if (act === "gcdel") {
+    const m = gChat.find((x) => x.id === b.dataset.id); if (!m || !gid() || !(m.by === uid || gMod())) return true;
+    try { await db.doc("g/" + gid() + "/chat/" + m.id).delete(); } catch (err) { fail(err); }
+    return true;
+  }
+  return true;
+}
+async function groupSubmit(e) {
+  const f = e.target;
+  if (f.id === "regForm") {
+    e.preventDefault();
+    const name = (gVal("regName") || "").trim().replace(/\s+/g, " ").slice(0, 24);
+    if (name.length < 2) { toast("Напиши имя, хотя бы 2 буквы."); return true; }
+    const r = await gCall({ a: "reg", name });
+    if (r && r.pl) onPl({ exists: true, data: () => r.pl });
+    return true;
+  }
+  if (f.id === "gJoinForm") {
+    e.preventDefault();
+    const v = (gVal("gJoinIn") || "").trim(), m = /join[=-]([A-Za-z0-9-]{4,24})/.exec(v), code = (m ? m[1] : v).toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (code.length < 4) { toast("Вставь ссылку-приглашение или код."); return true; }
+    gOpenJoin(code); return true;
+  }
+  if (f.id === "gChatForm") {
+    e.preventDefault();
+    const inp = $("gChatIn"), t = (inp.value || "").trim().slice(0, 500);
+    if (!t || !gid() || !uid || !canWrite) return true;
+    inp.value = ""; gChatBottom = true;
+    try { await db.doc("g/" + gid() + "/chat/" + now().toString(36) + Math.random().toString(36).slice(2, 7)).set({ by: uid, t }); }
+    catch (err) { inp.value = t; fail(err); }
+    return true;
+  }
+  return false;
+}
+
+// v28: обучение ждёт, пока новичок разберётся с именем и приглашением в группу
+function tourWhenFree() { if (gOv || !$("pickOv").hidden) { setTimeout(tourWhenFree, 1500); return; } startTour(); }
 function renderLog() { const r = heatHtml(mainPid(), "heat"); setHtml("heat", r.html); $("hmSub").textContent = r.sub; hmScroll("heat"); }
 // на узком экране год не влезает: при первой отрисовке прокрутить к сегодняшнему дню
 function hmScroll(id) {
@@ -5303,11 +5679,11 @@ const hmLevel = (n) => (n <= 0 ? 0 : n <= 2 ? 1 : n <= 4 ? 2 : n <= 6 ? 3 : 4);
 function dayInfo(pid, d) {
   const p = profile(pid), list = (tasksBy[pid] || []).filter((t) => t.date === d && !t.moved);
   const done = list.filter(countsTask).length;
-  return { d, total: list.length, done, miss: list.length - done, xp: num(p.xpByDay[d]), off: isOff(pid, d), tam: p.tampered.has(d), joined: d >= joinedOf(pid), future: d > today() };
+  return { d, total: list.length, done, miss: list.length - done, xp: num(p.allByDay[d]), off: isOff(pid, d), tam: p.tampered.has(d), joined: d >= joinedOf(pid), future: d > today() };
 }
 function dayInfoText(x) {
   const wd = WD[(new Date(toUTC(x.d)).getUTCDay() + 6) % 7].toLowerCase();
-  if (!x.joined) return wd + ", " + nice(x.d) + ": ещё не в пати";
+  if (!x.joined) return wd + ", " + nice(x.d) + ": ещё не в группе";
   if (x.future) return wd + ", " + nice(x.d) + ": ещё впереди";
   let s = wd + ", " + nice(x.d) + ": ";
   s += x.total ? "выполнено " + x.done + " из " + x.total : x.done ? "выполнено " + x.done : "квестов не было";
@@ -5364,60 +5740,22 @@ const boundUids = () => new Set(Object.values(roster).filter(Boolean));
 
 function renderIdentity() {
   const ov = $("pickOv");
-  if (!db || !rosterLoaded || !metaLoaded || !claimsLoaded || !uid || !canWrite || me || pickDismissed) { ov.hidden = true; return; }
-  const free = freeSlots();
-  const myClaim = claims.find((c) => c.uid === uid && (typeof c.name === "string" || free.some((p) => p.id === c.want)));
-  let h;
-  const guestBtn = '<button class="btn ghost" data-act="dismiss">Смотреть как гость</button>';
-  const full = activePlayers().length >= MAX_ACTIVE;
-  if (isOwner && free.length) {
-    h = '<p class="sub" style="margin:0">Ты владелец системы. Выбери своего персонажа, он навсегда привяжется к твоему аккаунту.</p><div class="picks">' +
-      free.map((p) => '<button class="btn" data-act="bind" data-p="' + p.id + '">' + esc(p.name) + "</button>").join("") + guestBtn + "</div>";
-  } else if (myClaim && !reclaiming) {
-    h = '<p class="sub" style="margin:0">Запрос на вход в пати как <b style="color:var(--fg)">' + esc(typeof myClaim.name === "string" ? myClaim.name : pname(myClaim.want)) + "</b> отправлен. Владелец системы должен подтвердить, что это ты. Страница обновится сама.</p>" +
-      '<div class="picks"><button class="btn ghost" data-act="reclaim">Изменить имя</button>' + guestBtn + "</div>";
-  } else if (full) {
-    h = '<p class="sub">В пати уже ' + MAX_ACTIVE + " игроков, это максимум. Можно смотреть статусы игроков.</p><div class=\"picks\">" + guestBtn + "</div>";
-  } else {
-    h = '<p class="sub" style="margin:0">Добро пожаловать! Как тебя называть в пати? После подтверждения владельца персонаж навсегда привяжется к твоему аккаунту' + (STANDALONE ? "" : " claude.ai") + ".</p>" + (STANDALONE ? '<p class="hint" style="margin:0;color:var(--gold)">Уже играл в «Системе» раньше, в claude.ai? Ничего не отправляй: напиши владельцу, он вернёт тебе твой профиль со всем опытом.</p>' : "") +
-      '<form class="picks" id="joinForm" autocomplete="off"><input type="text" id="joinName" maxlength="24" placeholder="Твоё имя, например «Данияр»" aria-label="Имя в пати" style="text-align:center">' +
-      '<button class="btn" type="submit">Отправить запрос</button>' + guestBtn + "</form>";
-  }
-  setHtml("pickBody", h);
+  // v28: игрок называет себя сам, без одобрения владельца. Дальше: создать группу или вступить по ссылке
+  if (!db || !uid || !canWrite || !plLoaded || myPl) { if (!ov.hidden) ov.hidden = true; return; }
+  setHtml("pickBody", '<p class="sub" style="margin:0">Добро пожаловать в Систему! Как тебя называть? Имя увидят друзья в группе.</p>' +
+    '<form class="picks" id="regForm" autocomplete="off"><input type="text" id="regName" maxlength="24" placeholder="Твоё имя, например «Данияр»" aria-label="Имя" style="text-align:center">' +
+    '<button class="btn" type="submit"' + (gBusy ? " disabled" : "") + ">Войти в Систему</button></form>" +
+    (joinCode ? '<p class="hint" style="margin:0">Потом откроется приглашение в группу.</p>' : '<p class="hint" style="margin:0">Потом создашь свою группу или вступишь в группу друга по ссылке.</p>'));
   ov.hidden = false;
 }
 
 function renderAdmin() {
   const panel = $("adminPanel");
-  if (!isOwner || !db) { panel.hidden = true; adminPend = 0; return; }
+  adminPend = 0;
+  // v28: составом и заявками управляют лидеры групп. Владельцу сайта здесь остались только сообщения об ошибках
+  if (!isOwner || !db) { panel.hidden = true; return; }
   panel.hidden = false;
-  const bound = boundUids();
-  const pend = claims.filter((c) => !bound.has(c.uid) && (typeof c.name === "string" || PLAYERS.some((p) => p.id === c.want)));
-  const full = activePlayers().length >= MAX_ACTIVE;
-  adminPend = pend.length;
-  panel.classList.toggle("alert", pend.length > 0);
-  let h = "";
-  if (pend.length) {
-    h += '<div class="lbl" style="color:var(--gold)">Запросы на вход</div>' + pend.map((c) => {
-      const byName = typeof c.name === "string";
-      const blocked = byName ? full : !!roster[c.want];
-      return '<div class="arow"><span>Аккаунт <b data-uname="' + esc(c.uid) + '">…</b> хочет войти как <b>' + esc(byName ? c.name : pname(c.want)) + "</b>" + (blocked ? ' <span class="flag">' + (byName ? "пати заполнена (" + MAX_ACTIVE + ")" : "место занято") + "</span>" : "") +
-        '</span><span class="acts">' + (byName ? legacyFree().map((l) => '<button class="btn sm" data-act="claimlegacy" data-u="' + esc(c.uid) + '" data-to="' + esc(l.uid) + '">Это ' + esc(pname(l.slot)) + " (старый профиль)</button>").join("") : "") +
-        '<button class="btn sm ok" data-act="approve" data-u="' + esc(c.uid) + '"' + (blocked ? " disabled" : "") + ">" + (byName && legacyFree().length ? "Новый игрок" : "Подтвердить") + '</button><button class="btn sm no" data-act="rejectclaim" data-u="' + esc(c.uid) + '">Отклонить</button></span></div>' +
-        (byName && legacyFree().length ? '<div class="hint" style="color:var(--gold)">Есть старые профили без входа. Если это кто-то из них, нажми «Это … (старый профиль)», а не «Новый игрок».</div>' : "");
-    }).join("");
-  }
-  h += '<div class="lbl">Состав пати · ' + activePlayers().length + " из " + MAX_ACTIVE + "</div>" + PLAYERS.filter((p) => roster[p.id]).map((p) =>
-    '<div class="arow"><span><b>' + esc(p.name) + "</b> · аккаунт <span data-uname=\"" + esc(roster[p.id]) + '">…</span>' + (roster[p.id] === uid ? " (ты)" : "") +
-    (joinedOf(p.id) > SEASON_START ? " · с " + nice(joinedOf(p.id)) : "") + (p.archived ? ' · <span class="flag">в архиве</span>' : "") + "</span>" +
-    (roster[p.id] !== uid ? (p.archived
-      ? '<button class="btn sm ghost" data-act="unarchive" data-p="' + p.id + '"' + (full ? " disabled" : "") + ">Вернуть</button>"
-      : '<button class="btn sm ghost" data-act="archive" data-p="' + p.id + '" title="Убрать из недели, проверок и голосований. Данные сохранятся.">В архив</button>') : "") + "</div>").join("") +
-    '<p class="hint" style="margin:0">Чтобы добавить человека: ' + (STANDALONE ? "отправь ему ссылку на сайт. Он создаст аккаунт" : "«Поделиться» → пригласи его по email как «Редактора». Он откроет сайт") + ', напишет имя, а ты подтвердишь здесь. Максимум ' + MAX_ACTIVE + " активных игроков.</p>" +
-    (STANDALONE ? "" : '<h3 class="fh">Переезд на свой сайт</h3><div class="picks" style="justify-content:flex-start"><button class="btn sm" data-act="exportall">Выгрузить всё для переезда</button><span class="hint" id="exportMsg"></span></div>');
-  h += bugsAdminHtml();
-  if (!STANDALONE) h += '<p class="hint" style="margin:0">Подтверждай, только если имя аккаунта совпадает с другом. Квесты и голоса хранятся под аккаунтом: после отвязки они скрываются, после повторной привязки того же аккаунта возвращаются.</p>';
-  if (STANDALONE && legacyFree().length) h += '<p class="hint" style="margin:0">Ещё не вошли со старым профилем: ' + legacyFree().map((l) => esc(pname(l.slot))).join(", ") + '. Когда пришлют запрос с именем, нажми «Это … (старый профиль)».</p>';
+  const h = bugsAdminHtml();
   if (lastHtml.admin !== h) { lastHtml.admin = h; $("admin").innerHTML = h; fillNames(); }
 }
 async function fillNames() {
@@ -5504,7 +5842,7 @@ function newBugCount() {
 }
 function renderBadges() {
   const un = unreadCmts();
-  const n = verifyCount + adminPend + (isOwner ? newBugCount() : 0) + un, b = $("partyBadge");
+  const n = verifyCount + adminPend + (isOwner ? newBugCount() : 0) + un + gReqN() + gChatUnread(), b = $("partyBadge");
   b.hidden = !n; b.textContent = n;
   const v = $("vNote");
   v.hidden = !verifyCount && !un;
@@ -5560,6 +5898,7 @@ function renderAll() {
     for (const a of ACH) if (got[a.k]) achToasted.add(a.k);
     lastAch[me] = { ...got };
   }
+  renderGroup();
   fxWatch();
   renderMigr();
   renderSmig();
@@ -6056,11 +6395,12 @@ document.addEventListener("click", async (e) => {
   const act = b.dataset.act;
   if (act === "wday") { const d = num(b.dataset.d); if (selDays.has(d)) selDays.delete(d); else selDays.add(d); lastHtml.qWeekdays = null; renderRepeat(); return; }
   if (act === "tshift" && TEST_MODE) { const v = b.dataset.v; testShift = v === "0" ? 0 : testShift + num(v); renderTestBar(); renderAll(); ensureDailies(); writeSeals(); return; }
-  if (act === "tab") { setTab(b.dataset.t); return; }
+  if (act === "tab") { if (b.id === "vNote" && (verifyCount || unreadCmts())) { gSub = verifyCount ? "ver" : "talk"; store.set("sys.gsub", gSub); } setTab(b.dataset.t); return; }
   if (plUi(b, act)) return;
   if (dUi(b, act)) return;
   if (yrUi(b, act)) return;
   if (await pfAct(b, act)) return;
+  if (await groupAct(act, b)) return;
   if (act === "guideopen") { setTab("more"); setTimeout(() => { const g = $("guidePanel"); if (g) g.scrollIntoView({ block: "start" }); }, 30); return; }
   if (act === "bugsold") { bugsOld = !bugsOld; openKeys.add("bugsClosed"); renderAdmin(); return; }
   if (act === "bugopen") { setTab("more"); setTimeout(() => { const g = $("bugPanel"); if (g) g.scrollIntoView({ block: "start" }); const t = $("bugText"); if (t) t.focus(); }, 30); return; }
@@ -6499,6 +6839,8 @@ const PUSH_TYPES = [
   { k: "nudge", n: "Друзья напоминают зайти («Пнуть»)" },
   { k: "week", n: "Итоги недели готовы (пн, 9:00)" },
   { k: "remind", n: "Напоминания к моим квестам (⏰)" },
+  { k: "chat", n: "Сообщения в чате группы" },
+  { k: "group", n: "Группа: заявки и приём" },
 ];
 let pushUI = { loaded: false, busy: false, avail: null, st: null };
 async function refreshPush() {
@@ -6747,6 +7089,8 @@ async function writeSeals() {
 const TASK_RANGES = [["", "2026-12-01"], ["2026-12-01", "2027-02-01"], ["2027-02-01", ""]];
 const onErr = (e) => { if (e && e.code !== "unavailable") showNotice("Связь с системой потеряна. Обнови страницу."); };
 function syncSubs() {
+  // v28: кто ушёл из группы, того больше не слушаем
+  for (const id of Object.keys(subs)) if (!PLAYERS.some((p) => p.id === id)) { subs[id].un.forEach((f) => f()); delete subs[id]; tasksBy[id] = []; storiesBy[id] = []; votesBy[id] = []; votesVer++; sealsBy[id] = {}; prefsBy[id] = {}; }
   for (const p of PLAYERS) {
     const u = (isActive(p) || p.id === me) ? roster[p.id] || null : null, s = subs[p.id];
     if (s && s.uid === u) continue;
@@ -6817,7 +7161,7 @@ function syncSubs() {
       renderTabs(); renderGuide(); renderMyBugs(); if (tab === "more") markSeen(); touchSeen();
       if (tab === "party" && cmtBase == null) cmtBase = num(prefs.cmtSeen);
       lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderStatus(); renderMigr(); renderSmig(); renderDiary(); renderProfile();
-      if (!prefs.tourDone && !tourAuto && me) { tourAuto = true; setTimeout(startTour, 900); }
+      if (!prefs.tourDone && !tourAuto && me) { tourAuto = true; setTimeout(tourWhenFree, 900); }
     }, onErr);
   }
 }
@@ -6869,6 +7213,7 @@ document.addEventListener("toggle", (e) => {
   }
 }, true);
 document.addEventListener("submit", async (e) => {
+  if (e.target && (await groupSubmit(e))) return;
   if (!e.target || e.target.id !== "joinForm") return;
   e.preventDefault();
   const name = ($("joinName")?.value || "").trim().replace(/\s+/g, " ").slice(0, 24);
@@ -6881,7 +7226,7 @@ $("bugForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const text = $("bugText").value.trim();
   if (!text) { toast("Опиши, что случилось."); $("bugText").focus(); return; }
-  if (!db || !uid || !canWrite || !me) { toast("Отправлять сообщения могут только игроки пати."); return; }
+  if (!db || !uid || !canWrite || !me) { toast("Отправлять сообщения могут только игроки Системы."); return; }
   $("bugBtn").disabled = true;
   try {
     let img = null;
@@ -6970,21 +7315,11 @@ renderAll.day = today();
   }).catch(() => {});
   if (!uid) showNotice("Не удалось определить аккаунт. Войди в claude.ai, чтобы играть. Пока доступен только просмотр.");
   else if (!canWrite && !STANDALONE) showNotice("У тебя доступ только на просмотр. Чтобы играть, владелец должен пригласить тебя по email как «Редактора».");
-  db.doc("roster/main").onSnapshot((s) => {
-    rosterMain = s.exists ? { ...s.data() } : {};
-    rebuildRoster(); rosterLoaded = true; recomputeMe(); if (metaLoaded) syncSubs(); renderAll();
-  }, onErr);
-  db.doc("roster/meta").onSnapshot((s) => {
-    rosterMeta = s.exists ? { ...s.data() } : null; metaLoaded = true;
-    rebuildRoster(); recomputeMe(); if (rosterLoaded) syncSubs(); renderAll();
-  }, onErr);
+  // v28: кто я и в какой группе (пишет только сервер). Группа даёт состав игроков вместо старых roster/main и roster/meta
+  if (uid) db.doc("pl/" + uid).onSnapshot(onPl, onErr); else { plLoaded = true; rebuildGroup(); }
   db.collection("rs").limit(1000).onSnapshot((snap) => {
     bugStatus = Object.fromEntries(snap.docs.map((x) => [x.id, x.data()]));
     renderMyBugs(); renderAdmin(); renderBadges(); renderTabs();
-  }, onErr);
-  db.collection("acc").limit(100).onSnapshot((snap) => {
-    claims = snap.docs.map((x) => ({ uid: x.id, ...x.data() }));
-    claimsLoaded = true; renderAll();
   }, onErr);
   if (uid && canWrite) syncClock(); else clockTried = true;
   renderAll();

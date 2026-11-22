@@ -8,7 +8,7 @@ from playwright.async_api import async_playwright
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 def page_html():
     h = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
-    mock = open(os.path.join(ROOT, 'ci', 'mock_supabase.js'), encoding='utf-8').read()
+    mock = open(os.path.join(ROOT, 'ci', 'sys_mock.js'), encoding='utf-8').read() + '\n' + open(os.path.join(ROOT, 'ci', 'mock_supabase.js'), encoding='utf-8').read()
     data = json.dumps(make(), ensure_ascii=False).replace('</script', '<\\/script')
     h = re.sub(r'<script src="vendor/supabase\.js[^"]*"></script>', lambda m: '<script>window.__MOCK=' + data + ';</script><script>' + mock + '</script>', h)
     h = re.sub(r'<script src="config\.js[^"]*"></script>', lambda m: '<script>window.SISTEMA_CONFIG={url:"https://ci.invalid",key:"ci"};</script>', h)
@@ -44,9 +44,11 @@ async def run():
             check(await pg.evaluate("document.getElementById('migrOv').hidden"), 'окно закрывается кнопкой «Позже»')
             check(await pg.evaluate("!!document.querySelector('#migrNote .migrn')"), 'плашка «Перевести на новый опыт» на месте')
             n = await pg.evaluate("document.querySelectorAll('#quests .qi').length"); check(n >= 5, f'квесты дня показаны ({n})')
-            for t in ['today', 'story', 'diary', 'party', 'status', 'more']:
+            for t in ['today', 'story', 'diary', 'party', 'chat', 'status', 'more']:
                 if t == 'more':  # v25: «Ещё» стала «Настройками», вход через шестерёнку в «Профиле»
                     await pg.click('#tab-status'); await pg.wait_for_timeout(200); await pg.click('#profHero .pfgear')
+                elif t == 'chat':  # v28: чат группы
+                    await pg.click('#gSeg [data-s=chat]'); await pg.wait_for_timeout(200)
                 else: await pg.click('#tab-' + t)
                 await pg.wait_for_timeout(350)
                 await pg.evaluate("document.querySelectorAll('details').forEach(d=>d.open=true)"); await pg.wait_for_timeout(150)
@@ -58,6 +60,10 @@ async def run():
             await pg.click('#tab-status'); await pg.wait_for_timeout(300)
             check(await pg.evaluate("document.querySelectorAll('#heat .hm[data-d]').length") > 20, 'карта активности нарисована')
             await pg.click('#tab-party'); await pg.wait_for_timeout(300)
+            check('Автотест' in await pg.evaluate("document.getElementById('gTop').innerText"), 'шапка группы на месте')
+            await pg.click('#gSeg [data-s=chat]'); await pg.wait_for_timeout(200); await pg.fill('#gChatIn', 'Привет из автотеста'); await pg.press('#gChatIn', 'Enter'); await pg.wait_for_timeout(500)
+            check('Привет из автотеста' in await pg.evaluate("document.getElementById('gChat').innerText"), 'сообщение в чат группы отправляется')
+            await pg.click('#gSeg [data-s=mem]'); await pg.wait_for_timeout(200)
             await pg.click('#party .pc[data-p=aldiyar] .nm'); await pg.wait_for_timeout(400)
             check(await pg.evaluate("!document.getElementById('friendOv').hidden"), 'окно друга открывается')
             check(await pg.evaluate("document.querySelectorAll('#fHeat .hm[data-d]').length") > 20, 'у друга есть карта активности')

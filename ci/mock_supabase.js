@@ -34,7 +34,18 @@
       if (st.op === "upsert") {
         for (const r of st.payload) {
           if (M.denyPrefix && r.path.split("/")[1] !== M.myUid() && !M.isAdmin()) return { data: null, error: { code: "42501", message: "new row violates row-level security policy" } };
-          docs[r.path] = JSON.parse(JSON.stringify(r.data)); window.__writes.push(["set", r.path, r.data]); fire(r.path, "UPDATE");
+          let d = JSON.parse(JSON.stringify(r.data));
+          // v28: как триггеры сервера: чат (автор, время), покупки (prof.own меняет только сервер)
+          if (/^g\/[^/]+\/chat\//.test(r.path)) {
+            const pl = docs["pl/" + M.myUid()] || {};
+            if (d.by !== M.myUid() || d.sys || !pl.gid || r.path.split("/")[1] !== pl.gid || r.path in docs) return { data: null, error: { code: "42501", message: "new row violates row-level security policy" } };
+            d = { by: M.myUid(), pid: pl.pid, n: pl.name || "", t: String(d.t || "").trim().slice(0, 500), at: Date.now() };
+          }
+          if (/^q\/[^/]+\/meta\/prefs$/.test(r.path) && d.prof && typeof d.prof === "object") {
+            const old = docs[r.path] && docs[r.path].prof && docs[r.path].prof.own;
+            if (old) d.prof.own = JSON.parse(JSON.stringify(old)); else delete d.prof.own;
+          }
+          docs[r.path] = d; window.__writes.push(["set", r.path, d]); fire(r.path, "UPDATE");
         }
         return { data: null, error: null };
       }
@@ -58,6 +69,15 @@
         return { data: null, error: null };
       }
       return { data: null, error: { message: "no rpc" } };
+    },
+    functions: {
+      invoke: async (name, o) => {
+        if (M.offline || !window.__SYS) return { data: null, error: { message: "fetch failed", context: { json: async () => ({}) } } };
+        const ctx = window.__SYS.memCtx(docs, M.myUid(), { now: () => Date.now() + (M.skew || 0), onWrite: (p) => { window.__writes.push(["fn", p]); fire(p, "UPDATE"); } });
+        const data = await window.__SYS.handle(ctx, JSON.parse(JSON.stringify((o && o.body) || {})));
+        window.__writes.push(["call", (o && o.body && o.body.a) || "", data && data.ok]);
+        return { data, error: null };
+      },
     },
     storage: { from: () => ({ upload: async (id, blob) => { window.__writes.push(["upload", id, blob.size]); return { data: { path: id }, error: null }; }, remove: async (ids) => { window.__writes.push(["remove", ids]); return { error: null }; } }) },
     channel: (name, opts) => {

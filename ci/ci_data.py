@@ -32,5 +32,14 @@ def make(seed=7):
     # старые повторы с буквой: для окна перевода на новый опыт (v19)
     docs['q/u_me/daily/rp1'] = {'title': 'Зарядка', 'stat': 'str', 'rank': 'D', 'rep': {'type': 'daily'}, 'start': days[0], 'createdAt': ms(days[0], 8)}
     docs['q/u_me/daily/rp2'] = {'title': 'Английский через день', 'stat': 'int', 'rank': 'C', 'rep': {'type': 'every', 'n': 2}, 'start': days[0], 'createdAt': ms(days[0], 8)}
+    # v28: пати стала группой: кто где (pl/), состав группы, пара сообщений в чате
+    names = {'aitbatyr': 'Айтбатыр', 'aldiyar': 'Арман', 'nursultan': 'Дана'}; roles = {'aitbatyr': 'lead', 'aldiyar': 'helper', 'nursultan': 'member'}
+    for slot, uid in U.items():
+        docs[f'pl/{uid}'] = {'pid': slot, 'name': names[slot], 'gid': 'g-ci', 'role': roles[slot], 'carry': 0, 'gAt': 0, 'cach': [], 'joined': '2026-10-15'}
+    docs['g/g-ci/info'] = {'name': 'Автотест', 'about': 'Вымышленная группа', 'emb': '🐺', 'col': '#49e3a0', 'lead': 'aitbatyr', 'inv': 'CITEST22',
+        'members': {slot: {'uid': uid, 'name': names[slot], 'role': roles[slot], 'joined': '2026-10-15', 'gAt': 0, 'carry': 0, 'cach': []} for slot, uid in U.items()}}
+    docs['gi/CITEST22'] = {'gid': 'g-ci'}
+    docs['g/g-ci/chat/a1'] = {'sys': 1, 't': 'Арман теперь помощник', 'at': ms(TODAY, 0, 2)}
+    docs['g/g-ci/chat/a2'] = {'by': 'u_arman', 'pid': 'aldiyar', 'n': 'Арман', 't': 'Кто завтра на пробежку в 7? Очень длинное сообщение, чтобы проверить перенос строк в чате на узком экране телефона', 'at': ms(TODAY, 0, 3)}
     accs = [{'auth_id': 'a-me', 'uid': 'u_me', 'email': 'ci@sistema.local', 'admin': True, 'created_at': '2026-10-15T00:00:00Z'}]
     return {'docs': docs, 'accounts': accs, 'session': {'user': {'id': 'a-me', 'email': 'ci@sistema.local'}}}
