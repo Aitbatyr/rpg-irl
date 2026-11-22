@@ -1310,9 +1310,19 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .gjf{display:flex;gap:8px}.gjf input{flex:1;min-width:0}
 .gpend{border:1px solid rgba(255,207,92,.4);background:rgba(255,207,92,.06);padding:12px 14px;width:100%;text-align:left}
 .gpend .acts{margin-top:8px}
-.gchat{display:flex;flex-direction:column;gap:10px;max-height:min(56vh,560px);overflow-y:auto;padding-right:4px;overscroll-behavior:contain}
+.gchat{display:flex;flex-direction:column;gap:10px;max-height:min(56vh,560px);overflow-y:auto;padding:16px 4px 4px 0;overscroll-behavior:contain}
 .gmsg{display:flex;gap:10px;align-items:flex-start}
 .gmsg .av{flex:none}
+.gmsg .pfavw.gcav{width:42px;height:42px;margin-top:4px}
+.gmsg .pfavw.gcav .pfav{width:38px;height:38px;font-size:16px;border-width:2px}
+.gmsg .gsp{width:42px;flex:none}
+.gmsg.cont{margin-top:-6px}
+.gmsg .grl{font:700 10px var(--f-mono);letter-spacing:.04em;color:var(--muted);margin-left:6px;white-space:nowrap}
+.gmsg .grl.lead{color:var(--gold)}.gmsg .grl.helper{color:var(--story)}
+.pc .groi{font-size:14px;margin-left:5px;vertical-align:1px}
+.pc .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc.mine{box-shadow:inset 3px 0 0 var(--sys);border-color:rgba(94,200,255,.35)}
+.pcav{position:relative;display:inline-flex;flex:none}.pcav .ondot{position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;border:2px solid var(--panel-solid)}
 .gmsg .b{background:rgba(255,255,255,.03);border:1px solid var(--line-soft);padding:7px 10px;max-width:min(80%,520px);min-width:0}
 .gmsg .h{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}.gmsg .h b{color:var(--fg)}
 .gmsg p{margin:2px 0 0;font-size:14px;overflow-wrap:anywhere;white-space:pre-wrap}
@@ -5390,8 +5400,8 @@ function renderParty() {
   const archived = [];
   setHtml("party", activePlayers().map((pl) => {
     const p = profile(pl.id); const hr = hunter(p.li.L); const bound = !!roster[pl.id];
-    return '<button class="pc" data-act="view" data-p="' + pl.id + '" aria-current="' + (friendId === pl.id) + '">' +
-      '<div class="top1">' + avaHtml(pl.id, "sm") + '<span class="rank r-' + hr + '">' + hr + '</span><span class="nm">' + esc(pl.name) + " " + onDot(pl.id) + "</span>" + (pl.role === "lead" || pl.role === "helper" ? '<span class="grole ' + pl.role + '" title="' + G_ROLE[pl.role] + '">' + G_ROLE[pl.role].split(" ")[0] + "</span>" : "") + (pl.id === me ? '<span class="you">ТЫ</span>' : "") + '<span class="lv">LV <b>' + p.li.L + "</b></span></div>" +
+    return '<button class="pc' + (pl.id === me ? " mine" : "") + '" data-act="view" data-p="' + pl.id + '" aria-current="' + (friendId === pl.id) + '"' + (pl.id === me ? ' title="Это ты"' : "") + ">" +
+      '<div class="top1"><span class="pcav">' + avaHtml(pl.id, "sm") + onDot(pl.id) + '</span><span class="rank r-' + hr + '">' + hr + '</span><span class="nm">' + esc(pl.name) + (pl.role === "lead" || pl.role === "helper" ? '<span class="groi" title="' + G_ROLE[pl.role].replace(/^\S+ /, "") + '" aria-label="' + G_ROLE[pl.role].replace(/^\S+ /, "") + '">' + G_ROLE[pl.role].split(" ")[0] + "</span>" : "") + "</span>" + '<span class="lv">LV <b>' + p.li.L + "</b></span></div>" +
       '<div class="bar"><i style="width:' + ((p.li.into / p.li.need) * 100).toFixed(1) + '%"></i></div>' +
       (bound
         ? '<div class="row2"><span>' + p.xp + " XP</span>" + (isOff(pl.id, today()) ? '<span style="color:var(--muted)">🌙 выходной</span>' : pl.id !== me && seenDay(pl.id) !== today() ? '<span style="color:var(--gold)">сегодня не заходил</span>' : "<span>сегодня " + p.tdDone + "/" + p.td.length + "</span>") + "<span>серия " + p.streak + "</span></div>" +
@@ -5525,11 +5535,17 @@ function renderChat() {
     gChat.map((m, i) => {
       const day = dayOf(m.at), sep = i === 0 || dayOf(gChat[i - 1].at) !== day ? '<div class="gday">' + esc(day === today() ? "Сегодня" : day === addDays(today(), -1) ? "Вчера" : nice(day)) + "</div>" : "";
       if (m.sys) return sep + '<div class="gmsg sys"><p>' + esc(m.t) + "</p></div>";
-      const mine = m.by === uid, del = mine || gMod();
-      return sep + '<div class="gmsg' + (mine ? " me" : "") + '">' + avaHtml(m.pid, "sm") + '<div class="b"><div class="h"><b>' + esc(mine ? "Ты" : PLAYERS.some((p) => p.id === m.pid) ? pname(m.pid) : m.n || "Бывший участник") + "</b> · " + esc(dTm(m.at)) +
+      const mine = m.by === uid, del = mine || gMod(), inG = PLAYERS.some((p) => p.id === m.pid), prev = gChat[i - 1];
+      // подряд от одного автора (до 5 минут): без повторной аватарки и имени, как в мессенджерах
+      const cont = !sep && prev && !prev.sys && prev.by === m.by && m.at - prev.at < 5 * 60e3;
+      const r = inG ? gRole(m.pid) : null, eq = inG ? pfEq(m.pid) : { fr: "none", hat: "none" }, a = inG ? avaOf(m.pid) : null;
+      const ava = cont ? '<span class="gsp"></span>' : '<div class="pfavw gcav"' + (eq.fr !== "none" ? ' data-fxfr="' + esc(eq.fr) + '"' : "") + '><span class="pfav">' + (a ? '<img src="' + esc(blobUrl(a)) + '" alt="">' : esc(((inG ? pname(m.pid) : m.n) || "?")[0])) + "</span>" + (eq.hat !== "none" ? pfHatHtml(eq.hat, "c" + m.id) : "") + "</div>";
+      const who = mine ? "Ты" : inG ? pname(m.pid) : m.n || "Бывший участник";
+      return sep + '<div class="gmsg' + (mine ? " me" : "") + (cont ? " cont" : "") + '">' + ava + '<div class="b">' +
+        '<div class="h">' + (cont ? "" : "<b>" + esc(who) + "</b>" + (r ? '<span class="grl ' + r + '">' + esc(G_ROLE[r]) + "</span>" : "") + " · ") + esc(dTm(m.at)) +
         (del ? '<button type="button" class="gdel" data-act="gcdel" data-id="' + esc(m.id) + '" title="Удалить сообщение" aria-label="Удалить сообщение">×</button>' : "") + "</div><p>" + esc(m.t) + "</p></div></div>";
     }).join("");
-  if (lastHtml.gChat !== html) { setHtml("gChat", html); if (near || gChatBottom) { box.scrollTop = box.scrollHeight; gChatBottom = false; } }
+  if (lastHtml.gChat !== html) { setHtml("gChat", html); pfMountFx(); if (near || gChatBottom) { box.scrollTop = box.scrollHeight; gChatBottom = false; } }
   if (tab === "party" && gSub === "chat" && !document.hidden && gChat.length) {
     const last = gChat[gChat.length - 1].at;
     if (last > num(prefs.chatSeen)) { writePrefs({ chatSeen: last }); renderBadges(); setTimeout(renderGroup, 0); }
