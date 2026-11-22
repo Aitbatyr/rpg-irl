@@ -578,9 +578,9 @@ span.remchip{cursor:default}
 /* Фон в отдельном фиксированном слое: стоит на месте при прокрутке на всех устройствах (в т.ч. iPhone). */
 #bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;--c1:60,130,255;--c2:94,200,255;--gl:1}
 #bg>div{position:absolute;border-radius:50%;will-change:transform}
-#bg .g1{width:min(1100px,140vw);height:min(760px,95vh);left:-30%;top:-35%;background:radial-gradient(closest-side,rgba(var(--c1),calc(.24*var(--gl))),transparent);animation:bgDrift1 34s ease-in-out infinite alternate}
-#bg .g2{width:min(900px,120vw);height:min(620px,80vh);right:-30%;top:0;background:radial-gradient(closest-side,rgba(var(--c2),calc(.14*var(--gl))),transparent);animation:bgDrift2 41s ease-in-out infinite alternate}
-#bg .g3{width:min(1000px,130vw);height:min(700px,90vh);left:10%;bottom:-45%;background:radial-gradient(closest-side,rgba(var(--c1),calc(.10*var(--gl))),transparent);animation:bgDrift3 47s ease-in-out infinite alternate}
+#bg .g1{width:min(1100px,140vw);height:min(760px,95vh);left:-30%;top:-35%;color:rgba(var(--c1),calc(.24*var(--gl)));background:radial-gradient(closest-side,currentColor,transparent);transition:color 1.6s ease;animation:bgDrift1 34s ease-in-out infinite alternate}
+#bg .g2{width:min(900px,120vw);height:min(620px,80vh);right:-30%;top:0;color:rgba(var(--c2),calc(.14*var(--gl)));background:radial-gradient(closest-side,currentColor,transparent);transition:color 1.6s ease;animation:bgDrift2 41s ease-in-out infinite alternate}
+#bg .g3{width:min(1000px,130vw);height:min(700px,90vh);left:10%;bottom:-45%;color:rgba(var(--c1),calc(.10*var(--gl)));background:radial-gradient(closest-side,currentColor,transparent);transition:color 1.6s ease;animation:bgDrift3 47s ease-in-out infinite alternate}
 #bg .g4{width:min(900px,120vw);height:min(600px,80vh);right:-20%;top:-30%;background:radial-gradient(closest-side,rgba(255,170,90,.09),transparent);opacity:0;transition:opacity 2s}
 #bg .grid{inset:0;border-radius:0;background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:40px 40px;-webkit-mask-image:radial-gradient(ellipse 90% 75% at 50% 35%,#000 35%,transparent 100%);mask-image:radial-gradient(ellipse 90% 75% at 50% 35%,#000 35%,transparent 100%);opacity:.9}
 #bgc{position:absolute;inset:0;width:100%;height:100%}
@@ -1233,6 +1233,46 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .pftryid>div:last-child{margin-top:50px}
 .pfavw.sm{transform:none;width:62px;height:62px}
 .pfavw.sm .pfav{width:54px;height:54px;font-size:22px;border-width:2px}
+/* v27: оттенок фона сайта, уборы, новые значки и фоны */
+#bg .tint{inset:0;border-radius:0;background-color:var(--tint,rgba(0,0,0,0));transition:background-color 1.6s ease}
+.pfhat{position:absolute;left:50%;top:-31%;width:90%;transform:translateX(-50%);z-index:4;pointer-events:none;line-height:0}
+.pfhat svg{width:100%;height:auto;overflow:visible;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+.pfhat.hat-headphones{top:-6%;width:104%}
+.pfhat.hat-halo{top:-40%}
+.pfhat.hat-catears{top:-26%;width:96%}
+.pfhat .tw{animation:hatTw 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.pfhat .tw.d2{animation-delay:.8s}.pfhat .tw.d3{animation-delay:1.4s}
+@keyframes hatTw{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1.1)}}
+.pfhat .hshine{animation:hatShine 3.5s ease-in-out infinite}
+@keyframes hatShine{0%,60%{transform:translateX(0) skewX(-20deg)}100%{transform:translateX(150px) skewX(-20deg)}}
+.pfhat .hbob{animation:hatBob 3s ease-in-out infinite}
+@keyframes hatBob{50%{transform:translateY(-4px)}}
+.pfhat .hsm{animation:hatSmoke 2.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+.pfhat .hsm.d2{animation-delay:1.3s}
+@keyframes hatSmoke{0%{opacity:0;transform:translateY(0) scale(.5)}30%{opacity:.8}100%{opacity:0;transform:translateY(-18px) scale(1.8)}}
+.pfhat .hear{animation:hatEar 4s ease-in-out infinite;transform-box:fill-box;transform-origin:30% 100%}
+@keyframes hatEar{0%,86%,100%{transform:rotate(0)}89%{transform:rotate(-14deg)}92%{transform:rotate(4deg)}95%{transform:rotate(-8deg)}}
+.pfhat .hwave rect{animation:hatWave .6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+.pfhat .hwave rect:nth-child(2n){animation-delay:.3s}
+@keyframes hatWave{from{transform:scaleY(.4)}to{transform:scaleY(1.2)}}
+.pfhat .hglint{animation:hatGlint 4s ease-in-out infinite}
+@keyframes hatGlint{0%,100%{opacity:.2}50%{opacity:.9}}
+.pfhat .hpom{animation:hatBob 2.4s ease-in-out infinite}
+.slv.heart::before,.slv.bolt::before,.slv.crownb::before,.slv.wings::before{border:0;box-shadow:none;background:var(--lc);-webkit-mask:var(--m) center/100% 100% no-repeat;mask:var(--m) center/100% 100% no-repeat;filter:drop-shadow(0 0 5px var(--lc))}
+.slv.heart::after,.slv.bolt::after,.slv.crownb::after,.slv.wings::after{content:"";position:absolute;inset:3px;background:#0b1830;-webkit-mask:var(--m) center/100% 100% no-repeat;mask:var(--m) center/100% 100% no-repeat}
+.slv.heart{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 90 C20 66 4 50 4 31 C4 17 15 7 29 7 C39 7 46 13 50 21 C54 13 61 7 71 7 C85 7 96 17 96 31 C96 50 80 66 50 90 Z'/%3E%3C/svg%3E")}
+.slv.bolt{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M62 2 L16 58 L46 58 L36 98 L84 38 L54 38 Z'/%3E%3C/svg%3E")}
+.slv.crownb{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M8 86 L4 24 L30 50 L50 12 L70 50 L96 24 L92 86 Z'/%3E%3C/svg%3E")}
+.slv.wings{width:46px;--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 100'%3E%3Cpath d='M70 6 L96 16 L96 50 Q96 78 70 94 Q44 78 44 50 L44 16 Z M44 26 Q16 18 2 36 Q18 38 10 50 Q24 48 18 60 Q32 56 44 62 Z M96 26 Q124 18 138 36 Q122 38 130 50 Q116 48 122 60 Q108 56 96 62 Z'/%3E%3C/svg%3E")}
+.slv.big.wings{width:64px}
+.slv.bolt>span,.slv.crownb>span{margin-top:6px}
+.slv.heart>span{margin-top:-2px}
+.pbg-volcano{background:radial-gradient(40% 50% at 55% 45%,rgba(255,120,40,.6),transparent 70%),linear-gradient(180deg,#140404,#5a1a08)}
+.pbg-underwater{background:linear-gradient(180deg,#1aa6d6,#0b5d93 50%,#032746)}
+.pbg-neoncity{background:linear-gradient(180deg,#07041a,#2a0d45 85%,#140728)}
+.pbg-autumn{background:linear-gradient(180deg,#f5c37a,#e8955a 60%,#7a3b1e)}
+.pbg-peaks{background:linear-gradient(180deg,#3a2a7a,#d96a8a 45%,#ffb07a 75%,#2c1a45)}
+.pbg-tunnel{background:radial-gradient(30% 30% at 50% 50%,rgba(140,220,255,.4),transparent 70%),#05030f}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
@@ -1242,7 +1282,7 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 <script src="shim.js?v=953f98ed"></script>
 
 
-<div id="bg" aria-hidden="true"><div class="g1"></div><div class="g2"></div><div class="g3"></div><div class="g4"></div><div class="grid"></div><canvas id="bgc"></canvas></div>
+<div id="bg" aria-hidden="true"><div class="tint"></div><div class="g1"></div><div class="g2"></div><div class="g3"></div><div class="g4"></div><div class="grid"></div><canvas id="bgc"></canvas></div>
 <div id="boot" role="status" aria-live="polite"><div class="bbx"><div class="blg">СИСТЕМА<span>.</span></div><div class="bld"><i></i></div><div class="btip" id="bootTip"></div><div class="bstat" id="bootSt">Загружаю твои квесты…</div><button type="button" class="bmore" id="bootMore">Ещё совет</button></div></div>
 <div class="wrap">
   <div id="testBar" class="testbar" hidden></div>
@@ -1451,6 +1491,7 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
     <section class="panel" aria-labelledby="looT">
       <div class="ph"><h2 class="ptitle" id="looT">Оформление</h2><span class="sub">на этом устройстве</span></div>
       <label class="setrow"><span><b>Живой фон</b><span class="hint" style="display:block">Плывущее свечение, частицы, звёзды ночью, снег в декабре. Выключи, чтобы беречь батарею.</span></span><input type="checkbox" id="liveBg"></label>
+      <label class="setrow"><span><b>Цвет сайта по фону профиля</b><span class="hint" style="display:block">Фон сайта в гамме твоего фона, а в профиле друга в гамме его фона.</span></span><input type="checkbox" id="themeBg"></label>
     </section>
     <section class="panel" id="guidePanel" aria-labelledby="gT">
       <div class="ph"><h2 class="ptitle" id="gT">Гайд</h2><span class="sub" id="gProg"></span></div>
@@ -1812,7 +1853,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 26;
+const APP_VERSION = 27;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -1853,6 +1894,12 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 27, date: "2026-11-22", title: "Уборы и цвет сайта", items: [
+    "Новый раздел магазина «Уборы»: 10 головных уборов поверх аватарки. Колпак со снежинками, кошачьи ушки (иногда дёргаются), цилиндр, ковбойская шляпа, наушники с бегущим звуком, рожки с дымком, шляпа волшебника со звёздами. Трофеи: нимб за «Идеальный день», шлем викинга за «Железную волю», корона за «Легенду».",
+    "Ещё 6 живых фонов: осенний лес, подводный мир, горы на закате, неоновый ливень, вулкан, кибер-туннель.",
+    "Ещё 6 живых рамок: листва, дымка, песчаный вихрь, звёздная пыль, руны, дракон. И 4 формы значка: сердце, молния, корона, крылья.",
+    "Цвет сайта по фону профиля: надел сакуру, и фон всего сайта у тебя плавно становится розовым. Открыл профиль друга, и фон на это время в гамме его фона, закрыл, и вернулся твой. Выключается в ⚙ Настройках → «Оформление».",
+  ] },
   { v: 26, date: "2026-11-22", title: "Интерфейс и магазин", items: [
     "Профиль друга на ПК больше не ужимается в узкую колонку: витрины во всю ширину, на ПК в 2 колонки, без рамки в рамке.",
     "Пати: сверху сразу друзья, «Обсуждения» свёрнуты в одну строку и показывают, сколько новых. Открыл, и они прочитаны.",
@@ -4396,10 +4443,12 @@ class Ring {
       c.globalCompositeOperation = "lighter"; for (const [lw, col] of [[4, "rgba(124,243,255,.25)"], [1.2, "#ffffff"]]) { c.strokeStyle = col; c.lineWidth = lw; for (const pts of this.arcs) { c.beginPath(); pts.forEach(([x, y], j) => (j ? c.lineTo(x, y) : c.moveTo(x, y))); c.stroke(); } } c.globalCompositeOperation = "source-over"; }
     if (g.flame) { const n = Math.min(12, Math.round(dt * 260)); for (let k = 0; k < n; k++) { const a = rnd(0, TAU), up = (1 - Math.sin(a)) / 2; this.p.push({ x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R, vx: Math.cos(a) * rnd(2, 6) + rnd(-3, 3), vy: -rnd(14, 34) * (.5 + up), l: 1, d: rnd(1.6, 2.6), r: rnd(3, 6) * (.6 + up * .6), fl: true }); } }
     if (g.spark && Math.random() < dt * 6) { const a = rnd(0, TAU); this.p.push({ x: cx + Math.cos(a) * (R + rnd(-2, 4)), y: cy + Math.sin(a) * (R + rnd(-2, 4)), vx: 0, vy: 0, l: 1, d: 1.6, r: rnd(2, 3.5), sp: true }); }
+    ringExtra(c, g, cx, cy, R, t, dt, this);
     c.globalCompositeOperation = "lighter";
     this.p = this.p.filter((p) => { p.l -= dt * p.d; if (p.l <= 0) return false; p.x += p.vx * dt; p.y += p.vy * dt;
       if (p.sp) { const a = Math.sin(p.l * Math.PI); c.strokeStyle = g.spark; c.globalAlpha = a; c.lineWidth = 1.2; c.beginPath(); c.moveTo(p.x - p.r * 1.6, p.y); c.lineTo(p.x + p.r * 1.6, p.y); c.moveTo(p.x, p.y - p.r * 1.6); c.lineTo(p.x, p.y + p.r * 1.6); c.stroke(); c.globalAlpha = 1; return true; }
-      const cols = g.flame, idx = clamp(Math.floor((1 - p.l) * (cols.length - 1)) + 1, 1, cols.length - 1), rr = p.r * (.4 + p.l * .8); p.vx *= .97;
+      if (p.smoke) { c.globalCompositeOperation = "source-over"; const r = p.r * (1.6 - p.l * .6); c.fillStyle = "rgba(140,148,165," + p.l * .35 + ")"; c.beginPath(); c.arc(p.x, p.y, r, 0, TAU); c.fill(); c.globalCompositeOperation = "lighter"; return true; }
+      const cols = g.flame || ["#fff6c8", "#ffcf5c", "#ff9d4d", "#ff3d1a"], idx = clamp(Math.floor((1 - p.l) * (cols.length - 1)) + 1, 1, cols.length - 1), rr = p.r * (.4 + p.l * .8); p.vx *= .97;
       const gg = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, rr); gg.addColorStop(0, cols[idx]); gg.addColorStop(1, "rgba(0,0,0,0)"); c.globalAlpha = Math.min(1, p.l * 1.4) * .55; c.fillStyle = gg; c.beginPath(); c.ellipse(p.x, p.y, rr * .7, rr * 1.25, 0, 0, TAU); c.fill(); c.globalAlpha = 1; return true; });
     c.globalCompositeOperation = "source-over";
     if (g.crown) { c.save(); c.translate(cx, cy - R - 4); c.rotate(-.14 + .06 * Math.sin(t * 2)); c.font = "26px serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("👑", 0, -2 * Math.sin(t * 2)); c.restore(); }
@@ -4416,6 +4465,117 @@ function loop(ts) {
 }
 requestAnimationFrame(loop);
 
+// ---- v27: новые фоны ----
+SC.volcano = {
+  init(S, w, h) { S.em = []; S.ash = Array.from({ length: 50 }, () => ({ x: rnd(0, w), y: rnd(0, h), s: rnd(8, 20), p: rnd(0, TAU), r: rnd(.6, 1.6) })); S.sm = []; },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#140404"], [.6, "#3a0c06"], [1, "#5a1a08"]]); c.fillRect(0, 0, w, h);
+    const cx = w * .55 + m.x * 6, top = h * .42, base = h, half = h * .55;
+    if (Math.random() < dt * 3) S.sm.push({ x: cx + rnd(-6, 6), y: top, r: rnd(10, 18), l: 1, vx: rnd(4, 12) });
+    S.sm = S.sm.filter((s) => { s.l -= dt * .12; s.y -= 14 * dt; s.x += s.vx * dt; s.r += 9 * dt; if (s.l <= 0) return false; c.fillStyle = "rgba(40,22,20," + s.l * .55 + ")"; c.beginPath(); c.arc(s.x, s.y, s.r, 0, TAU); c.fill(); return true; });
+    const gl = c.createRadialGradient(cx, top, 0, cx, top, h * .5); gl.addColorStop(0, "rgba(255,140,40," + (.55 + .15 * Math.sin(t * 3)) + ")"); gl.addColorStop(1, "rgba(255,60,20,0)"); c.fillStyle = gl; c.fillRect(0, 0, w, h);
+    c.fillStyle = "#120504"; c.beginPath(); c.moveTo(cx - half, base); c.lineTo(cx - 14, top); c.lineTo(cx + 14, top); c.lineTo(cx + half, base); c.fill();
+    c.globalCompositeOperation = "lighter"; c.lineCap = "round";
+    [[-1, .3], [1, .55], [-1, .8]].forEach(([d, k], i) => { c.strokeStyle = "rgba(255," + (90 + i * 30) + ",30,.85)"; c.lineWidth = 2.2; c.setLineDash([10, 8]); c.lineDashOffset = -t * 18; c.beginPath(); c.moveTo(cx + d * 8, top + 2); c.quadraticCurveTo(cx + d * half * k * .6, top + (base - top) * .45, cx + d * half * k, base); c.stroke(); });
+    c.setLineDash([]);
+    if (Math.random() < dt * 40) S.em.push({ x: cx + rnd(-8, 8), y: top, vx: rnd(-50, 50), vy: -rnd(90, 190), l: 1, r: rnd(1.2, 2.6) });
+    S.em = S.em.filter((e) => { e.l -= dt * .6; e.vy += 120 * dt; e.x += e.vx * dt; e.y += e.vy * dt; if (e.l <= 0 || e.y > h) return false; const g = c.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 3); g.addColorStop(0, "rgba(255,220,120," + e.l + ")"); g.addColorStop(1, "rgba(255,80,20,0)"); c.fillStyle = g; c.fillRect(e.x - e.r * 3, e.y - e.r * 3, e.r * 6, e.r * 6); return true; });
+    c.globalCompositeOperation = "source-over";
+    for (const a of S.ash) { a.y += a.s * dt; a.x += Math.sin(t + a.p) * 6 * dt; if (a.y > h) { a.y = -4; a.x = rnd(0, w); } c.fillStyle = "rgba(160,150,150,.45)"; c.fillRect(a.x, a.y, a.r, a.r); }
+  },
+};
+SC.underwater = {
+  init(S, w, h) { S.b = Array.from({ length: 34 }, () => ({ x: rnd(0, w), y: rnd(0, h), r: rnd(1.5, 5), s: rnd(15, 40), p: rnd(0, TAU) })); S.wd = Array.from({ length: 9 }, (_, i) => ({ x: (i + .5) * w / 9 + rnd(-10, 10), hh: rnd(.25, .55), p: rnd(0, TAU), col: Math.random() < .5 ? "#0f6b4f" : "#14805a" })); S.f = []; },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#1aa6d6"], [.5, "#0b5d93"], [1, "#032746"]]); c.fillRect(0, 0, w, h);
+    c.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 7; i++) { const x = w * (i / 6) + Math.sin(t * .4 + i) * 30 + m.x * 8; c.fillStyle = "rgba(200,240,255," + (.05 + .03 * Math.sin(t + i * 2)) + ")"; c.beginPath(); c.moveTo(x - 10, 0); c.lineTo(x + 14, 0); c.lineTo(x + 60, h); c.lineTo(x - 30, h); c.fill(); }
+    c.globalCompositeOperation = "source-over";
+    if (Math.random() < dt * .3 && S.f.length < 3) { const d = Math.random() < .5 ? 1 : -1; S.f.push({ x: d > 0 ? -30 : w + 30, y: rnd(h * .2, h * .7), d, s: rnd(25, 45), z: rnd(.6, 1.2) }); }
+    S.f = S.f.filter((f) => { f.x += f.d * f.s * dt; const y = f.y + Math.sin(t * 2 + f.x * .02) * 4; c.save(); c.translate(f.x, y); c.scale(f.d * f.z, f.z); c.fillStyle = "rgba(8,40,70,.75)"; c.beginPath(); c.ellipse(0, 0, 12, 5, 0, 0, TAU); c.fill(); c.beginPath(); c.moveTo(-10, 0); c.lineTo(-18, -6 + Math.sin(t * 10) * 2); c.lineTo(-18, 6 + Math.sin(t * 10) * 2); c.fill(); c.restore(); return f.x > -40 && f.x < w + 40; });
+    for (const s of S.wd) { const hh = h * s.hh; c.strokeStyle = s.col; c.lineWidth = 4; c.lineCap = "round"; c.beginPath(); c.moveTo(s.x, h); for (let k = 1; k <= 8; k++) { const yy = h - hh * k / 8, xx = s.x + Math.sin(t * 1.2 + s.p + k * .5) * k * 1.6 + m.x * 3; c.lineTo(xx, yy); } c.stroke(); }
+    c.fillStyle = "#04324f"; c.beginPath(); c.moveTo(0, h); for (let x = 0; x <= w; x += 10) c.lineTo(x, h - 6 - 5 * Math.sin(x * .04)); c.lineTo(w, h); c.fill();
+    for (const b of S.b) { b.y -= b.s * dt; const x = b.x + Math.sin(t * 2 + b.p) * 4; if (b.y < -8) { b.y = h + 6; b.x = rnd(0, w); } c.strokeStyle = "rgba(220,250,255,.65)"; c.lineWidth = 1; c.beginPath(); c.arc(x, b.y, b.r, 0, TAU); c.stroke(); c.fillStyle = "rgba(255,255,255,.6)"; c.beginPath(); c.arc(x - b.r * .35, b.y - b.r * .35, b.r * .3, 0, TAU); c.fill(); }
+  },
+};
+SC.neoncity = {
+  init(S, w, h) {
+    S.sky = skyline(w, h * .85, "#0c0820", .4, .85, true); S.d = Array.from({ length: 110 }, () => ({ x: rnd(-w * .2, w), y: rnd(-h, h), z: rnd(.3, 1) }));
+    S.signs = Array.from({ length: 7 }, () => ({ x: rnd(0, w * 2), y: rnd(h * .25, h * .6), wd: rnd(14, 30), hh: rnd(5, 10), col: ["255,60,200", "60,220,255", "255,200,60", "160,90,255"][Math.floor(rnd(0, 4))], p: rnd(0, TAU) }));
+  },
+  draw(c, S, t, dt, w, h, m) {
+    const gy = h * .85; c.fillStyle = grad(c, 0, gy, [[0, "#07041a"], [1, "#2a0d45"]]); c.fillRect(0, 0, w, gy);
+    const off = (t * 4) % w + m.x * 6; c.drawImage(S.sky.o, -off, 0);
+    for (const wd of S.sky.wins) { const x = wd[0] - off; if (x < -4 || x > w + 4) continue; c.fillStyle = wd[2]; c.globalAlpha = .6 + .4 * Math.sin(t * .4 + wd[3] * 6); c.fillRect(x, wd[1], 2, 2.5); } c.globalAlpha = 1;
+    c.globalCompositeOperation = "lighter";
+    for (const s of S.signs) { const x = ((s.x - off) % (w * 2) + w * 2) % (w * 2); if (x > w + 30) continue; const on = Math.sin(t * 7 + s.p) > -.85 ? 1 : .25; c.fillStyle = "rgba(" + s.col + "," + .9 * on + ")"; c.shadowColor = "rgba(" + s.col + ",1)"; c.shadowBlur = 12; c.fillRect(x, s.y, s.wd, s.hh); c.shadowBlur = 0;
+      const g = c.createLinearGradient(0, gy, 0, h); g.addColorStop(0, "rgba(" + s.col + "," + .35 * on + ")"); g.addColorStop(1, "rgba(" + s.col + ",0)"); c.fillStyle = g; c.fillRect(x + Math.sin(t * 3 + s.p) * 1.5, gy, s.wd, h - gy); }
+    c.globalCompositeOperation = "source-over";
+    c.fillStyle = "rgba(10,6,25,.55)"; c.fillRect(0, gy, w, h - gy);
+    c.strokeStyle = "rgba(180,200,255,.25)"; c.lineWidth = 1; for (const d of S.d) { const v = 380 + 300 * d.z; d.y += v * dt; d.x += v * .2 * dt; if (d.y > h) { d.y = rnd(-40, -5); d.x = rnd(-w * .2, w); } c.globalAlpha = .3 + .5 * d.z; c.beginPath(); c.moveTo(d.x, d.y); c.lineTo(d.x - 3, d.y - 12 * d.z); c.stroke(); } c.globalAlpha = 1;
+  },
+};
+SC.autumn = {
+  init(S, w, h) {
+    const o = mkOff(w * 2, h), oc = o.getContext("2d");
+    for (let i = 0; i < 9; i++) { const x = rnd(0, w * 2), th = rnd(.35, .6) * h, r = rnd(22, 40); oc.fillStyle = "#3a1d10"; oc.fillRect(x - 3, h - th, 6, th); for (let k = 0; k < 7; k++) { oc.fillStyle = ["#c2451c", "#e07a1f", "#a8321a", "#d9a12a"][Math.floor(rnd(0, 4))]; oc.beginPath(); oc.arc(x + rnd(-r, r) * .8, h - th + rnd(-r, r) * .5, r * rnd(.5, .8), 0, TAU); oc.fill(); } }
+    S.trees = o; S.l = Array.from({ length: 34 }, () => ({ x: rnd(0, w), y: rnd(-h, h), s: rnd(18, 36), a: rnd(0, TAU), va: rnd(-3, 3), p: rnd(0, TAU), col: ["#e07a1f", "#c2451c", "#f2b33d", "#a8321a"][Math.floor(rnd(0, 4))], r: rnd(3, 6) }));
+  },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#f5c37a"], [.6, "#e8955a"], [1, "#7a3b1e"]]); c.fillRect(0, 0, w, h);
+    c.drawImage(S.trees, -((t * 3) % w) - m.x * 6, 0);
+    c.fillStyle = "#5a2a12"; c.fillRect(0, h - 5, w, 5);
+    const wind = 22 + 14 * Math.sin(t * .5);
+    for (const l of S.l) { l.y += l.s * dt; l.x += (wind + Math.sin(t * 1.6 + l.p) * 18) * dt; l.a += l.va * dt; if (l.y > h + 8 || l.x > w + 10) { l.y = rnd(-30, -5); l.x = rnd(-w * .3, w); }
+      c.save(); c.translate(l.x + m.x * 8, l.y); c.rotate(l.a); c.scale(Math.cos(t * 2.4 + l.p), 1); c.fillStyle = l.col; c.beginPath(); c.moveTo(0, -l.r); c.quadraticCurveTo(l.r, 0, 0, l.r); c.quadraticCurveTo(-l.r, 0, 0, -l.r); c.fill(); c.strokeStyle = "rgba(80,30,10,.6)"; c.lineWidth = .6; c.beginPath(); c.moveTo(0, -l.r); c.lineTo(0, l.r); c.stroke(); c.restore(); }
+  },
+};
+function ridge(w, h, col, y0, amp, seed) { const o = mkOff(w * 2, h), c = o.getContext("2d"); c.fillStyle = col; c.beginPath(); c.moveTo(0, h); let y = y0; for (let x = 0; x <= w * 2; x += 12) { y = clamp(y + rnd(-amp, amp), y0 - amp * 3, y0 + amp * 2); c.lineTo(x, h * y / h); } c.lineTo(w * 2, h); c.fill(); return o; }
+SC.peaks = {
+  init(S, w, h) { S.L = [ridge(w, h, "#6d4a8a", h * .45, 12), ridge(w, h, "#4a2f6a", h * .58, 14), ridge(w, h, "#2c1a45", h * .72, 12), ridge(w, h, "#160c26", h * .86, 9)]; S.cl = Array.from({ length: 5 }, (_, i) => ({ x: rnd(0, w), y: rnd(.4, .75), r: rnd(40, 80), s: rnd(5, 10), L: i % 3 })); S.b = []; },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#3a2a7a"], [.45, "#d96a8a"], [.75, "#ffb07a"], [1, "#ffd59a"]]); c.fillRect(0, 0, w, h);
+    const sx = w * .3, sy = h * .5; const g = c.createRadialGradient(sx, sy, 0, sx, sy, h * .7); g.addColorStop(0, "rgba(255,240,200,.95)"); g.addColorStop(.12, "rgba(255,210,150,.6)"); g.addColorStop(1, "rgba(255,150,120,0)"); c.fillStyle = g; c.fillRect(0, 0, w, h);
+    S.L.forEach((o, i) => { c.drawImage(o, -((t * (1 + i * 1.5)) % w) - m.x * 5 * (i + 1), 0);
+      for (const k of S.cl) if (k.L === i) { k.x += k.s * dt; if (k.x > w + k.r * 2) k.x = -k.r * 2; const gg = c.createRadialGradient(k.x, h * k.y, 0, k.x, h * k.y, k.r); gg.addColorStop(0, "rgba(255,225,230,.5)"); gg.addColorStop(1, "rgba(255,225,230,0)"); c.fillStyle = gg; c.fillRect(k.x - k.r, h * k.y - k.r, k.r * 2, k.r * 2); } });
+    if (Math.random() < dt * .3 && S.b.length < 4) S.b.push({ x: -10, y: h * rnd(.15, .35), s: rnd(22, 34), p: rnd(0, TAU) });
+    c.strokeStyle = "#2c1a45"; c.lineWidth = 1.3; S.b = S.b.filter((b) => { b.x += b.s * dt; const f = Math.sin(t * 9 + b.p) * 3; c.beginPath(); c.moveTo(b.x - 5, b.y - f); c.lineTo(b.x, b.y); c.lineTo(b.x + 5, b.y - f); c.stroke(); return b.x < w + 10; });
+  },
+};
+SC.tunnel = {
+  init(S, w, h) { S.st = Array.from({ length: 60 }, () => ({ a: rnd(0, TAU), z: rnd(0, 1), s: rnd(.25, .6) })); },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = "#05030f"; c.fillRect(0, 0, w, h);
+    const cx = w / 2 + m.x * 30, cy = h / 2 + m.y * 14, R = Math.hypot(w, h) * .6;
+    c.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 14; i++) { const z = ((i / 14) + t * .25) % 1, k = Math.pow(z, 2.2), sw = w * .08 + k * w * 1.1, sh = h * .08 + k * h * 1.1; const col = i % 2 ? "120,80,255" : "60,240,255"; c.strokeStyle = "rgba(" + col + "," + (.15 + z * .7) + ")"; c.lineWidth = .6 + z * 2.4; c.strokeRect(cx - sw / 2, cy - sh / 2, sw, sh); }
+    c.strokeStyle = "rgba(160,120,255,.25)"; c.lineWidth = 1; c.beginPath(); [[0, 0], [w, 0], [0, h], [w, h], [w / 2, 0], [w / 2, h], [0, h / 2], [w, h / 2]].forEach(([x, y]) => { c.moveTo(cx, cy); c.lineTo(x, y); }); c.stroke();
+    for (const s of S.st) { s.z += s.s * dt; if (s.z > 1) { s.z = 0; s.a = rnd(0, TAU); } const r0 = Math.pow(s.z, 2) * R, r1 = Math.pow(Math.max(0, s.z - .04), 2) * R; c.strokeStyle = "rgba(200,240,255," + s.z + ")"; c.lineWidth = 1 + s.z; c.beginPath(); c.moveTo(cx + Math.cos(s.a) * r1, cy + Math.sin(s.a) * r1); c.lineTo(cx + Math.cos(s.a) * r0, cy + Math.sin(s.a) * r0); c.stroke(); }
+    const g = c.createRadialGradient(cx, cy, 0, cx, cy, w * .12); g.addColorStop(0, "rgba(140,220,255,.6)"); g.addColorStop(1, "rgba(140,220,255,0)"); c.fillStyle = g; c.fillRect(0, 0, w, h);
+    c.globalCompositeOperation = "source-over";
+  },
+};
+// ---- v27: новые рамки ----
+Object.assign(RINGS, {
+  leaves: { col: "#6b8f3a", glow: "140,200,90", leaves: true },
+  smoke: { col: "#8a93a6", glow: "150,160,180", smoke: true },
+  runes: { col: "#a58bff", glow: "165,139,255", runes: true },
+  dragon: { col: "#b83a1a", glow: "255,120,40", dragon: true },
+  stardust: { col: "rgba(200,220,255,.5)", glow: "180,200,255", stardust: true },
+  sand: { col: "#c99a4a", glow: "255,200,120", sand: true },
+});
+const RUNES = "ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ";
+function ringExtra(c, g, cx, cy, R, t, dt, self) {
+  if (g.leaves) for (let i = 0; i < 12; i++) { const a = i / 12 * TAU + t * .35, x = cx + Math.cos(a) * R, y = cy + Math.sin(a) * R; c.save(); c.translate(x, y); c.rotate(a + Math.PI / 2 + Math.sin(t * 2 + i) * .3); c.fillStyle = i % 3 ? "#7fb04a" : "#c9a23a"; c.beginPath(); c.moveTo(0, -5); c.quadraticCurveTo(4, 0, 0, 5); c.quadraticCurveTo(-4, 0, 0, -5); c.fill(); c.restore(); }
+  if (g.smoke) { if (Math.random() < dt * 18) { const a = rnd(0, TAU); self.p.push({ x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R, vx: Math.cos(a) * 6, vy: Math.sin(a) * 6 - 10, l: 1, d: .7, r: rnd(3, 6), smoke: true }); } }
+  if (g.runes) { c.save(); c.globalCompositeOperation = "lighter"; c.font = "bold 9px serif"; c.textAlign = "center"; c.textBaseline = "middle"; for (let ring = 0; ring < 2; ring++) { const rr = R + (ring ? 9 : 0), n = ring ? 16 : 12, sp = ring ? -.4 : .5; for (let i = 0; i < n; i++) { const a = i / n * TAU + t * sp; c.save(); c.translate(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); c.rotate(a + Math.PI / 2); c.fillStyle = "rgba(190,160,255," + (.55 + .45 * Math.sin(t * 3 + i)) + ")"; c.fillText(RUNES[(i * 7 + ring * 3) % RUNES.length], 0, 0); c.restore(); } } c.restore(); }
+  if (g.dragon) { const a0 = t * 1.1, n = 26; for (let i = n; i >= 0; i--) { const a = a0 - i * .17, rr = R + Math.sin(a * 3 + t * 2) * 3, x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr, s = 4.8 - i * .14; c.fillStyle = i % 2 ? "#b83a1a" : "#e0632a"; c.beginPath(); c.arc(x, y, Math.max(1, s), 0, TAU); c.fill(); if (i % 3 === 0 && i > 2) { c.fillStyle = "#ffcf5c"; c.beginPath(); c.arc(x, y, 1.2, 0, TAU); c.fill(); } }
+    const ha = a0 + .12, hx = cx + Math.cos(ha) * R, hy = cy + Math.sin(ha) * R; c.save(); c.translate(hx, hy); c.rotate(ha + Math.PI / 2); c.fillStyle = "#e0632a"; c.beginPath(); c.moveTo(9, 0); c.lineTo(-4, -5); c.lineTo(-4, 5); c.fill(); c.fillStyle = "#ffcf5c"; c.beginPath(); c.arc(2, -2, 1.2, 0, TAU); c.fill(); c.restore();
+    if (Math.random() < dt * 20) self.p.push({ x: hx, y: hy, vx: Math.cos(ha + Math.PI / 2) * 30 + rnd(-6, 6), vy: Math.sin(ha + Math.PI / 2) * 30 + rnd(-6, 6), l: 1, d: 2.5, r: rnd(1.5, 3), fl: true }); }
+  if (g.stardust) { c.save(); c.globalCompositeOperation = "lighter"; for (let i = 0; i < 40; i++) { const a = i * 2.39996 + t * (.2 + (i % 5) * .06), rr = R + ((i * 37) % 11) - 3 + Math.sin(t + i) * 2, tw = .3 + .7 * Math.abs(Math.sin(t * 2 + i * 1.7)); c.fillStyle = "rgba(220,235,255," + tw + ")"; c.beginPath(); c.arc(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, (i % 7 ? .9 : 1.8) * tw + .3, 0, TAU); c.fill(); } c.restore(); }
+  if (g.sand) { c.save(); for (let i = 0; i < 70; i++) { const a = (i / 70) * TAU + t * 1.4, rr = R + Math.sin(i * 13.7 + t * 3) * 2.5; c.fillStyle = "rgba(240," + (190 + (i % 4) * 12) + ",110," + (.5 + .5 * Math.sin(i * 3.1)) + ")"; c.fillRect(cx + Math.cos(a) * rr - .8, cy + Math.sin(a) * rr - .8, 1.6, 1.6); } c.restore(); }
+}
+
 return { Stage, Ring, RINGS, FX, SC };
 })();
 
@@ -4428,15 +4588,24 @@ const PF_SHOP = {
     { id: "sunset", n: "Закат", p: 450 }, { id: "stars", n: "Звёздное небо", p: 500 }, { id: "dunes", n: "Дюны", p: 500 }, { id: "ocean", n: "Океан", p: 550 },
     { id: "sakura", n: "Сакура", p: 600 }, { id: "forest", n: "Туманный лес", p: 600 }, { id: "city", n: "Ночной город", p: 750 }, { id: "aurora", n: "Северное сияние", p: 800 },
     { id: "lava", n: "Лава", p: 850 }, { id: "matrix", n: "Матрица", p: 900 }, { id: "synth", n: "Синтвейв", p: 1000 },
+    { id: "autumn", n: "Осенний лес", p: 550 }, { id: "underwater", n: "Подводный мир", p: 700 }, { id: "peaks", n: "Горы на закате", p: 750 },
+    { id: "neoncity", n: "Неоновый ливень", p: 950 }, { id: "volcano", n: "Вулкан", p: 1100 }, { id: "tunnel", n: "Кибер-туннель", p: 1200 },
     { id: "storm", n: "Гроза", tr: "s14" }, { id: "dawn", n: "Восход", tr: "perfect" }, { id: "cosmos", n: "Космос", tr: "q100" }],
   fr: [
     { id: "none", n: "Без рамки", p: 0 }, { id: "neon", n: "Неоновая", p: 200 }, { id: "double", n: "Двойное кольцо", p: 300 }, { id: "emerald", n: "Изумрудная", p: 350 },
     { id: "ice", n: "Ледяная", p: 400 }, { id: "pulse", n: "Пульс", p: 450 }, { id: "pixel", n: "Пиксельная", p: 500 }, { id: "electric", n: "Электрическая", p: 700 },
     { id: "holo", n: "Голограмма", p: 800 }, { id: "blueflame", n: "Синее пламя", p: 900 }, { id: "rainbow", n: "Радужная", p: 1000 }, { id: "gold", n: "Золотое кольцо", p: 1200 },
+    { id: "leaves", n: "Листва", p: 350 }, { id: "smoke", n: "Дымка", p: 450 }, { id: "sand", n: "Песчаный вихрь", p: 600 }, { id: "stardust", n: "Звёздная пыль", p: 750 },
+    { id: "runes", n: "Руны", p: 900 }, { id: "dragon", n: "Дракон", p: 1300 },
     { id: "fire", n: "Огненная", tr: "s30" }, { id: "crystal", n: "Хрусталь", tr: "clean7" }, { id: "crown", n: "Корона", tr: "bigS" }],
   bd: [
     { id: "circle", n: "Круг", p: 0 }, { id: "shield", n: "Щит", p: 250 }, { id: "diamond", n: "Ромб", p: 250 },
-    { id: "octa", n: "Октагон", p: 400 }, { id: "hex", n: "Гексагон", p: 500 }, { id: "gem", n: "Кристалл", p: 600 }, { id: "star", n: "Звезда", tr: "story" }],
+    { id: "octa", n: "Октагон", p: 400 }, { id: "hex", n: "Гексагон", p: 500 }, { id: "gem", n: "Кристалл", p: 600 },
+    { id: "heart", n: "Сердце", p: 350 }, { id: "bolt", n: "Молния", p: 450 }, { id: "crownb", n: "Корона", p: 700 }, { id: "wings", n: "Крылья", p: 900 }, { id: "star", n: "Звезда", tr: "story" }],
+  hat: [
+    { id: "none", n: "Без убора", p: 0 }, { id: "santa", n: "Новогодний колпак", p: 250 }, { id: "catears", n: "Кошачьи ушки", p: 300 }, { id: "tophat", n: "Цилиндр", p: 350 },
+    { id: "cowboy", n: "Ковбойская шляпа", p: 400 }, { id: "headphones", n: "Наушники", p: 450 }, { id: "horns", n: "Рожки", p: 500 }, { id: "wizard", n: "Шляпа волшебника", p: 700 },
+    { id: "halo", n: "Нимб", tr: "perfect" }, { id: "viking", n: "Шлем викинга", tr: "s30" }, { id: "crown", n: "Корона", tr: "bigS" }],
 };
 // фоны со своей разметкой внутри (гроза: тучи, дождь, молнии)
 const PF_BOLT1 = "M54 0 L47 22 L58 24 L44 50 L55 52 L38 100", PF_BOLT2 = "M30 0 L35 18 L26 21 L37 44 L29 46 L40 78";
@@ -4450,9 +4619,9 @@ function pfBgInner(id) {
   return "";
 }
 const pfHrs = (m) => (m < 60 ? m + " мин" : String(Math.round(m / 6) / 10).replace(".", ",") + " ч");
-const PF_CATS = [["bg", "Фоны"], ["fr", "Рамки"], ["bd", "Значок"]];
+const PF_CATS = [["bg", "Фоны"], ["fr", "Рамки"], ["bd", "Значок"], ["hat", "Уборы"]];
 const PF_ITEM = {}; for (const c in PF_SHOP) for (const it of PF_SHOP[c]) PF_ITEM[c + ":" + it.id] = { ...it, cat: c };
-const PF_DEF = { bg: "base", fr: "none", bd: "circle" };
+const PF_DEF = { bg: "base", fr: "none", bd: "circle", hat: "none" };
 const PF_SC = [["ach", "Витрина ачивок"], ["fav", "Любимый квест"], ["story", "Текущий сюжет"], ["stats", "Статистика"], ["recent", "Недавняя активность"], ["diary", "Дневник"], ["awards", "Награды"], ["wall", "Стена"]];
 const PF_SC_KEYS = PF_SC.map((x) => x[0]);
 const PF_AWARDS = [["🔥", "Огонь"], ["💪", "Респект"], ["🧠", "Мозг"], ["🎯", "Снайпер"], ["🌙", "Сова"], ["🤝", "Поддержка"]];
@@ -4468,7 +4637,7 @@ function profOf(pid) {
   const show = Array.isArray(raw.show) ? [...new Set(raw.show.filter((k) => PF_SC_KEYS.includes(k)))] : PF_SC_KEYS.slice();
   const ach = Array.isArray(raw.ach) ? [...new Set(raw.ach.filter((k) => ACH.some((a) => a.k === k)))].slice(0, 6) : null;
   const eq = { ...PF_DEF };
-  if (raw.eq && typeof raw.eq === "object") for (const c of ["bg", "fr", "bd"]) if (typeof raw.eq[c] === "string" && PF_ITEM[c + ":" + raw.eq[c]]) eq[c] = raw.eq[c];
+  if (raw.eq && typeof raw.eq === "object") for (const c of ["bg", "fr", "bd", "hat"]) if (typeof raw.eq[c] === "string" && PF_ITEM[c + ":" + raw.eq[c]]) eq[c] = raw.eq[c];
   return { status: str(raw.status, PF_ST), about: typeof raw.about === "string" ? raw.about.trim().slice(0, PF_AB) : "", own, show, ach, eq };
 }
 const pfAwardsBy = (pid) => (votesBy[pid] || []).filter((x) => x && x.kind === "award" && typeof x.owner === "string" && x.owner !== pid && PF_AWARDS.some((a) => a[0] === x.e));
@@ -4491,6 +4660,26 @@ function pfAwardsTo(pid) {
 }
 const pfGaveToday = (to) => pfAwardsBy(me).some((x) => x.owner === to && x.day === today());
 function pfLvl(L, shape, big) { return '<span class="slv ' + esc(shape) + (big ? " big" : "") + '" style="--lc:' + pfTier(L) + '" title="Уровень ' + L + '"><span>' + L + "</span></span>"; }
+// головные уборы: SVG поверх аватарки, живые детали через CSS-анимации
+const PF_HATS = {
+  santa: '<svg viewBox="0 0 100 70"><defs><linearGradient id="hS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5d5d"/><stop offset="1" stop-color="#b3121f"/></linearGradient></defs><path d="M18 58 Q38 14 80 8 Q70 30 84 52 Z" fill="url(#hS)"/><circle class="hpom" cx="82" cy="9" r="7.5" fill="#fff"/><path d="M10 52 Q50 42 90 52 L90 64 Q50 55 10 64 Z" fill="#f4f8ff"/><path class="tw" d="M30 30 l1.5 4 4 1.5 -4 1.5 -1.5 4 -1.5 -4 -4 -1.5 4 -1.5z" fill="#fff"/><path class="tw d2" d="M58 22 l1 3 3 1 -3 1 -1 3 -1 -3 -3 -1 3 -1z" fill="#fff"/></svg>',
+  crown: '<svg viewBox="0 0 100 70"><defs><linearGradient id="hC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2b8"/><stop offset=".5" stop-color="#ffcf5c"/><stop offset="1" stop-color="#b8862b"/></linearGradient><clipPath id="hCc"><path d="M14 62 L10 22 L30 40 L50 10 L70 40 L90 22 L86 62 Z"/></clipPath></defs><path d="M14 62 L10 22 L30 40 L50 10 L70 40 L90 22 L86 62 Z" fill="url(#hC)" stroke="#8a5f1a" stroke-width="1.5"/><g clip-path="url(#hCc)"><rect class="hshine" x="-30" y="0" width="16" height="70" fill="rgba(255,255,255,.75)" transform="skewX(-20)"/></g><circle cx="50" cy="50" r="5" fill="#ff3d5a"/><circle cx="30" cy="52" r="3.5" fill="#5ec8ff"/><circle cx="70" cy="52" r="3.5" fill="#49e3a0"/><circle cx="10" cy="22" r="3" fill="#fff2b8"/><circle cx="50" cy="10" r="3.5" fill="#fff2b8"/><circle cx="90" cy="22" r="3" fill="#fff2b8"/></svg>',
+  halo: '<svg viewBox="0 0 100 70"><g class="hbob"><ellipse cx="50" cy="34" rx="34" ry="9" fill="none" stroke="rgba(255,230,140,.35)" stroke-width="10"/><ellipse cx="50" cy="34" rx="34" ry="9" fill="none" stroke="#ffe08a" stroke-width="4"/><ellipse cx="50" cy="33" rx="34" ry="9" fill="none" stroke="#fffbe6" stroke-width="1.4"/></g></svg>',
+  horns: '<svg viewBox="0 0 100 70"><defs><linearGradient id="hH" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7a0f12"/><stop offset="1" stop-color="#ff4d3a"/></linearGradient></defs><path d="M28 66 Q12 44 22 12 Q30 38 44 58 Z" fill="url(#hH)"/><path d="M72 66 Q88 44 78 12 Q70 38 56 58 Z" fill="url(#hH)"/><circle class="hsm" cx="22" cy="10" r="4" fill="rgba(160,160,170,.6)"/><circle class="hsm d2" cx="78" cy="10" r="4" fill="rgba(160,160,170,.6)"/></svg>',
+  catears: '<svg viewBox="0 0 100 70"><g><path d="M12 66 L22 12 L46 54 Z" fill="#2b2b3a"/><path d="M19 60 L24 26 L39 53 Z" fill="#ff9ecf"/></g><g class="hear"><path d="M88 66 L78 12 L54 54 Z" fill="#2b2b3a"/><path d="M81 60 L76 26 L61 53 Z" fill="#ff9ecf"/></g></svg>',
+  wizard: '<svg viewBox="0 0 100 70"><defs><linearGradient id="hW" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b5bff"/><stop offset="1" stop-color="#2a1a7a"/></linearGradient></defs><ellipse cx="50" cy="60" rx="46" ry="8" fill="#1f1460"/><path d="M26 59 Q42 34 50 14 Q56 4 72 8 Q60 12 60 22 Q66 40 74 59 Z" fill="url(#hW)"/><rect x="28" y="50" width="45" height="6" rx="2" fill="#ffcf5c"/><path class="tw" d="M44 34 l1.5 4 4 1.5 -4 1.5 -1.5 4 -1.5 -4 -4 -1.5 4 -1.5z" fill="#ffe66b"/><path class="tw d2" d="M58 40 l1 3 3 1 -3 1 -1 3 -1 -3 -3 -1 3 -1z" fill="#ffe66b"/><path class="tw d3" d="M53 24 l1 2.5 2.5 1 -2.5 1 -1 2.5 -1 -2.5 -2.5 -1 2.5 -1z" fill="#fff"/></svg>',
+  tophat: '<svg viewBox="0 0 100 70"><ellipse cx="50" cy="62" rx="40" ry="7" fill="#0b0b12"/><rect x="28" y="12" width="44" height="50" fill="#14141f"/><ellipse cx="50" cy="12" rx="22" ry="5" fill="#22222f"/><rect x="28" y="48" width="44" height="7" fill="#c41e3a"/><rect class="hglint" x="33" y="16" width="5" height="30" fill="rgba(255,255,255,.18)"/></svg>',
+  cowboy: '<svg viewBox="0 0 100 70"><path d="M4 50 Q22 62 50 58 Q78 62 96 50 Q88 68 50 68 Q12 68 4 50 Z" fill="#8a5a2b"/><path d="M28 58 Q24 26 40 22 Q50 30 60 22 Q76 26 72 58 Z" fill="#a8703a"/><path d="M28 52 Q50 56 72 52 L72 58 Q50 62 28 58 Z" fill="#4a2a12"/><circle cx="50" cy="56" r="2.5" fill="#ffcf5c"/></svg>',
+  headphones: '<svg viewBox="0 0 100 100"><path d="M14 60 Q12 8 50 8 Q88 8 86 60" fill="none" stroke="#1d1f2b" stroke-width="8" stroke-linecap="round"/><path d="M18 52 Q18 14 50 14 Q82 14 82 52" fill="none" stroke="#5ec8ff" stroke-width="1.6" opacity=".6"/><rect x="2" y="50" width="20" height="32" rx="9" fill="#1d1f2b"/><rect x="78" y="50" width="20" height="32" rx="9" fill="#1d1f2b"/><rect x="6" y="56" width="6" height="20" rx="3" fill="#ff5da8"/><rect x="88" y="56" width="6" height="20" rx="3" fill="#ff5da8"/><g class="hwave"><rect x="-8" y="60" width="2.5" height="12" rx="1" fill="#7cf3ff"/><rect x="-13" y="56" width="2.5" height="20" rx="1" fill="#7cf3ff"/><rect x="105.5" y="60" width="2.5" height="12" rx="1" fill="#7cf3ff"/><rect x="110.5" y="56" width="2.5" height="20" rx="1" fill="#7cf3ff"/></g></svg>',
+  viking: '<svg viewBox="0 0 100 70"><defs><linearGradient id="hV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6edf5"/><stop offset="1" stop-color="#6d7a8a"/></linearGradient></defs><path d="M24 44 Q4 38 6 8 Q14 30 28 34 Z" fill="#f2e6c8"/><path d="M76 44 Q96 38 94 8 Q86 30 72 34 Z" fill="#f2e6c8"/><path d="M20 62 Q20 20 50 18 Q80 20 80 62 Z" fill="url(#hV)"/><rect x="18" y="54" width="64" height="8" rx="2" fill="#8a5a2b"/><rect x="46" y="18" width="8" height="46" fill="#a8b4c2"/><circle cx="26" cy="58" r="1.6" fill="#ffcf5c"/><circle cx="40" cy="58" r="1.6" fill="#ffcf5c"/><circle cx="60" cy="58" r="1.6" fill="#ffcf5c"/><circle cx="74" cy="58" r="1.6" fill="#ffcf5c"/><rect class="hglint" x="30" y="26" width="4" height="22" fill="rgba(255,255,255,.35)" transform="rotate(-18 32 37)"/></svg>',
+};
+// у каждого убора SVG с id градиентов: делаем id уникальными, чтобы несколько уборов на странице не путались
+function pfHatHtml(id, key) {
+  const svg = PF_HATS[id]; if (!svg) return "";
+  const n = String(key || "x").replace(/[^a-z0-9]/gi, ""), u = svg.replace(/id="(h[A-Za-z]+)"/g, 'id="$1' + n + '"').replace(/url\(#(h[A-Za-z]+)\)/g, "url(#$1" + n + ")");
+  return '<span class="pfhat hat-' + id + '" aria-hidden="true">' + u + "</span>";
+}
+
 function pfAva(pid, own) {
   const a = avaOf(pid), img = a ? '<img src="' + esc(blobUrl(a)) + '" alt="">' : esc((pname(pid) || "?")[0]);
   if (own && assetsApi && canWrite) return '<label class="pfav avaed" title="Сменить аватарку">' + img + '<input type="file" accept="image/*" id="avaFile" aria-label="Сменить аватарку"><span class="avacam">' + (avaBusy ? "…" : "📷") + "</span></label>";
@@ -4508,7 +4697,7 @@ function pfHeroHtml(pid, ctx) {
   const fr = pid !== me && ctx === "friend" && me && canWrite && meActive() && isActive(PLAYERS.find((x) => x.id === pid));
   return '<section class="panel pfhero"><div class="pfbg pbg-' + eq.bg + '" data-fxbg="' + eq.bg + '" aria-hidden="true">' + pfBgInner(eq.bg) + "</div>" +
     (own ? '<div class="pftools"><button type="button" class="pfpts" data-act="pfshop" aria-label="Очки и магазин">💠 ' + pfPoints(pid) + '</button><button type="button" class="pfgear" data-act="tab" data-t="more" aria-label="Настройки">⚙' + '<span class="dot" id="gearDot" hidden></span></button></div>' : "") +
-    '<div class="pfid"><div class="pfavw" data-fxfr="' + eq.fr + '">' + pfAva(pid, own) + '</div><div class="pfnm"><div class="pfname">' + esc(pname(pid)) + pfLvl(p.li.L, eq.bd) + "</div>" + pfOnline(pid) + (own && avaOf(pid) ? '<div class="pfavl"><button type="button" class="linkbtn" data-act="imgview" data-kind="ava" data-src="' + esc(blobUrl(avaOf(pid))) + '">открыть аватарку</button><button type="button" class="linkbtn" data-act="avadel">убрать</button></div>' : "") + "</div></div>" +
+    '<div class="pfid"><div class="pfavw" data-fxfr="' + eq.fr + '">' + pfAva(pid, own) + pfHatHtml(eq.hat, ctx + pid) + '</div><div class="pfnm"><div class="pfname">' + esc(pname(pid)) + pfLvl(p.li.L, eq.bd) + "</div>" + pfOnline(pid) + (own && avaOf(pid) ? '<div class="pfavl"><button type="button" class="linkbtn" data-act="imgview" data-kind="ava" data-src="' + esc(blobUrl(avaOf(pid))) + '">открыть аватарку</button><button type="button" class="linkbtn" data-act="avadel">убрать</button></div>' : "") + "</div></div>" +
     '<div class="pfbody">' + (pr.status ? '<div class="pfst">' + esc(pr.status) + "</div>" : own ? '<button type="button" class="pfst empty" data-act="pfedit">+ Добавить статус</button>' : "") +
     '<div class="pfcls"><span>Класс <b>' + esc(p.cls) + '</b></span><span>Ранг охотника <span class="rank r-' + hunter(p.li.L) + '">' + hunter(p.li.L) + "</span></span><span>в Системе с " + nice(joinedOf(pid)) + "</span></div>" +
     (pr.about ? '<div class="pfab">' + esc(pr.about) + "</div>" : "") +
@@ -4574,6 +4763,30 @@ function pfShowHtml(pid, ctx) {
   // в окне друга сюжет и дневник уже есть ниже целиком, поэтому витрины с ними пропускаем
   return profOf(pid).show.filter((k) => ctx !== "friend" || (k !== "story" && k !== "diary")).map((k) => pfScHtml(pid, k, ctx)).join("");
 }
+// гамма фона: [свечение 1, свечение 2, оттенок фона сайта] в виде "r,g,b"
+const PF_PAL = {
+  neon: ["180,90,255", "94,200,255", "40,10,70"], snow: ["150,200,255", "220,240,255", "20,40,70"], rain: ["90,130,190", "170,205,255", "15,25,40"],
+  sunset: ["255,110,140", "255,180,90", "60,20,45"], stars: ["90,110,255", "200,210,255", "10,12,40"], dunes: ["255,150,80", "255,210,140", "60,30,15"],
+  ocean: ["40,140,230", "120,220,255", "5,35,70"], sakura: ["255,120,180", "255,190,225", "70,20,50"], forest: ["90,170,150", "180,230,170", "15,40,35"],
+  city: ["255,90,200", "120,200,255", "35,15,60"], aurora: ["60,230,150", "170,120,255", "10,40,45"], lava: ["255,80,30", "255,170,60", "70,12,5"],
+  matrix: ["40,220,110", "150,255,180", "5,35,15"], synth: ["255,90,170", "255,200,90", "50,10,60"], storm: ["110,140,220", "190,215,255", "15,20,40"],
+  dawn: ["255,160,100", "255,220,150", "70,40,50"], cosmos: ["160,90,255", "90,170,255", "25,10,55"], volcano: ["255,90,40", "255,200,80", "60,10,5"],
+  underwater: ["40,200,220", "140,240,255", "3,40,60"], neoncity: ["255,60,200", "60,220,255", "40,8,55"], autumn: ["230,120,40", "255,200,90", "60,30,10"],
+  peaks: ["255,140,120", "170,150,255", "40,25,55"], tunnel: ["120,80,255", "60,240,255", "15,10,50"],
+};
+function pfThemeOn() { try { return localStorage.getItem("sys.theme") !== "0"; } catch { return true; } }
+// фон сайта в гамме фона профиля: свой, а пока открыт профиль друга, его
+function syncTheme(force) {
+  try { syncTheme0(force); } catch {} // фон сайта ещё не готов при самой первой отрисовке
+}
+function syncTheme0(force) {
+  const el = $("bg"); if (!el) return;
+  const pid = friendId || me, pal = pfThemeOn() && pid ? PF_PAL[pfEq(pid).bg] : null, key = (pal ? pal.join("|") : "") + "|" + bgS.rank;
+  if (!force && bgS.theme === key) return; bgS.theme = key;
+  const c = pal || BG_RANK[bgS.rank] || BG_RANK.E;
+  el.style.setProperty("--c1", c[0]); el.style.setProperty("--c2", c[1]); el.style.setProperty("--tint", pal ? "rgba(" + pal[2] + ",.6)" : "rgba(0,0,0,0)");
+  bgS.c2 = pal ? pal[1] : null;
+}
 function pfMountFx() {
   PFX.FX.live = bgLiveOn() && !RM();
   document.querySelectorAll("[data-fxbg]").forEach((el) => {
@@ -4592,12 +4805,13 @@ function renderProfile() {
   setHtml("profShow", pfShowHtml(pid, "me"));
   const gd = $("gearDot"); if (gd) gd.hidden = $("moreDot").hidden;
   if (pf) renderPf();
-  pfMountFx();
+  pfMountFx(); syncTheme();
 }
 // ---------- шторки профиля ----------
 function pfItemPv(it, pid) {
   if (it.cat === "bg") return '<div class="pv pbg-' + it.id + '" data-fxbg="' + it.id + '" data-fxsm="1">' + pfBgInner(it.id) + "</div>";
   if (it.cat === "fr") return '<div class="pv"><div class="pfavw sm" data-fxfr="' + it.id + '"><span class="pfav">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="">' : esc(pname(pid)[0])) + "</span></div></div>";
+  if (it.cat === "hat") return '<div class="pv"><div class="pfavw sm"><span class="pfav">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="">' : esc(pname(pid)[0])) + "</span>" + pfHatHtml(it.id, "it" + it.id) + "</div></div>";
   return '<div class="pv">' + pfLvl(profile(pid).li.L, it.id, true) + "</div>";
 }
 function renderPf() {
@@ -4610,7 +4824,7 @@ function renderPf() {
     const eq = pfEq(pid);
     const tr = { ...eq, ...(pf.try || {}) }, trN = PF_CATS.map(([c]) => PF_ITEM[c + ":" + tr[c]].n).join(" · ");
     h = '<div class="ph"><h2 class="ptitle">Магазин</h2><span class="pfpts">💠 ' + pts + '</span><button type="button" class="btn sm ghost" data-act="pfclose" aria-label="Закрыть">×</button></div>' +
-      '<div class="pftry"><div class="pfbg pbg-' + tr.bg + '" data-fxbg="' + tr.bg + '" aria-hidden="true">' + pfBgInner(tr.bg) + '</div><div class="pftryid"><div class="pfavw" data-fxfr="' + tr.fr + '"><span class="pfav">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="">' : esc(pname(pid)[0])) + "</span></div><div><b>" + esc(pname(pid)) + " " + pfLvl(profile(pid).li.L, tr.bd) + '</b><span class="hint">Примерка: ' + esc(trN) + "</span></div></div></div>" +
+      '<div class="pftry"><div class="pfbg pbg-' + tr.bg + '" data-fxbg="' + tr.bg + '" aria-hidden="true">' + pfBgInner(tr.bg) + '</div><div class="pftryid"><div class="pfavw" data-fxfr="' + tr.fr + '"><span class="pfav">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="">' : esc(pname(pid)[0])) + "</span>" + pfHatHtml(tr.hat, "try") + "</div><div><b>" + esc(pname(pid)) + " " + pfLvl(profile(pid).li.L, tr.bd) + '</b><span class="hint">Примерка: ' + esc(trN) + "</span></div></div></div>" +
       (isOwner ? '<label class="setrow pftest"><span><b>🧪 Тест: всё открыто</b><span class="hint" style="display:block">Видно только тебе. Друзья видят у тебя только купленное и заработанное.</span></span><input type="checkbox" data-act="pftest"' + (pfTest() ? " checked" : "") + "></label>" : "") +
       '<p class="hint" style="margin:10px 0 12px">Нажми на картинку вещи, чтобы примерить её сверху. Очки копятся вместе с опытом: <b>1 XP = 1 очко</b>. Покупка тратит только очки, опыт и уровень не меняются. Вещи с 🏆 не продаются, они открываются ачивкой.</p>' +
       '<div class="dseg pfcats" role="group" aria-label="Раздел">' + PF_CATS.map(([c, n]) => '<button type="button" data-act="pfcat" data-c="' + c + '" aria-pressed="' + (pf.cat === c) + '">' + n + "</button>").join("") + "</div>" +
@@ -4935,7 +5149,7 @@ const GUIDE = [
   { id: "b-story", l: 2, t: "Сюжетные квесты", b: "<p>Сюжетный квест это большая цель, разбитая на <b>шаги</b>. Вкладка «Сюжет» → «+ Новый квест»: 1) цель, 2) срок (неделя, 2 недели, месяц… или своя дата, не позже 31 декабря), 3) характеристика, 4) шаги: пиши шаг и жми Enter.</p><p>Шаг это задача, как квест дня: <b>время × сложность × «нравится»</b>, опыт по той же формуле. У шага две кнопки: <b>дата</b> (мини-календарь, «Без даты», «повторять до срока» каждый день, через день или раз в неделю) и <b>время · сложность</b> (ползунки). Дата необязательна.</p><p>Шаги с датой «сегодня» видны на вкладке «Сегодня» в блоке <b>«Сюжет сегодня»</b>. Отметить можно <b>любой</b> несделанный шаг до срока: он засчитается сегодняшним днём. Когда все шаги сделаны, квест <b>сам уходит друзьям</b> на проверку. Одобрили: <b>бонус +50%</b> от опыта шагов.</p>", v: 22 },
   { id: "b-diary", l: 2, t: "Дневник", b: "<p>Вкладка «Дневник»: записи о том, что происходит. Кнопка <b>«+ Запись за сегодня»</b>: настроение и текст. Записать можно только за сегодня, править только в тот же день, удалить в любой момент. Опыта за дневник нет.</p><p>Новая запись по умолчанию <b>🔒 только мне</b>: её видишь только ты, сервер не отдаёт её друзьям. Замок у записи переключает <b>👁 друзьям</b> и обратно. «👀 Как видят друзья» показывает твой дневник их глазами.</p><p>Открытые записи друзей во вкладке «Дневник → Друзья» (новые с меткой НОВОЕ) и в окне друга. Под ними реакции и комментарии. Если запись скрыть, реакции и комментарии спрячутся вместе с ней и вернутся, когда откроешь снова.</p>", v: 23 },
   { id: "b-yr", l: 2, t: "Итоги сезона", b: "<p>31 декабря в 18:00 открываются <b>итоги сезона 1</b>: на «Сегодня» плашка, в ⚙ Настройках раздел «Итоги сезона». Это сторис: нажми справа, чтобы листать, слева, чтобы вернуться, ❚❚ ставит на паузу.</p><p>Что внутри: опыт по месяцам, процент выполнения, лучшая серия, главный квест, ритм по дням недели, рост характеристик, сюжеты, ачивки, голоса в пати и номинации. В конце карточка-итог и таблица пати. Можно открыть итоги любого друга.</p><p>Всё считается из квестов с 15 октября по 31 декабря, ничего заполнять не нужно.</p>", v: 24 },
-  { id: "b-prof", l: 2, t: "Профиль, магазин и награды", b: "<p><b>Профиль</b> как в Steam: фон, рамка аватарки, значок уровня, статус и «О себе». Ниже витрины: ачивки (выбираешь до 6), любимый квест, текущий сюжет, статистика, недавняя активность за 2 недели, дневник (только открытые записи), награды и стена. «✎ Изменить профиль»: статус, о себе, какие витрины показывать и в каком порядке.</p><p><b>Очки 💠</b> копятся вместе с опытом: 1 XP = 1 очко. В <b>магазине</b> на них покупаются фоны, рамки и форма значка уровня. Покупка тратит только очки, опыт и уровень не меняются. Цвет значка показывает уровень (меняется каждые 10 уровней) и не продаётся. Вещи с 🏆 открываются только ачивкой: фоны Гроза (Две недели), Восход (Идеальный день), Космос (Сотня), рамки Огненная (Железная воля), Хрусталь (Без провалов), Корона (Легенда), значок Звезда (Сюжет пройден).</p><p><b>Профиль друга</b> открывается в «Пати» по нажатию на него. Там можно написать на <b>стене</b> и <b>наградить</b> 🔥 💪 🧠 🎯 🌙 🤝: награда стоит 100 очков, одному другу одна в день, и навсегда остаётся у него на профиле.</p><p>Фоны и рамки <b>живые</b>: рисуются кодом прямо на устройстве и двигаются за мышкой или пальцем. В магазине сверху <b>примерка</b>: нажми на картинку вещи, и она сразу появится на тебе. Остановить анимацию: ⚙ Настройки → «Оформление» → «Живой фон».</p>", v: 26 },
+  { id: "b-prof", l: 2, t: "Профиль, магазин и награды", b: "<p><b>Профиль</b> как в Steam: фон, рамка аватарки, значок уровня, статус и «О себе». Ниже витрины: ачивки (выбираешь до 6), любимый квест, текущий сюжет, статистика, недавняя активность за 2 недели, дневник (только открытые записи), награды и стена. «✎ Изменить профиль»: статус, о себе, какие витрины показывать и в каком порядке.</p><p><b>Очки 💠</b> копятся вместе с опытом: 1 XP = 1 очко. В <b>магазине</b> на них покупаются фоны, рамки и форма значка уровня. Покупка тратит только очки, опыт и уровень не меняются. Цвет значка показывает уровень (меняется каждые 10 уровней) и не продаётся. Вещи с 🏆 открываются только ачивкой: фоны Гроза (Две недели), Восход (Идеальный день), Космос (Сотня), рамки Огненная (Железная воля), Хрусталь (Без провалов), Корона (Легенда), значок Звезда (Сюжет пройден).</p><p><b>Профиль друга</b> открывается в «Пати» по нажатию на него. Там можно написать на <b>стене</b> и <b>наградить</b> 🔥 💪 🧠 🎯 🌙 🤝: награда стоит 100 очков, одному другу одна в день, и навсегда остаётся у него на профиле.</p><p>Фоны и рамки <b>живые</b>: рисуются кодом прямо на устройстве и двигаются за мышкой или пальцем. В магазине сверху <b>примерка</b>: нажми на картинку вещи, и она сразу появится на тебе. Остановить анимацию: ⚙ Настройки → «Оформление» → «Живой фон».</p><p><b>Уборы</b>: головной убор поверх аватарки, раздел «Уборы» в магазине. <b>Цвет сайта</b> подстраивается под твой фон профиля, а в профиле друга под его фон. Выключается в «Оформлении».</p>", v: 27 },
   { id: "b-link", l: 2, t: "Шаги на ходу и лимит дня", b: "<p>Пока срок не вышел, шаги можно менять: дату и время у несделанных, добавлять новые, убирать лишние (×). Убранный шаг уходит в «Убрано»: опыта за него нет, бонус меньше, друзья видят «убрано N». Его можно вернуть. Последний шаг убрать нельзя. Сделанный шаг под замком 🔒.</p><p>Лимит дня общий: <b>16 часов и 5 привычек</b> на квесты дня, повторы и шаги сюжетов вместе. Шаг без даты день не занимает, пока не отметишь его или не поставишь дату. Честные часы действуют и для шагов.</p><p>Привязка квеста дня к сюжету (плашка «сюжет») осталась только у старых квестов: новым она не нужна.</p>", v: 22 },
   { id: "b-verify", l: 2, t: "Проверка друзьями", b: "<p>Ежедневные квесты друзья не проверяют, их можно только <b>оспорить</b> в течение суток. На проверку уходит <b>сюжетный квест</b>: сам, когда сделаны все шаги (и старые крупные B, A, S, отправленные до v18). Фото или пояснение для друзей добавь в обсуждении под квестом. У друзей появляется запрос во вкладке «Пати» и цифра на вкладке.</p><p>Засчитано, если <b>большинство</b> друзей сказали «да» (при 2 друзьях оба, при 3 двое, при 4 трое), или если есть хотя бы одно «да», ни одного «нет» и прошло <b>48 часов</b>. Зеркально: одно или больше «нет», ни одного «да» и 48 часов, и квест отклонён. Если «нет» сказали столько, что большинства уже не набрать, квест отклонён, его можно отправить снова.</p>", v: 22 },
   { id: "b-talk", l: 2, t: "Комментарии и обсуждения", b: "<p>Под квестом на проверке или в споре есть <b>обсуждение</b>: друзья спрашивают, ты отвечаешь, можно с фото. Когда итог подведён, переписка остаётся, но писать туда уже нельзя.</p><p>Голосуя, можно оставить комментарий. К «Не засчитывать» он обязателен, к «Подтверждаю» по желанию. «Спросить» отправляет вопрос без голоса. «Оспорить» тоже требует причину.</p><p>Все твои обсуждения собраны во вкладке «Пати» в разделе «Обсуждения». Новые комментарии видны цифрой на вкладке и в плашке на «Сегодня».</p>", v: 11 },
@@ -5308,12 +5522,12 @@ function nudgeHtml(pid) {
 function renderFriend() {
   const ov = $("friendOv");
   document.body.style.overflow = friendId ? "hidden" : "";
-  if (!friendId) { hideOv(ov); return; }
+  if (!friendId) { hideOv(ov); syncTheme(); return; }
   showOv(ov);
   const fn = avaHtml(friendId, "md") + esc(pname(friendId)) + (isHere(friendId) ? ' <span class="ondot" aria-hidden="true"></span><span class="onl">онлайн</span>' : isAway(friendId) ? ' <span class="ondot away" aria-hidden="true"></span><span class="onl" style="color:var(--gold)">' + esc(awayTxt(friendId)) + "</span>" : roster[friendId] ? '<span class="onl" style="color:var(--muted)">' + esc(lastSeenTxt(friendId)) + "</span>" : "");
   if ($("fName").innerHTML !== fn) $("fName").innerHTML = fn;
   setHtml("fProf", pfHeroHtml(friendId, "friend") + '<div class="pfgw">' + pfShowHtml(friendId, "friend") + "</div>");
-  pfMountFx();
+  pfMountFx(); syncTheme();
   setHtml("fNudge", nudgeHtml(friendId));
   setHtml("fQuests", questsListHtml(friendId).html);
   setHtml("fStories", storiesHtml(friendId));
@@ -5646,7 +5860,7 @@ function bgMode() { const d = today().slice(5); return d === "12-31" || d === "0
 function bgUpdate() {
   const el = $("bg"); if (!el) return;
   const rk = me && loadedBy[me] ? hunter(profile(me).li.L) : "E";
-  if (rk !== bgS.rank) { bgS.rank = rk; const c = BG_RANK[rk] || BG_RANK.E; el.style.setProperty("--c1", c[0]); el.style.setProperty("--c2", c[1]); }
+  if (rk !== bgS.rank) { bgS.rank = rk; syncTheme(true); }
   const ph = bgPhase(), md = bgMode(), live = bgLiveOn() && !RM();
   if (ph !== bgS.phase || md !== bgS.mode || live !== bgS.live) {
     bgS.phase = ph; bgS.mode = md; bgS.live = live;
@@ -5671,7 +5885,7 @@ function bgSeed() {
 }
 function bgDraw(t, dt) {
   const c = $("bgc"); if (!c) return; const x = c.getContext("2d"); if (!x) return;
-  const W = bgS.w, H = bgS.h, d = bgS.dpr, c2 = (BG_RANK[bgS.rank] || BG_RANK.E)[1];
+  const W = bgS.w, H = bgS.h, d = bgS.dpr, c2 = bgS.c2 || (BG_RANK[bgS.rank] || BG_RANK.E)[1];
   x.setTransform(d, 0, 0, d, 0, 0); x.clearRect(0, 0, W, H);
   for (const s of bgS.stars) { const tw = 0.45 + 0.55 * Math.abs(Math.sin(t / 1000 * s.s + s.p)); x.fillStyle = "rgba(220,235,255," + (tw * 0.8).toFixed(3) + ")"; x.beginPath(); x.arc(s.x, s.y, s.r, 0, 6.283); x.fill(); }
   for (const q of bgS.parts) {
@@ -5706,6 +5920,7 @@ window.SISTEMA_BG = (o) => { const el = $("bg"); bgS.phase = o.phase || bgPhase(
   const cb = $("liveBg"); if (!cb) return;
   cb.checked = bgLiveOn();
   cb.addEventListener("change", () => { PFX.FX.live = cb.checked && !RM(); });
+  const tb = $("themeBg"); if (tb) { tb.checked = pfThemeOn(); tb.addEventListener("change", () => { try { localStorage.setItem("sys.theme", tb.checked ? "1" : "0"); } catch {} syncTheme(true); }); }
   cb.addEventListener("change", () => { try { localStorage.setItem("sys.liveBg", cb.checked ? "1" : "0"); } catch {} bgS.live = null; bgUpdate(); toast(cb.checked ? "Живой фон включён." : "Живой фон выключен: статичная картинка."); });
 })();
 bgUpdate();
