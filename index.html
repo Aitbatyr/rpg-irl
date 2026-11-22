@@ -1210,6 +1210,18 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .slv.gem::after{clip-path:polygon(50% 0,100% 35%,80% 100%,20% 100%,0 35%);inset:4px}
 .slv.gem>span{margin-top:3px}
 @media (prefers-reduced-motion:reduce){.pfbg *,.pfbg::before,.pfbg::after,.pv *,.pv::before,.pv::after,.pfr{animation:none !important}}
+/* живые фоны и рамки */
+.pfbg{touch-action:pan-y;z-index:0;isolation:isolate}
+.pfbg>.fxc{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:3}
+.ringc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:2}
+.pftry{position:relative;border:1px solid var(--line-soft);overflow:hidden;background:var(--panel-solid)}
+.pftry .pfbg{height:120px}
+.pftryid{display:flex;align-items:flex-end;gap:12px;padding:0 14px 12px;margin-top:-44px;position:relative;z-index:4}
+.pftryid b{display:flex;align-items:center;gap:8px;font:800 18px var(--f-display)}
+.pftryid .hint{display:block;font-size:12px}
+.pftest{margin:10px 0 0;padding:10px 12px;border:1px dashed rgba(255,207,92,.5)}
+.pfit .pvb{display:block;width:100%;padding:0;border:0;background:none;cursor:pointer}
+.pfit.tried{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
 </style>
 <style>[hidden]{display:none!important}html{background:#060a14}body{margin:0}</style>
 </head>
@@ -1838,6 +1850,10 @@ const NEWS = [
     "Магазин: 10 новых фонов (снегопад, ливень, звёздное небо, дюны, океан, туманный лес, ночной город, лава, синтвейв), 8 рамок (двойное кольцо, ледяная, пульс, электрическая, голограмма, синее пламя, золотое кольцо), 2 формы значка (октагон, кристалл).",
     "Новые трофеи: фон «Восход» за «Идеальный день» и рамка «Хрусталь» за «Без провалов».",
     "«Гроза» переделана: тучи плывут, идёт косой дождь, молнии бьют в разное время и в разных местах, иногда двойной вспышкой.",
+    "Живые фоны: все 18 фонов профиля теперь рисуются кодом кадр за кадром. Снег на трёх глубинах с ветром, дождь с брызгами, падающие звёзды, лепестки сакуры, светлячки в лесу, огни города, волны с бликами, сияние, лава и космос на видеокарте. Молнии каждый раз новые, с ветками.",
+    "Живые рамки: пламя из частиц, электрические разряды, иней, волны, комета по кругу, блик на золоте. Рамка теперь лежит прямо на краю аватарки, без зазора.",
+    "Фон двигается за мышкой или пальцем, получается глубина. В магазине сверху «примерка»: нажми на картинку вещи и сразу видишь её на себе вживую.",
+    "Выключатель «Живой фон» в ⚙ Настройках → «Оформление» останавливает и фон профиля.",
   ] },
   { v: 25, date: "2026-11-20", title: "Профиль как в Steam", items: [
     "Внизу теперь 5 вкладок с иконками: Сегодня, Сюжет, Дневник, Пати, Профиль. «Статус» стал «Профилем», а вкладка «Ещё» превратилась в ⚙ Настройки (шестерёнка в профиле).",
@@ -3974,6 +3990,424 @@ function renderYrEntry() {
     '<div class="acts">' + (me && isActive(PLAYERS.find((x) => x.id === me)) ? '<button type="button" class="btn" data-act="yropen" data-p="' + esc(me) + '">🎬 Мои итоги</button>' : "") + '<button type="button" class="btn ghost" data-act="yropen">Итоги друзей</button></div>');
 }
 
+// ---------- v26+: живые фоны профиля и рамки (Canvas 2D + WebGL) ----------
+const PFX = (() => {
+// ===== FX: новые живые фоны (Canvas 2D + WebGL) и рамки =====
+const TAU = Math.PI * 2, rnd = (a, b) => a + Math.random() * (b - a), clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const FX = { live: true, fps: 0, q: matchMedia("(pointer: coarse)").matches ? 1 : 2 };
+const mkOff = (w, h) => { const c = document.createElement("canvas"); c.width = Math.max(1, w); c.height = Math.max(1, h); return c; };
+const grad = (ctx, y0, y1, stops) => { const g = ctx.createLinearGradient(0, y0, 0, y1); stops.forEach(([o, c]) => g.addColorStop(o, c)); return g; };
+// ---------- WebGL ----------
+const GLSL_HEAD = `precision mediump float;
+uniform vec2 u_res; uniform float u_t; uniform vec2 u_m; uniform float u_flash; uniform vec2 u_fp;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),u.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x),u.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
+`;
+const SHADERS = {
+  aurora: `void main(){vec2 uv=gl_FragCoord.xy/u_res;float asp=u_res.x/u_res.y;vec2 p=vec2(uv.x*asp,uv.y)+u_m*.03;
+    vec3 col=mix(vec3(.01,.03,.07),vec3(.02,.05,.13),uv.y);
+    vec2 sg=floor(gl_FragCoord.xy/2.);float sh=hash(sg);col+=step(.996,sh)*(.4+.6*sin(u_t*2.+sh*60.))*.8;
+    for(int i=0;i<3;i++){float fi=float(i);float x=p.x*1.3+fi*1.9;
+      float base=.38+fi*.09+.12*sin(x*1.7+u_t*.25+fi*2.)+.1*(fbm(vec2(x*1.2,u_t*.12+fi*3.))-.5);
+      float d=uv.y-base;float rays=.55+.45*fbm(vec2(x*9.+fi*7.,d*1.5-u_t*.35));
+      float a=smoothstep(-.015,.02,d)*exp(-max(d,0.)*(3.2+fi))*rays;
+      vec3 c=mix(vec3(.15,1.,.55),vec3(.55,.35,1.),clamp(d*2.6+fi*.25,0.,1.));
+      col+=c*a*(.75-fi*.15);}
+    col+=vec3(.05,.2,.15)*smoothstep(.25,0.,uv.y)*.6;
+    gl_FragColor=vec4(col,1.);}`,
+  lava: `void main(){vec2 uv=gl_FragCoord.xy/u_res;float asp=u_res.x/u_res.y;vec2 p=vec2(uv.x*asp,uv.y);float f=0.;
+    for(int i=0;i<10;i++){float fi=float(i);vec2 c=vec2(asp*(.5+.45*sin(u_t*(.11+fi*.023)+fi*1.7)),.5+.6*sin(u_t*(.09+fi*.017)+fi*2.9));
+      float r=(.13+.05*sin(fi*3.1+u_t*.3))*(.6+.4*asp/2.);f+=r*r/dot(p-c,p-c);}
+    f+=.25*fbm(p*3.+u_t*.1);
+    vec3 col=mix(vec3(.08,.01,.01),vec3(.35,.03,.02),uv.y);
+    col=mix(col,vec3(.9,.18,.04),smoothstep(.9,1.15,f));col=mix(col,vec3(1.,.55,.08),smoothstep(1.3,1.9,f));col=mix(col,vec3(1.,.9,.5),smoothstep(2.4,4.,f));
+    col+=vec3(.5,.1,.02)*smoothstep(.4,.95,f)*.5;
+    gl_FragColor=vec4(col,1.);}`,
+  cosmos: `void main(){vec2 uv=gl_FragCoord.xy/u_res;float asp=u_res.x/u_res.y;vec2 p=vec2(uv.x*asp,uv.y)*2.+u_m*.06;
+    vec2 q=vec2(fbm(p+u_t*.02),fbm(p+vec2(5.2,1.3)-u_t*.015));float n=fbm(p+2.5*q);
+    vec3 col=vec3(.01,.01,.03);col+=mix(vec3(.25,.05,.45),vec3(.05,.35,.7),q.x)*pow(n,2.2)*1.6;col+=vec3(1.,.4,.7)*pow(n,5.)*1.2;
+    vec2 sg=floor(gl_FragCoord.xy/1.5);float sh=hash(sg);col+=step(.993,sh)*(.5+.5*sin(u_t*(1.+sh*3.)+sh*90.));
+    float sh2=hash(sg+7.);col+=step(.9992,sh2)*vec3(.8,.9,1.)*1.5;
+    gl_FragColor=vec4(col,1.);}`,
+  storm: `void main(){vec2 uv=gl_FragCoord.xy/u_res;float asp=u_res.x/u_res.y;vec2 p=vec2(uv.x*asp,uv.y)+u_m*.02;
+    vec3 sky=mix(vec3(.12,.14,.2),vec3(.03,.04,.07),uv.y);
+    float c1=fbm(vec2(p.x*1.6-u_t*.035,p.y*2.6+u_t*.01));float c2=fbm(vec2(p.x*3.2-u_t*.06,p.y*4.+3.));
+    float dens=smoothstep(.35,.75,c1*.65+c2*.45+uv.y*.35);
+    vec3 cl=mix(vec3(.2,.23,.31),vec3(.05,.06,.1),smoothstep(.3,.8,c2));vec3 rim=vec3(.32,.36,.46)*smoothstep(.55,.8,c1)*.35;cl+=rim;
+    vec3 col=mix(sky,cl,dens);
+    vec2 fp=vec2(u_fp.x*asp,u_fp.y);float d=length(p-fp);
+    col+=u_flash*(vec3(.55,.65,.95)*exp(-d*2.2)*(.4+dens)+vec3(.15,.18,.3)*(1.-uv.y*.3));
+    col+=u_flash*.25*vec3(.7,.8,1.)*smoothstep(.6,1.,c2)*exp(-d*1.2);
+    gl_FragColor=vec4(col,1.);}`,
+};
+function makeGL(canvas, src) {
+  const gl = canvas.getContext("webgl", { antialias: false, premultipliedAlpha: false, preserveDrawingBuffer: false });
+  if (!gl) return null;
+  const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) { console.warn(gl.getShaderInfoLog(o)); return null; } return o; };
+  const vs = sh(gl.VERTEX_SHADER, "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}"), fs = sh(gl.FRAGMENT_SHADER, GLSL_HEAD + src);
+  if (!vs || !fs) return null;
+  const pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr); gl.useProgram(pr);
+  const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = {}; for (const k of ["u_res", "u_t", "u_m", "u_flash", "u_fp"]) U[k] = gl.getUniformLocation(pr, k);
+  return { gl, draw(w, h, t, m, flash, fp) { gl.viewport(0, 0, w, h); gl.uniform2f(U.u_res, w, h); gl.uniform1f(U.u_t, t); gl.uniform2f(U.u_m, m.x, m.y); gl.uniform1f(U.u_flash, flash || 0); gl.uniform2f(U.u_fp, fp ? fp.x : .5, fp ? fp.y : .8); gl.drawArrays(gl.TRIANGLES, 0, 3); } };
+}
+// ---------- молния: ломаная с ветками (середина со смещением) ----------
+function boltPath(x0, y0, x1, y1, disp, depth, out, branch) {
+  if (depth <= 0) { out.push([x0, y0, x1, y1, branch]); return; }
+  const mx = (x0 + x1) / 2 + rnd(-disp, disp), my = (y0 + y1) / 2 + rnd(-disp * .25, disp * .25);
+  boltPath(x0, y0, mx, my, disp / 2, depth - 1, out, branch); boltPath(mx, my, x1, y1, disp / 2, depth - 1, out, branch);
+  if (!branch && depth >= 3 && Math.random() < .45) { const ang = Math.atan2(y1 - y0, x1 - x0) + rnd(-.9, .9), len = Math.hypot(x1 - x0, y1 - y0) * rnd(.35, .7); boltPath(mx, my, mx + Math.cos(ang) * len, my + Math.sin(ang) * len, disp / 2, depth - 2, out, true); }
+}
+function drawBolt(ctx, segs, a) {
+  ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.lineCap = "round";
+  for (const [lw, al, col] of [[7, .12, "#6fa8ff"], [3.2, .35, "#a9cfff"], [1.3, 1, "#ffffff"]]) {
+    ctx.strokeStyle = col; ctx.beginPath();
+    for (const s of segs) { ctx.globalAlpha = al * a * (s[4] ? .55 : 1); ctx.lineWidth = lw * (s[4] ? .6 : 1); ctx.beginPath(); ctx.moveTo(s[0], s[1]); ctx.lineTo(s[2], s[3]); ctx.stroke(); }
+  }
+  ctx.restore();
+}
+// ---------- сцены ----------
+// каждая сцена: gl (шейдер, по желанию), init(S,w,h), draw(ctx,S,t,dt,w,h,m)
+const SC = {};
+SC.base = {
+  init(S, w, h) { S.d = Array.from({ length: 40 }, () => ({ x: rnd(0, w), y: rnd(0, h), r: rnd(.5, 1.6), s: rnd(4, 14), p: rnd(0, TAU) })); },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#0d1d3a"], [1, "#050913"]]); c.fillRect(0, 0, w, h);
+    c.globalCompositeOperation = "lighter";
+    [[.25, .3, "94,200,255", .9], [.75, .6, "180,140,255", .7], [.5, .9, "73,227,160", .45]].forEach(([x, y, col, k], i) => {
+      const cx = w * (x + .08 * Math.sin(t * .2 + i * 2)) + m.x * 12 * (i + 1), cy = h * (y + .1 * Math.cos(t * .17 + i)) + m.y * 6, r = Math.max(w, h) * .45;
+      const g = c.createRadialGradient(cx, cy, 0, cx, cy, r); g.addColorStop(0, "rgba(" + col + "," + .28 * k + ")"); g.addColorStop(1, "rgba(" + col + ",0)"); c.fillStyle = g; c.fillRect(0, 0, w, h);
+    });
+    for (const p of S.d) { p.y -= p.s * dt; if (p.y < -5) { p.y = h + 5; p.x = rnd(0, w); } c.globalAlpha = .35 + .35 * Math.sin(t * 2 + p.p); c.fillStyle = "#bfe8ff"; c.beginPath(); c.arc(p.x + m.x * 8, p.y, p.r, 0, TAU); c.fill(); }
+    c.globalAlpha = 1; c.globalCompositeOperation = "source-over";
+  },
+};
+SC.neon = {
+  draw(c, S, t, dt, w, h, m) {
+    const hz = h * .42; c.fillStyle = grad(c, 0, h, [[0, "#12062b"], [.42, "#2a0b4d"], [.43, "#0a0420"], [1, "#05020f"]]); c.fillRect(0, 0, w, h);
+    const vx = w / 2 + m.x * 30, sp = (t * .35) % 1;
+    c.globalCompositeOperation = "lighter";
+    for (const [lw, a] of [[5, .12], [1.4, .8]]) {
+      c.lineWidth = lw; c.strokeStyle = "rgba(94,200,255," + a + ")"; c.beginPath();
+      for (let i = 0; i < 14; i++) { const z = (i + sp) / 14, y = hz + (h - hz) * Math.pow(z, 2.2); c.moveTo(0, y); c.lineTo(w, y); }
+      c.stroke(); c.strokeStyle = "rgba(200,120,255," + a + ")"; c.beginPath();
+      for (let i = -14; i <= 14; i++) { c.moveTo(vx + i * 10, hz); c.lineTo(vx + i * w * .16, h); }
+      c.stroke();
+    }
+    const g = c.createLinearGradient(0, hz - 30, 0, hz + 4); g.addColorStop(0, "rgba(255,93,168,0)"); g.addColorStop(1, "rgba(255,93,168," + (.55 + .2 * Math.sin(t * 2)) + ")"); c.fillStyle = g; c.fillRect(0, hz - 30, w, 34);
+    c.globalCompositeOperation = "source-over";
+  },
+};
+SC.snow = {
+  init(S, w, h) { const n = FX.q > 1 ? 1 : .6; S.f = []; [[70, .6, 1.2, 14, .35], [45, 1.2, 2.2, 28, .6], [22, 2.4, 3.8, 50, .9]].forEach(([cnt, r0, r1, sp, a], L) => { for (let i = 0; i < cnt * n; i++) S.f.push({ x: rnd(0, w), y: rnd(0, h), r: rnd(r0, r1), s: sp * rnd(.8, 1.2), a, L, p: rnd(0, TAU) }); }); },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#0a1830"], [.7, "#1b3256"], [1, "#2b4a72"]]); c.fillRect(0, 0, w, h);
+    c.fillStyle = "rgba(225,240,255,.9)"; c.beginPath(); c.moveTo(0, h);
+    for (let x = 0; x <= w; x += 8) c.lineTo(x, h - 10 - 7 * Math.sin(x * .018 + 1) - 5 * Math.sin(x * .05)); c.lineTo(w, h); c.fill();
+    const wind = 12 * Math.sin(t * .23) + 8 * Math.sin(t * .61);
+    for (const f of S.f) {
+      f.y += f.s * dt; f.x += (wind * (f.L + 1) * .35 + Math.sin(t * 1.3 + f.p) * 9) * dt;
+      if (f.y > h + 6) { f.y = -6; f.x = rnd(-20, w + 20); } if (f.x > w + 10) f.x = -10; if (f.x < -10) f.x = w + 10;
+      const x = f.x + m.x * 10 * (f.L + 1), y = f.y + m.y * 4 * (f.L + 1);
+      if (f.L === 2) { const g = c.createRadialGradient(x, y, 0, x, y, f.r * 1.8); g.addColorStop(0, "rgba(255,255,255,.95)"); g.addColorStop(1, "rgba(255,255,255,0)"); c.fillStyle = g; c.beginPath(); c.arc(x, y, f.r * 1.8, 0, TAU); c.fill(); }
+      else { c.globalAlpha = f.a; c.fillStyle = "#eaf6ff"; c.beginPath(); c.arc(x, y, f.r, 0, TAU); c.fill(); c.globalAlpha = 1; }
+    }
+  },
+};
+SC.rain = {
+  init(S, w, h) { S.d = Array.from({ length: FX.q > 1 ? 160 : 90 }, () => ({ x: rnd(-w * .2, w), y: rnd(-h, h), z: rnd(.3, 1) })); S.sp = []; },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#0a111d"], [1, "#1a2638"]]); c.fillRect(0, 0, w, h);
+    const ang = .26, gy = h - 6;
+    c.lineCap = "round";
+    for (const d of S.d) {
+      const v = 420 + 380 * d.z; d.y += v * dt; d.x += v * ang * dt;
+      if (d.y > gy) { if (d.z > .6 && S.sp.length < 120) for (let k = 0; k < 3; k++) S.sp.push({ x: d.x, y: gy, vx: rnd(-40, 40), vy: rnd(-80, -40), l: .35 }); d.y = rnd(-60, -10); d.x = rnd(-w * .25, w); }
+      const len = 10 + 14 * d.z; c.strokeStyle = "rgba(175,205,255," + (.12 + .35 * d.z) + ")"; c.lineWidth = .6 + d.z; c.beginPath(); const x = d.x + m.x * 8 * d.z; c.moveTo(x, d.y); c.lineTo(x - len * ang, d.y - len); c.stroke();
+    }
+    c.fillStyle = "rgba(190,215,255,.6)";
+    S.sp = S.sp.filter((p) => { p.l -= dt; p.vy += 300 * dt; p.x += p.vx * dt; p.y += p.vy * dt; if (p.l <= 0) return false; c.globalAlpha = p.l * 2; c.fillRect(p.x, p.y, 1.4, 1.4); return true; });
+    c.globalAlpha = 1; c.fillStyle = grad(c, h * .6, h, [[0, "rgba(120,150,200,0)"], [1, "rgba(120,150,200,.22)"]]); c.fillRect(0, h * .6, w, h * .4);
+  },
+};
+SC.sunset = {
+  init(S, w, h) { S.cl = Array.from({ length: 6 }, (_, i) => ({ x: rnd(0, w), y: h * rnd(.12, .45), s: rnd(5, 12), r: rnd(40, 90) })); S.b = []; S.nb = 2; },
+  draw(c, S, t, dt, w, h, m) {
+    const sea = h * .68; c.fillStyle = grad(c, 0, sea, [[0, "#2a0f3d"], [.45, "#b23a6e"], [.8, "#ff8a4d"], [1, "#ffc46b"]]); c.fillRect(0, 0, w, sea);
+    const sx = w * .62 + m.x * 6, sy = sea - h * .1 + 3 * Math.sin(t * .3);
+    let g = c.createRadialGradient(sx, sy, 0, sx, sy, h * .9); g.addColorStop(0, "rgba(255,220,140,.55)"); g.addColorStop(1, "rgba(255,120,80,0)"); c.fillStyle = g; c.fillRect(0, 0, w, sea);
+    c.fillStyle = "#ffe3a0"; c.beginPath(); c.arc(sx, sy, h * .13, 0, TAU); c.fill();
+    for (const k of S.cl) { k.x -= k.s * dt; if (k.x < -k.r * 2) k.x = w + k.r * 2; const x = k.x + m.x * 12;
+      c.fillStyle = "rgba(90,30,70,.55)"; c.beginPath(); c.ellipse(x, k.y, k.r, k.r * .18, 0, 0, TAU); c.ellipse(x + k.r * .4, k.y - k.r * .08, k.r * .6, k.r * .16, 0, 0, TAU); c.fill();
+      c.fillStyle = "rgba(255,170,120,.35)"; c.beginPath(); c.ellipse(x, k.y + k.r * .1, k.r * .9, k.r * .06, 0, 0, TAU); c.fill(); }
+    c.fillStyle = grad(c, sea, h, [[0, "#5a2347"], [1, "#1a0a22"]]); c.fillRect(0, sea, w, h - sea);
+    for (let i = 0; i < 26; i++) { const yy = sea + 3 + i * (h - sea) / 26, ww = (h * .09) * (1 - i / 34) * (0.6 + 0.4 * Math.sin(t * 3 + i * 1.7)); c.fillStyle = "rgba(255,210,140," + (.55 - i * .018) + ")"; c.fillRect(sx - ww, yy, ww * 2, 1.4); }
+    if (Math.random() < dt * .25 && S.b.length < 3) S.b.push({ x: -20, y: h * rnd(.15, .4), s: rnd(25, 40), p: rnd(0, TAU) });
+    c.strokeStyle = "#2a0f2a"; c.lineWidth = 1.4;
+    S.b = S.b.filter((b) => { b.x += b.s * dt; const f = Math.sin(t * 9 + b.p) * 3; c.beginPath(); c.moveTo(b.x - 6, b.y - f); c.lineTo(b.x, b.y); c.lineTo(b.x + 6, b.y - f); c.stroke(); return b.x < w + 20; });
+  },
+};
+SC.stars = {
+  init(S, w, h) {
+    S.s = Array.from({ length: FX.q > 1 ? 260 : 150 }, () => ({ x: rnd(0, w), y: rnd(0, h), r: Math.random() < .08 ? rnd(1.2, 1.9) : rnd(.3, 1), p: rnd(0, TAU), f: rnd(1, 3), L: Math.floor(rnd(0, 3)) }));
+    const o = mkOff(w, h), oc = o.getContext("2d"); for (let i = 0; i < 1400; i++) { const x = rnd(0, w), y = h * .5 + (x - w / 2) * -.35 + rnd(-1, 1) * rnd(0, h * .22); oc.fillStyle = "rgba(200,190,255," + rnd(.05, .3) + ")"; oc.fillRect(x, y, 1, 1); }
+    oc.filter = "blur(8px)"; S.mw = o; S.sh = null; S.next = rnd(1.5, 4);
+  },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#02030a"], [1, "#0b1030"]]); c.fillRect(0, 0, w, h);
+    c.globalAlpha = .8; c.drawImage(S.mw, m.x * 4, m.y * 2); c.globalAlpha = 1;
+    for (const s of S.s) { const a = .35 + .65 * (.5 + .5 * Math.sin(t * s.f + s.p)); c.fillStyle = "rgba(235,240,255," + a + ")"; c.beginPath(); c.arc(s.x + m.x * 4 * (s.L + 1), s.y + m.y * 2 * (s.L + 1), s.r, 0, TAU); c.fill(); }
+    S.next -= dt; if (S.next <= 0 && !S.sh) { S.sh = { x: rnd(w * .2, w), y: rnd(0, h * .4), vx: -rnd(260, 420), vy: rnd(90, 160), l: 1 }; S.next = rnd(3, 8); }
+    if (S.sh) { const s = S.sh; s.x += s.vx * dt; s.y += s.vy * dt; s.l -= dt * .9; const g = c.createLinearGradient(s.x, s.y, s.x - s.vx * .25, s.y - s.vy * .25); g.addColorStop(0, "rgba(255,255,255," + s.l + ")"); g.addColorStop(1, "rgba(255,255,255,0)"); c.strokeStyle = g; c.lineWidth = 1.6; c.beginPath(); c.moveTo(s.x, s.y); c.lineTo(s.x - s.vx * .25, s.y - s.vy * .25); c.stroke(); if (s.l <= 0) S.sh = null; }
+  },
+};
+SC.dunes = {
+  init(S, w, h) { S.g = Array.from({ length: 50 }, () => ({ x: rnd(0, w), y: rnd(h * .4, h), s: rnd(30, 80), l: rnd(0, 1) })); },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#ff8f5a"], [.5, "#ffc98a"], [1, "#ffe2b0"]]); c.fillRect(0, 0, w, h);
+    const sx = w * .7, sy = h * .3; const g = c.createRadialGradient(sx, sy, 0, sx, sy, h * .7); g.addColorStop(0, "rgba(255,250,220,.9)"); g.addColorStop(.2, "rgba(255,230,170,.5)"); g.addColorStop(1, "rgba(255,200,140,0)"); c.fillStyle = g; c.fillRect(0, 0, w, h);
+    [["#d98a52", .52, 22, .006, .3], ["#c06a3a", .62, 26, .009, .6], ["#9c4e28", .74, 22, .012, 1], ["#6e3319", .86, 16, .016, 1.6]].forEach(([col, yb, amp, fr, par], i) => {
+      c.fillStyle = col; c.beginPath(); c.moveTo(0, h); const off = m.x * 14 * par;
+      for (let x = 0; x <= w; x += 6) { const X = x + off; c.lineTo(x, h * yb - amp * Math.sin(X * fr + i * 2.1) - amp * .5 * Math.sin(X * fr * 2.3 + i)); } c.lineTo(w, h); c.fill();
+    });
+    c.fillStyle = "rgba(255,235,200,.55)";
+    for (const p of S.g) { p.x += p.s * dt; p.l += dt * .6; if (p.x > w + 4 || p.l > 1) { p.x = rnd(-10, w * .5); p.y = rnd(h * .45, h); p.l = 0; } c.globalAlpha = Math.sin(p.l * Math.PI) * .8; c.fillRect(p.x, p.y + Math.sin(p.x * .05) * 2, 1.5, 1); }
+    c.globalAlpha = 1;
+  },
+};
+SC.ocean = {
+  init(S, w, h) { S.sp = Array.from({ length: 40 }, () => ({ x: rnd(0, w), y: rnd(0, 1), p: rnd(0, TAU) })); S.cl = Array.from({ length: 4 }, () => ({ x: rnd(0, w), y: rnd(.08, .3), r: rnd(30, 60), s: rnd(4, 9) })); },
+  draw(c, S, t, dt, w, h, m) {
+    const hz = h * .46; c.fillStyle = grad(c, 0, hz, [[0, "#3a8fdc"], [1, "#bfe6ff"]]); c.fillRect(0, 0, w, hz);
+    const sx = w * .3 + m.x * 6, sy = hz * .45; let g = c.createRadialGradient(sx, sy, 0, sx, sy, h * .5); g.addColorStop(0, "rgba(255,255,230,.95)"); g.addColorStop(.12, "rgba(255,250,210,.6)"); g.addColorStop(1, "rgba(255,255,255,0)"); c.fillStyle = g; c.fillRect(0, 0, w, hz);
+    for (const k of S.cl) { k.x += k.s * dt; if (k.x > w + k.r * 2) k.x = -k.r * 2; c.fillStyle = "rgba(255,255,255,.75)"; c.beginPath(); c.ellipse(k.x, h * k.y, k.r, k.r * .25, 0, 0, TAU); c.ellipse(k.x + k.r * .5, h * k.y - k.r * .12, k.r * .5, k.r * .25, 0, 0, TAU); c.fill(); }
+    const rows = 12;
+    for (let i = 0; i < rows; i++) {
+      const z = i / (rows - 1), y0 = hz + (h - hz) * Math.pow(z, 1.4), amp = 1.5 + z * 7, fr = .05 - z * .03, sp = .6 + z * 1.2;
+      const shade = Math.round(30 + z * 10), col = "rgb(" + (8 + z * 4) + "," + (60 - z * 25) + "," + (120 - z * 40) + ")";
+      c.fillStyle = col; c.beginPath(); c.moveTo(0, h);
+      for (let x = 0; x <= w; x += 5) c.lineTo(x, y0 - amp * Math.sin(x * fr + t * sp + i * 1.3) - amp * .5 * Math.sin(x * fr * 2.1 - t * sp * .7 + i));
+      c.lineTo(w, h); c.fill();
+      c.strokeStyle = "rgba(200,235,255," + (.08 + z * .1) + ")"; c.lineWidth = 1; c.beginPath();
+      for (let x = 0; x <= w; x += 5) { const yy = y0 - amp * Math.sin(x * fr + t * sp + i * 1.3) - amp * .5 * Math.sin(x * fr * 2.1 - t * sp * .7 + i); x ? c.lineTo(x, yy) : c.moveTo(x, yy); } c.stroke();
+    }
+    c.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 30; i++) { const yy = hz + 4 + i * (h - hz) / 30, ww = (8 + i * 1.6) * (.5 + .5 * Math.sin(t * 4 + i * 2.3)); c.fillStyle = "rgba(255,250,215," + (.5 - i * .012) + ")"; c.fillRect(sx - ww, yy, ww * 2, 1.3); }
+    for (const s of S.sp) { const a = Math.max(0, Math.sin(t * 3 + s.p)); c.fillStyle = "rgba(255,255,255," + a * .8 + ")"; c.fillRect(s.x, hz + (h - hz) * s.y, 1.6, 1.6); }
+    c.globalCompositeOperation = "source-over";
+  },
+};
+SC.sakura = {
+  init(S, w, h) {
+    S.p = Array.from({ length: FX.q > 1 ? 46 : 28 }, () => ({ x: rnd(0, w), y: rnd(-h, h), s: rnd(18, 40), r: rnd(3, 6.5), a: rnd(0, TAU), va: rnd(-2, 2), ph: rnd(0, TAU), z: rnd(.5, 1.3) }));
+    const o = mkOff(w, h), oc = o.getContext("2d"); oc.strokeStyle = "#3a1626"; oc.lineCap = "round";
+    const br = (x, y, a, l, wd) => { if (l < 6) { oc.fillStyle = "rgba(255,190,220,.95)"; for (let k = 0; k < 4; k++) { oc.beginPath(); oc.arc(x + rnd(-5, 5), y + rnd(-5, 5), rnd(2, 4), 0, TAU); oc.fill(); } return; } const x2 = x + Math.cos(a) * l, y2 = y + Math.sin(a) * l; oc.lineWidth = wd; oc.beginPath(); oc.moveTo(x, y); oc.lineTo(x2, y2); oc.stroke(); br(x2, y2, a + rnd(-.5, .1), l * .72, wd * .7); br(x2, y2, a + rnd(.2, .7), l * .62, wd * .65); };
+    br(w + 5, -8, Math.PI * .8, h * .55, 10); br(-5, -8, Math.PI * .22, h * .38, 7); S.br = o;
+  },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#9fd0ff"], [.55, "#f7c3dc"], [1, "#e58bb7"]]); c.fillRect(0, 0, w, h);
+    c.drawImage(S.br, m.x * 6, m.y * 3);
+    const wind = 18 + 12 * Math.sin(t * .4);
+    for (const p of S.p) {
+      p.y += p.s * p.z * dt; p.x += (wind * p.z + Math.sin(t * 1.4 + p.ph) * 14) * dt; p.a += p.va * dt;
+      if (p.y > h + 10 || p.x > w + 12) { p.y = rnd(-30, -8); p.x = rnd(-w * .3, w); }
+      const x = p.x + m.x * 10 * p.z, y = p.y; c.save(); c.translate(x, y); c.rotate(p.a); c.scale(Math.cos(t * 2 + p.ph), 1);
+      c.fillStyle = p.z > 1.1 ? "rgba(255,150,195,.75)" : "rgba(255,190,220,.98)"; c.beginPath(); c.ellipse(0, 0, p.r * p.z, p.r * .55 * p.z, 0, 0, TAU); c.fill(); c.fillStyle = "rgba(255,255,255,.55)"; c.beginPath(); c.ellipse(-p.r * .2 * p.z, 0, p.r * .45 * p.z, p.r * .22 * p.z, 0, 0, TAU); c.fill(); c.restore();
+    }
+  },
+};
+function pines(w, h, n, col, top, bot) { const o = mkOff(w * 2, h), c = o.getContext("2d"); c.fillStyle = col; for (let i = 0; i < n; i++) { const x = rnd(0, w * 2), hh = rnd(top, bot) * h, bw = hh * rnd(.22, .3); c.beginPath(); c.moveTo(x, h - hh); c.lineTo(x - bw, h); c.lineTo(x + bw, h); c.fill(); } c.fillRect(0, h - 4, w * 2, 4); return o; }
+SC.forest = {
+  init(S, w, h) { S.L = [pines(w, h, 40, "#5d7480", .35, .55), pines(w, h, 34, "#3a5260", .45, .7), pines(w, h, 26, "#22343f", .55, .85), pines(w, h, 16, "#0f1a21", .7, 1.05)]; S.ff = Array.from({ length: 22 }, () => ({ x: rnd(0, w), y: rnd(h * .5, h), p: rnd(0, TAU), vx: rnd(-8, 8), vy: rnd(-5, 5) })); S.fog = Array.from({ length: 6 }, () => ({ x: rnd(0, w), y: rnd(h * .4, h), r: rnd(60, 120), s: rnd(5, 12) })); },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#26384a"], [.6, "#71909a"], [1, "#9fb6b6"]]); c.fillRect(0, 0, w, h);
+    S.L.forEach((o, i) => { const off = ((t * (2 + i * 3)) % w) + m.x * 6 * (i + 1); c.drawImage(o, -off, 0); if (i < 3) { c.fillStyle = "rgba(170,195,200," + (.28 - i * .06) + ")"; c.fillRect(0, 0, w, h); } });
+    for (const f of S.fog) { f.x += f.s * dt; if (f.x > w + f.r) f.x = -f.r; const g = c.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r); g.addColorStop(0, "rgba(220,235,238,.35)"); g.addColorStop(1, "rgba(220,235,238,0)"); c.fillStyle = g; c.fillRect(f.x - f.r, f.y - f.r, f.r * 2, f.r * 2); }
+    c.globalCompositeOperation = "lighter";
+    for (const f of S.ff) { f.x += (f.vx + Math.sin(t + f.p) * 6) * dt; f.y += (f.vy + Math.cos(t * .8 + f.p) * 5) * dt; if (f.x < 0 || f.x > w) f.vx *= -1; if (f.y < h * .4 || f.y > h) f.vy *= -1;
+      const a = Math.max(0, Math.sin(t * 1.7 + f.p)); const g = c.createRadialGradient(f.x, f.y, 0, f.x, f.y, 6); g.addColorStop(0, "rgba(220,255,140," + a + ")"); g.addColorStop(1, "rgba(220,255,140,0)"); c.fillStyle = g; c.fillRect(f.x - 6, f.y - 6, 12, 12); }
+    c.globalCompositeOperation = "source-over";
+  },
+};
+function skyline(w, h, col, top, bot, win) {
+  const o = mkOff(w * 2, h), c = o.getContext("2d"), wins = []; let x = 0;
+  while (x < w * 2) { const bw = rnd(14, 34), bh = rnd(top, bot) * h; c.fillStyle = col; c.fillRect(x, h - bh, bw, bh); if (Math.random() < .3) c.fillRect(x + bw / 2 - 1, h - bh - rnd(6, 14), 2, 14);
+    if (win) for (let yy = h - bh + 5; yy < h - 4; yy += 6) for (let xx = x + 3; xx < x + bw - 3; xx += 5) if (Math.random() < .3) wins.push([xx, yy, Math.random() < .8 ? "#ffd36b" : "#9fe3ff", rnd(0, TAU)]);
+    x += bw + rnd(1, 4); }
+  return { o, wins };
+}
+SC.city = {
+  init(S, w, h) { S.L = [skyline(w, h, "#1a1640", .35, .6, false), skyline(w, h, "#0f0d2a", .45, .78, true), skyline(w, h, "#06050f", .25, .5, true)]; S.st = Array.from({ length: 60 }, () => ({ x: rnd(0, w), y: rnd(0, h * .5), p: rnd(0, TAU) })); S.pl = { x: -20, y: h * .18 }; },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#04061a"], [.7, "#251a52"], [1, "#4a2366"]]); c.fillRect(0, 0, w, h);
+    for (const s of S.st) { c.fillStyle = "rgba(255,255,255," + (.3 + .4 * Math.sin(t + s.p)) + ")"; c.fillRect(s.x, s.y, 1, 1); }
+    const g = c.createRadialGradient(w / 2, h, 0, w / 2, h, h * .9); g.addColorStop(0, "rgba(255,100,200,.35)"); g.addColorStop(1, "rgba(255,100,200,0)"); c.fillStyle = g; c.fillRect(0, 0, w, h);
+    S.pl.x += 22 * dt; if (S.pl.x > w + 20) S.pl.x = -20; if (Math.sin(t * 6) > .6) { c.fillStyle = "#ff4d6d"; c.fillRect(S.pl.x, S.pl.y, 2, 2); } c.fillStyle = "rgba(255,255,255,.7)"; c.fillRect(S.pl.x - 3, S.pl.y + 1, 2, 1);
+    S.L.forEach((L, i) => { const off = ((t * (1 + i * 2.5)) % w) + m.x * 5 * (i + 1); c.drawImage(L.o, -off, 0);
+      for (const wd of L.wins) { const x = wd[0] - off; if (x < -4 || x > w + 4) continue; const a = .55 + .45 * Math.sin(t * .3 + wd[3] * 5); if (a < .2) continue; c.fillStyle = wd[2]; c.globalAlpha = a; c.fillRect(x, wd[1], 2, 2.5); } c.globalAlpha = 1; });
+  },
+};
+SC.matrix = {
+  init(S, w, h) { S.fs = 13; S.cols = Array.from({ length: Math.ceil(w / S.fs) }, () => ({ y: rnd(-h, 0), s: rnd(40, 110) })); S.ch = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ZXCVBNM"; S.clear = true; },
+  keep: true,
+  draw(c, S, t, dt, w, h, m) {
+    if (S.clear) { c.fillStyle = "#020a05"; c.fillRect(0, 0, w, h); S.clear = false; }
+    c.fillStyle = "rgba(2,10,5," + clamp(dt * 6, .05, .3) + ")"; c.fillRect(0, 0, w, h);
+    c.font = S.fs + "px monospace"; c.textBaseline = "top";
+    S.cols.forEach((col, i) => { const prev = col.y; col.y += col.s * dt; if (Math.floor(col.y / S.fs) !== Math.floor(prev / S.fs)) { const ch = S.ch[Math.floor(Math.random() * S.ch.length)]; c.fillStyle = "#d8ffe6"; c.fillText(ch, i * S.fs, Math.floor(col.y / S.fs) * S.fs); c.fillStyle = "#2bd96a"; c.fillText(S.ch[Math.floor(Math.random() * S.ch.length)], i * S.fs, Math.floor(prev / S.fs) * S.fs); } if (col.y > h + rnd(0, 200)) { col.y = rnd(-80, 0); col.s = rnd(40, 110); } });
+  },
+};
+SC.synth = {
+  init(S, w, h) { S.st = Array.from({ length: 70 }, () => ({ x: rnd(0, w), y: rnd(0, h * .5), p: rnd(0, TAU) })); },
+  draw(c, S, t, dt, w, h, m) {
+    const hz = h * .6; c.fillStyle = grad(c, 0, hz, [[0, "#12052e"], [.6, "#4a0f6a"], [1, "#ff5da8"]]); c.fillRect(0, 0, w, hz);
+    for (const s of S.st) { c.fillStyle = "rgba(255,255,255," + (.3 + .5 * Math.sin(t * 2 + s.p)) + ")"; c.fillRect(s.x, s.y, 1.2, 1.2); }
+    const sx = w / 2 + m.x * 5, sr = Math.min(h * .3, w * .18), sy = hz - sr * .25;
+    c.save(); c.beginPath(); c.arc(sx, sy, sr, 0, TAU); c.clip(); c.fillStyle = grad(c, sy - sr, sy + sr, [[0, "#ffe66b"], [.55, "#ff8a5c"], [1, "#ff3d9a"]]); c.fillRect(sx - sr, sy - sr, sr * 2, sr * 2);
+    c.fillStyle = "#4a0f6a"; for (let i = 0; i < 7; i++) { const k = ((i / 7) + (t * .06) % (1 / 7)) , yy = sy + sr * (k * 1.1 - .05), th = 1 + k * 7; if (yy > sy) c.fillRect(sx - sr, yy, sr * 2, th); } c.restore();
+    const g = c.createRadialGradient(sx, sy, sr * .8, sx, sy, sr * 2.2); g.addColorStop(0, "rgba(255,93,168,.45)"); g.addColorStop(1, "rgba(255,93,168,0)"); c.fillStyle = g; c.fillRect(0, 0, w, hz);
+    c.fillStyle = "#1a0631"; c.strokeStyle = "rgba(124,243,255,.6)"; c.lineWidth = 1; c.beginPath(); c.moveTo(0, hz);
+    [[0, 0], [.1, .14], [.22, .05], [.33, .2], [.42, .08], [.58, .1], [.7, .24], [.82, .07], [.92, .16], [1, 0]].forEach(([x, y]) => c.lineTo(w * x + m.x * 4, hz - h * y)); c.lineTo(w, hz); c.fill(); c.stroke();
+    c.fillStyle = "#0b0218"; c.fillRect(0, hz, w, h - hz);
+    const vx = w / 2 + m.x * 20, sp = (t * .5) % 1; c.strokeStyle = "rgba(255,93,168,.85)"; c.lineWidth = 1.2; c.beginPath();
+    for (let i = 0; i < 12; i++) { const z = (i + sp) / 12, y = hz + (h - hz) * Math.pow(z, 2); c.moveTo(0, y); c.lineTo(w, y); }
+    for (let i = -16; i <= 16; i++) { c.moveTo(vx + i * 6, hz); c.lineTo(vx + i * w * .14, h); } c.stroke();
+  },
+};
+SC.dawn = {
+  init(S, w, h) { S.cl = Array.from({ length: 5 }, () => ({ x: rnd(0, w), y: rnd(.15, .5), r: rnd(40, 80), s: rnd(3, 8) })); },
+  draw(c, S, t, dt, w, h, m) {
+    c.fillStyle = grad(c, 0, h, [[0, "#2b3a7a"], [.55, "#ff9d6b"], [1, "#ffe0a8"]]); c.fillRect(0, 0, w, h);
+    const sx = w * .5 + m.x * 6, sy = h * (.98 - .04 * Math.sin(t * .2));
+    c.save(); c.translate(sx, sy); c.rotate(t * .05); c.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 18; i++) { c.rotate(TAU / 18); c.fillStyle = "rgba(255,235,190," + (.07 + .05 * Math.sin(t + i)) + ")"; c.beginPath(); c.moveTo(0, 0); c.lineTo(-w * .08, -w * 1.2); c.lineTo(w * .08, -w * 1.2); c.fill(); }
+    c.restore();
+    const g = c.createRadialGradient(sx, sy, 0, sx, sy, h * .55); g.addColorStop(0, "rgba(255,246,214,1)"); g.addColorStop(.22, "rgba(255,207,92,.9)"); g.addColorStop(1, "rgba(255,157,77,0)"); c.fillStyle = g; c.fillRect(0, 0, w, h);
+    for (const k of S.cl) { k.x += k.s * dt; if (k.x > w + k.r * 2) k.x = -k.r * 2; c.fillStyle = "rgba(255,200,170,.55)"; c.beginPath(); c.ellipse(k.x, h * k.y, k.r, k.r * .16, 0, 0, TAU); c.fill(); c.fillStyle = "rgba(255,240,220,.5)"; c.beginPath(); c.ellipse(k.x, h * k.y - 2, k.r * .7, k.r * .08, 0, 0, TAU); c.fill(); }
+  },
+};
+SC.aurora = { gl: "aurora" };
+SC.lava = { gl: "lava" };
+SC.cosmos = { gl: "cosmos" };
+SC.storm = {
+  gl: "storm",
+  init(S, w, h) { S.d = Array.from({ length: FX.q > 1 ? 140 : 80 }, () => ({ x: rnd(-w * .2, w), y: rnd(-h, h), z: rnd(.3, 1) })); S.next = rnd(1, 3); S.fl = 0; S.fp = { x: .5, y: .8 }; S.bolt = null; S.queue = []; },
+  draw(c, S, t, dt, w, h, m) {
+    c.clearRect(0, 0, w, h);
+    S.next -= dt;
+    if (S.next <= 0) {
+      const far = Math.random() < .35, x = rnd(.15, .85);
+      S.fp = { x, y: rnd(.75, .95) };
+      if (far) { S.queue.push({ at: 0, a: .45, bolt: false }); }
+      else { const segs = []; boltPath(w * x, 0, w * (x + rnd(-.15, .15)), h * rnd(.75, 1.05), w * .18, 6, segs, false); S.queue.push({ at: 0, a: 1, bolt: segs }); if (Math.random() < .5) S.queue.push({ at: rnd(.12, .22), a: .8, bolt: segs }); }
+      S.next = rnd(2.5, 7);
+    }
+    S.queue = S.queue.filter((q) => { q.at -= dt; if (q.at <= 0) { S.fl = Math.max(S.fl, q.a); if (q.bolt) S.bolt = { segs: q.bolt, l: 1 }; return false; } return true; });
+    S.fl = Math.max(0, S.fl - dt * 3.2);
+    const ang = .22; c.lineCap = "round";
+    for (const d of S.d) { const v = 380 + 360 * d.z; d.y += v * dt; d.x += v * ang * dt; if (d.y > h) { d.y = rnd(-60, -10); d.x = rnd(-w * .25, w); } const len = 9 + 14 * d.z; c.strokeStyle = "rgba(180,205,255," + (.08 + .25 * d.z + S.fl * .3) + ")"; c.lineWidth = .5 + d.z * .9; c.beginPath(); c.moveTo(d.x, d.y); c.lineTo(d.x - len * ang, d.y - len); c.stroke(); }
+    if (S.bolt) { const fl = S.bolt.l > .7 ? 1 : S.bolt.l * (Math.random() < .3 ? .4 : 1.2); drawBolt(c, S.bolt.segs, clamp(fl, 0, 1)); S.bolt.l -= dt * 2.6; if (S.bolt.l <= 0) S.bolt = null; }
+    S.glFlash = S.fl; S.glFp = { x: S.fp.x, y: 1 - (1 - S.fp.y) };
+  },
+};
+// ---------- сцена в контейнере ----------
+const STAGES = new Set();
+class Stage {
+  constructor(el, id) {
+    this.el = el; this.id = id; this.S = {}; this.m = { x: 0, y: 0 }; this.tm = { x: 0, y: 0 }; this.t = rnd(0, 50); this.vis = true;
+    const sc = SC[id] || SC.base; this.sc = sc;
+    if (sc.gl) { this.cg = document.createElement("canvas"); this.cg.className = "fxc"; el.appendChild(this.cg); this.glr = makeGL(this.cg, SHADERS[sc.gl]); if (!this.glr) { this.cg.remove(); this.cg = null; } }
+    if (sc.draw || (sc.gl && !this.glr)) { this.c2 = document.createElement("canvas"); this.c2.className = "fxc"; el.appendChild(this.c2); this.ctx = this.c2.getContext("2d"); }
+    if (sc.gl && !this.glr && !sc.draw) this.fallback = true;
+    this.resize(); this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(el);
+    this.io = new IntersectionObserver((e) => { this.vis = e[0].isIntersecting; }); this.io.observe(el);
+    this.onMove = (e) => { const r = el.getBoundingClientRect(), p = e.touches ? e.touches[0] : e; this.tm.x = clamp(((p.clientX - r.left) / r.width - .5) * 2, -1, 1); this.tm.y = clamp(((p.clientY - r.top) / r.height - .5) * 2, -1, 1); };
+    el.addEventListener("pointermove", this.onMove); el.addEventListener("pointerleave", () => { this.tm.x = 0; this.tm.y = 0; });
+    STAGES.add(this); this.frame(0);
+  }
+  resize() {
+    const r = this.el.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, FX.q > 1 ? 2 : 1.25);
+    this.w = Math.max(10, r.width); this.h = Math.max(10, r.height);
+    if (this.cg) { const k = FX.q > 1 ? Math.min(dpr, 1.5) : .75; this.cg.width = Math.round(this.w * k); this.cg.height = Math.round(this.h * k); }
+    if (this.c2) { this.c2.width = Math.round(this.w * dpr); this.c2.height = Math.round(this.h * dpr); this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); this.S = {}; this.S.clear = true; if (this.sc.init) this.sc.init(this.S, this.w, this.h); }
+  }
+  frame(dt) {
+    this.m.x += (this.tm.x - this.m.x) * Math.min(1, dt * 4); this.m.y += (this.tm.y - this.m.y) * Math.min(1, dt * 4);
+    this.t += dt;
+    if (this.ctx && this.sc.draw) this.sc.draw(this.ctx, this.S, this.t, dt, this.w, this.h, this.m);
+    if (this.glr) this.glr.draw(this.cg.width, this.cg.height, this.t, this.m, this.S.glFlash || 0, this.S.glFp);
+    if (this.fallback && this.ctx) SC.base.draw(this.ctx, this.S, this.t, dt, this.w, this.h, this.m);
+  }
+  destroy() { STAGES.delete(this); this.ro.disconnect(); this.io.disconnect(); this.el.removeEventListener("pointermove", this.onMove); if (this.cg) { const lose = this.glr && this.glr.gl.getExtension("WEBGL_lose_context"); if (lose) lose.loseContext(); this.cg.remove(); } if (this.c2) this.c2.remove(); }
+}
+// ---------- рамки: кольцо вокруг аватарки на своём холсте ----------
+const RINGS = {
+  neon: { col: "#5ec8ff", glow: "94,200,255", comet: true },
+  double: { col: "#dcebff", glow: "94,200,255", dashes: true },
+  emerald: { col: "#1fae7a", glow: "73,227,160", shine: "#b6ffe0" },
+  ice: { col: "#d9f6ff", glow: "191,239,255", frost: true, spark: "#ffffff" },
+  pulse: { col: "#b48cff", glow: "180,140,255", ripple: true },
+  pixel: { col: "#ffcf5c", glow: "255,207,92", pixel: true },
+  electric: { col: "#7cf3ff", glow: "124,243,255", arcs: true },
+  holo: { holo: true, glow: "200,200,255" },
+  blueflame: { col: "#5ec8ff", glow: "94,160,255", flame: ["#ffffff", "#bff3ff", "#5ec8ff", "#2d6bff"] },
+  rainbow: { holo: true, spin: true, glow: "255,255,255", spark: "#ffffff" },
+  gold: { col: "#ffcf5c", glow: "255,207,92", shine: "#fff6d6", gold: true },
+  fire: { col: "#ff9d4d", glow: "255,140,60", flame: ["#fff6c8", "#ffcf5c", "#ff9d4d", "#ff3d1a"] },
+  crystal: { holo: true, glow: "220,240,255", spark: "#ffffff", rays: true },
+  crown: { col: "#ffcf5c", glow: "255,207,92", shine: "#fff6d6", gold: true, crown: true, spark: "#fff3c0" },
+};
+class Ring {
+  constructor(el, id) { this.el = el; this.id = id; this.cfg = RINGS[id]; this.p = []; this.t = 0; this.arcT = 0; this.arcs = [];
+    this.c = document.createElement("canvas"); this.c.className = "ringc"; el.appendChild(this.c); this.ctx = this.c.getContext("2d"); this.resize();
+    this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(el); STAGES.add(this); this.frame(1 / 60); }
+  resize() { const dpr = Math.min(window.devicePixelRatio || 1, 2), s = this.el.getBoundingClientRect().width * 1.7, av = this.el.querySelector(".pfav, .av"); this.s = s; this.ar = av ? av.getBoundingClientRect().width / 2 : s / 1.7 / 2 - 6; this.c.width = s * dpr; this.c.height = s * dpr; this.c.style.width = this.c.style.height = s + "px"; this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  frame(dt) {
+    const c = this.ctx, s = this.s, cx = s / 2, cy = s / 2, R = this.ar - 1.5, g = this.cfg; /* рамка прямо на краю аватарки */ this.t += dt; const t = this.t;
+    c.clearRect(0, 0, s, s); if (!g || !(this.ar > 10)) return; // скрытый элемент: размеров ещё нет
+    const ring = (col, lw, a) => { c.globalAlpha = a; c.strokeStyle = col; c.lineWidth = lw; c.beginPath(); c.arc(cx, cy, R, 0, TAU); c.stroke(); c.globalAlpha = 1; };
+    c.globalCompositeOperation = "lighter";
+    const gl = c.createRadialGradient(cx, cy, R - 6, cx, cy, R + 18); gl.addColorStop(0, "rgba(" + g.glow + ",0)"); gl.addColorStop(.35, "rgba(" + g.glow + "," + (g.ripple ? .25 + .2 * Math.sin(t * 3) : .28) + ")"); gl.addColorStop(1, "rgba(" + g.glow + ",0)"); c.fillStyle = gl; c.fillRect(0, 0, s, s);
+    c.globalCompositeOperation = "source-over";
+    if (g.holo) { const cg = c.createConicGradient ? c.createConicGradient(g.spin ? t * 1.5 : t * .5, cx, cy) : null; if (cg) { ["#ff5d73", "#ffcf5c", "#49e3a0", "#5ec8ff", "#b48cff", "#ff9ecf", "#ff5d73"].forEach((col, i, a) => cg.addColorStop(i / (a.length - 1), col)); ring(cg, 4, g.spin ? 1 : .85); } else ring("#b48cff", 4, 1); if (!g.spin) { c.globalAlpha = .5 + .3 * Math.sin(t * 4); ring("#ffffff", 1, .5); } }
+    else if (g.gold) { const lg = c.createLinearGradient(cx - R, cy - R, cx + R, cy + R); lg.addColorStop(0, "#b8862b"); lg.addColorStop(.5, "#ffe08a"); lg.addColorStop(1, "#8a5f1a"); ring(lg, 5, 1); }
+    else if (g.pixel) { c.fillStyle = g.col; const n = 24; for (let i = 0; i < n; i++) { const a = i / n * TAU + Math.floor(t * 6) * (TAU / n) * .5; if (i % 2) continue; c.fillRect(cx + Math.cos(a) * R - 2.5, cy + Math.sin(a) * R - 2.5, 5, 5); } }
+    else if (g.dashes) { c.setLineDash([8, 6]); c.lineDashOffset = -t * 20; ring(g.col, 2, 1); c.setLineDash([4, 8]); c.lineDashOffset = t * 30; c.strokeStyle = "#5ec8ff"; c.lineWidth = 2; c.beginPath(); c.arc(cx, cy, R + 5, 0, TAU); c.stroke(); c.setLineDash([]); }
+    else ring(g.col, g.flame ? 2 : 3.2, 1);
+    if (g.comet) { const a = t * 2.2; c.globalCompositeOperation = "lighter"; for (let k = 0; k < 18; k++) { const aa = a - k * .05; c.fillStyle = "rgba(220,245,255," + (1 - k / 18) + ")"; c.beginPath(); c.arc(cx + Math.cos(aa) * R, cy + Math.sin(aa) * R, 2.6 - k * .12, 0, TAU); c.fill(); } c.globalCompositeOperation = "source-over"; }
+    if (g.shine) { const a = (t * .9) % TAU; c.globalCompositeOperation = "lighter"; c.strokeStyle = g.shine; c.lineWidth = 3.5; c.globalAlpha = .9; c.beginPath(); c.arc(cx, cy, R, a, a + .5); c.stroke(); c.globalAlpha = 1; c.globalCompositeOperation = "source-over"; }
+    if (g.ripple) for (let k = 0; k < 3; k++) { const ph = ((t * .6 + k / 3) % 1); c.strokeStyle = "rgba(180,140,255," + (1 - ph) * .6 + ")"; c.lineWidth = 2; c.beginPath(); c.arc(cx, cy, R + ph * 22, 0, TAU); c.stroke(); }
+    if (g.frost) for (let i = 0; i < 16; i++) { const a = i / 16 * TAU + .1, l = 5 + 3 * Math.sin(i * 7.3); c.strokeStyle = "rgba(220,248,255,.85)"; c.lineWidth = 1; c.beginPath(); const x0 = cx + Math.cos(a) * (R + 1), y0 = cy + Math.sin(a) * (R + 1), x1 = cx + Math.cos(a) * (R + l), y1 = cy + Math.sin(a) * (R + l); c.moveTo(x0, y0); c.lineTo(x1, y1); c.moveTo((x0 + x1) / 2, (y0 + y1) / 2); c.lineTo((x0 + x1) / 2 + Math.cos(a + .8) * 3, (y0 + y1) / 2 + Math.sin(a + .8) * 3); c.stroke(); }
+    if (g.rays) { c.globalCompositeOperation = "lighter"; for (let i = 0; i < 6; i++) { const a = i / 6 * TAU + t * .3; c.fillStyle = "rgba(230,245,255,.12)"; c.beginPath(); c.moveTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R); c.lineTo(cx + Math.cos(a - .06) * (R + 26), cy + Math.sin(a - .06) * (R + 26)); c.lineTo(cx + Math.cos(a + .06) * (R + 26), cy + Math.sin(a + .06) * (R + 26)); c.fill(); } c.globalCompositeOperation = "source-over"; }
+    if (g.arcs) { this.arcT -= dt; if (this.arcT <= 0) { this.arcT = rnd(.05, .12); this.arcs = []; const n = Math.floor(rnd(2, 5)); for (let k = 0; k < n; k++) { const a0 = rnd(0, TAU), a1 = a0 + rnd(.3, .9), pts = []; for (let j = 0; j <= 8; j++) { const a = a0 + (a1 - a0) * j / 8, rr = R + rnd(-5, 7); pts.push([cx + Math.cos(a) * rr, cy + Math.sin(a) * rr]); } this.arcs.push(pts); } }
+      c.globalCompositeOperation = "lighter"; for (const [lw, col] of [[4, "rgba(124,243,255,.25)"], [1.2, "#ffffff"]]) { c.strokeStyle = col; c.lineWidth = lw; for (const pts of this.arcs) { c.beginPath(); pts.forEach(([x, y], j) => (j ? c.lineTo(x, y) : c.moveTo(x, y))); c.stroke(); } } c.globalCompositeOperation = "source-over"; }
+    if (g.flame) { const n = Math.min(12, Math.round(dt * 260)); for (let k = 0; k < n; k++) { const a = rnd(0, TAU), up = (1 - Math.sin(a)) / 2; this.p.push({ x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R, vx: Math.cos(a) * rnd(2, 6) + rnd(-3, 3), vy: -rnd(14, 34) * (.5 + up), l: 1, d: rnd(1.6, 2.6), r: rnd(3, 6) * (.6 + up * .6), fl: true }); } }
+    if (g.spark && Math.random() < dt * 6) { const a = rnd(0, TAU); this.p.push({ x: cx + Math.cos(a) * (R + rnd(-2, 4)), y: cy + Math.sin(a) * (R + rnd(-2, 4)), vx: 0, vy: 0, l: 1, d: 1.6, r: rnd(2, 3.5), sp: true }); }
+    c.globalCompositeOperation = "lighter";
+    this.p = this.p.filter((p) => { p.l -= dt * p.d; if (p.l <= 0) return false; p.x += p.vx * dt; p.y += p.vy * dt;
+      if (p.sp) { const a = Math.sin(p.l * Math.PI); c.strokeStyle = g.spark; c.globalAlpha = a; c.lineWidth = 1.2; c.beginPath(); c.moveTo(p.x - p.r * 1.6, p.y); c.lineTo(p.x + p.r * 1.6, p.y); c.moveTo(p.x, p.y - p.r * 1.6); c.lineTo(p.x, p.y + p.r * 1.6); c.stroke(); c.globalAlpha = 1; return true; }
+      const cols = g.flame, idx = clamp(Math.floor((1 - p.l) * (cols.length - 1)) + 1, 1, cols.length - 1), rr = p.r * (.4 + p.l * .8); p.vx *= .97;
+      const gg = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, rr); gg.addColorStop(0, cols[idx]); gg.addColorStop(1, "rgba(0,0,0,0)"); c.globalAlpha = Math.min(1, p.l * 1.4) * .55; c.fillStyle = gg; c.beginPath(); c.ellipse(p.x, p.y, rr * .7, rr * 1.25, 0, 0, TAU); c.fill(); c.globalAlpha = 1; return true; });
+    c.globalCompositeOperation = "source-over";
+    if (g.crown) { c.save(); c.translate(cx, cy - R - 4); c.rotate(-.14 + .06 * Math.sin(t * 2)); c.font = "26px serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("👑", 0, -2 * Math.sin(t * 2)); c.restore(); }
+  }
+  destroy() { STAGES.delete(this); if (this.ro) this.ro.disconnect(); this.c.remove(); }
+}
+// ---------- общий цикл ----------
+let last = 0, fpsAcc = 0, fpsN = 0;
+function loop(ts) {
+  const dt = last ? Math.min(.05, (ts - last) / 1000) : 0; last = ts;
+  fpsAcc += dt; fpsN++; if (fpsAcc >= .5) { FX.fps = Math.round(fpsN / fpsAcc); fpsAcc = 0; fpsN = 0; if (FX.onFps) FX.onFps(FX.fps); }
+  for (const s of STAGES) { if (!s.el.isConnected) { s.destroy(); continue; } if (FX.live && !document.hidden && s.vis !== false) s.frame(dt); }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+return { Stage, Ring, RINGS, FX, SC };
+})();
+
 // ---------- v25: профиль как в Steam, магазин очков, награды, стена ----------
 // Профиль хранится в prefs.prof (свои prefs друзья уже читают). Очки = весь опыт (profile.xp) минус цены купленного и 100 за каждую подаренную награду.
 // Потраченное не хранится числом, а считается из списка покупок: подделать «очки» правкой одного поля нельзя.
@@ -4030,8 +4464,10 @@ const pfAwardsBy = (pid) => (votesBy[pid] || []).filter((x) => x && x.kind === "
 const pfSpent = (pid) => profOf(pid).own.reduce((a, k) => a + PF_ITEM[k].p, 0) + pfAwardsBy(pid).length * PF_AWARD_COST;
 const pfPoints = (pid) => profile(pid).xp - pfSpent(pid);
 // вещь открыта: бесплатная, купленная или трофей за ачивку
+const pfTest = () => { if (!isOwner) return false; try { return localStorage.getItem("sys.pftest") !== "0"; } catch { return true; } };
 function pfHas(pid, key) {
   const it = PF_ITEM[key]; if (!it) return false;
+  if (pid === me && pfTest()) return true; // временно: владелец тестирует всё, друзья видят только купленное
   if (it.tr) return !!profile(pid).ach[it.tr];
   return !it.p || profOf(pid).own.includes(key);
 }
@@ -4059,9 +4495,9 @@ function pfOnline(pid) {
 function pfHeroHtml(pid, ctx) {
   const p = profile(pid), pr = profOf(pid), eq = pfEq(pid), own = pid === me && canWrite && ctx === "me";
   const fr = pid !== me && ctx === "friend" && me && canWrite && meActive() && isActive(PLAYERS.find((x) => x.id === pid));
-  return '<section class="panel pfhero"><div class="pfbg pbg-' + eq.bg + '" aria-hidden="true">' + pfBgInner(eq.bg) + "</div>" +
+  return '<section class="panel pfhero"><div class="pfbg pbg-' + eq.bg + '" data-fxbg="' + eq.bg + '" aria-hidden="true">' + pfBgInner(eq.bg) + "</div>" +
     (own ? '<div class="pftools"><button type="button" class="pfpts" data-act="pfshop" aria-label="Очки и магазин">💠 ' + pfPoints(pid) + '</button><button type="button" class="pfgear" data-act="tab" data-t="more" aria-label="Настройки">⚙' + '<span class="dot" id="gearDot" hidden></span></button></div>' : "") +
-    '<div class="pfid"><div class="pfavw">' + pfAva(pid, own) + '<span class="pfr pfr-' + eq.fr + '" aria-hidden="true"></span></div><div class="pfnm"><div class="pfname">' + esc(pname(pid)) + pfLvl(p.li.L, eq.bd) + "</div>" + pfOnline(pid) + (own && avaOf(pid) ? '<div class="pfavl"><button type="button" class="linkbtn" data-act="imgview" data-kind="ava" data-src="' + esc(blobUrl(avaOf(pid))) + '">открыть аватарку</button><button type="button" class="linkbtn" data-act="avadel">убрать</button></div>' : "") + "</div></div>" +
+    '<div class="pfid"><div class="pfavw" data-fxfr="' + eq.fr + '">' + pfAva(pid, own) + '</div><div class="pfnm"><div class="pfname">' + esc(pname(pid)) + pfLvl(p.li.L, eq.bd) + "</div>" + pfOnline(pid) + (own && avaOf(pid) ? '<div class="pfavl"><button type="button" class="linkbtn" data-act="imgview" data-kind="ava" data-src="' + esc(blobUrl(avaOf(pid))) + '">открыть аватарку</button><button type="button" class="linkbtn" data-act="avadel">убрать</button></div>' : "") + "</div></div>" +
     '<div class="pfbody">' + (pr.status ? '<div class="pfst">' + esc(pr.status) + "</div>" : own ? '<button type="button" class="pfst empty" data-act="pfedit">+ Добавить статус</button>' : "") +
     '<div class="pfcls"><span>Класс <b>' + esc(p.cls) + '</b></span><span>Ранг охотника <span class="rank r-' + hunter(p.li.L) + '">' + hunter(p.li.L) + "</span></span><span>в Системе с " + nice(joinedOf(pid)) + "</span></div>" +
     (pr.about ? '<div class="pfab">' + esc(pr.about) + "</div>" : "") +
@@ -4127,6 +4563,17 @@ function pfShowHtml(pid, ctx) {
   // в окне друга сюжет и дневник уже есть ниже целиком, поэтому витрины с ними пропускаем
   return profOf(pid).show.filter((k) => ctx !== "friend" || (k !== "story" && k !== "diary")).map((k) => pfScHtml(pid, k, ctx)).join("");
 }
+function pfMountFx() {
+  PFX.FX.live = bgLiveOn() && !RM();
+  document.querySelectorAll("[data-fxbg]").forEach((el) => {
+    const id = el.dataset.fxbg; if (el._fx && el._fx.id === id) return;
+    if (el._fx) el._fx.destroy(); el._fx = PFX.SC[id] ? new PFX.Stage(el, id) : null;
+  });
+  document.querySelectorAll("[data-fxfr]").forEach((el) => {
+    const id = el.dataset.fxfr; if (el._ring !== undefined && el._rid === id) return;
+    if (el._ring) el._ring.destroy(); el._rid = id; el._ring = PFX.RINGS[id] ? new PFX.Ring(el, id) : null;
+  });
+}
 function renderProfile() {
   const pid = mainPid();
   if (!pid) return;
@@ -4134,6 +4581,7 @@ function renderProfile() {
   setHtml("profShow", pfShowHtml(pid, "me"));
   const gd = $("gearDot"); if (gd) gd.hidden = $("moreDot").hidden;
   if (pf) renderPf();
+  pfMountFx();
 }
 // ---------- шторки профиля ----------
 function pfItemPv(it, pid) {
@@ -4143,14 +4591,17 @@ function pfItemPv(it, pid) {
 }
 function renderPf() {
   const ov = $("pfOv");
-  if (!pf) { hideOv(ov); return; }
+  if (!pf) { hideOv(ov); $("pfBox")._h = null; return; }
   showOv(ov);
   const pid = me, pr = profOf(pid), pts = pfPoints(pid);
   let h = "";
   if (pf.kind === "shop") {
     const eq = pfEq(pid);
+    const tr = { ...eq, ...(pf.try || {}) }, trN = PF_CATS.map(([c]) => PF_ITEM[c + ":" + tr[c]].n).join(" · ");
     h = '<div class="ph"><h2 class="ptitle">Магазин</h2><span class="pfpts">💠 ' + pts + '</span><button type="button" class="btn sm ghost" data-act="pfclose" aria-label="Закрыть">×</button></div>' +
-      '<p class="hint" style="margin:0 0 12px">Очки копятся вместе с опытом: <b>1 XP = 1 очко</b>. Покупка тратит только очки, опыт и уровень не меняются. Вещи с 🏆 не продаются, они открываются ачивкой.</p>' +
+      '<div class="pftry"><div class="pfbg pbg-' + tr.bg + '" data-fxbg="' + tr.bg + '" aria-hidden="true">' + pfBgInner(tr.bg) + '</div><div class="pftryid"><div class="pfavw" data-fxfr="' + tr.fr + '"><span class="pfav">' + (avaOf(pid) ? '<img src="' + esc(blobUrl(avaOf(pid))) + '" alt="">' : esc(pname(pid)[0])) + "</span></div><div><b>" + esc(pname(pid)) + " " + pfLvl(profile(pid).li.L, tr.bd) + '</b><span class="hint">Примерка: ' + esc(trN) + "</span></div></div></div>" +
+      (isOwner ? '<label class="setrow pftest"><span><b>🧪 Тест: всё открыто</b><span class="hint" style="display:block">Видно только тебе. Друзья видят у тебя только купленное и заработанное.</span></span><input type="checkbox" data-act="pftest"' + (pfTest() ? " checked" : "") + "></label>" : "") +
+      '<p class="hint" style="margin:10px 0 12px">Нажми на картинку вещи, чтобы примерить её сверху. Очки копятся вместе с опытом: <b>1 XP = 1 очко</b>. Покупка тратит только очки, опыт и уровень не меняются. Вещи с 🏆 не продаются, они открываются ачивкой.</p>' +
       '<div class="dseg pfcats" role="group" aria-label="Раздел">' + PF_CATS.map(([c, n]) => '<button type="button" data-act="pfcat" data-c="' + c + '" aria-pressed="' + (pf.cat === c) + '">' + n + "</button>").join("") + "</div>" +
       (pf.cat === "bd" ? '<p class="hint" style="margin:12px 0 6px">Цвет значка показывает уровень и меняется каждые 10 уровней, его не купить. В магазине только форма.</p><div class="pflad">' + [1, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((L) => "<div>" + pfLvl(L, eq.bd) + "<span>" + L + "+</span></div>").join("") + "</div>" : "") +
       '<div class="pfitems">' + PF_SHOP[pf.cat].map((it0) => {
@@ -4159,7 +4610,8 @@ function renderPf() {
           : has ? '<button type="button" class="btn sm" data-act="pfequip" data-k="' + key + '">Надеть</button>'
           : it.tr ? '<button type="button" class="btn sm ghost" disabled>🔒 Закрыто</button>'
           : '<button type="button" class="btn sm" data-act="pfbuy" data-k="' + key + '"' + (pts < it.p || !canWrite ? " disabled" : "") + ">Купить за " + it.p + "</button>";
-        return '<div class="pfit' + (on ? " on" : "") + '">' + pfItemPv(it, pid) + '<div class="inf"><b>' + esc(it.n) + "</b>" +
+        const tried = (pf.try || {})[pf.cat] === it.id;
+        return '<div class="pfit' + (on ? " on" : "") + (tried ? " tried" : "") + '"><button type="button" class="pvb" data-act="pftry" data-k="' + key + '" aria-label="Примерить: ' + esc(it.n) + '">' + pfItemPv(it, pid) + '</button><div class="inf"><b>' + esc(it.n) + "</b>" +
           (it.tr ? '<span class="tr">🏆 за ачивку «' + esc((ACH.find((a) => a.k === it.tr) || {}).n || "") + "»</span>" : '<span class="pr">' + (it.p ? "💠 " + it.p + (has ? " · куплено" : "") : "бесплатно") + "</span>") + btn + "</div></div>";
       }).join("") + "</div>";
   } else if (pf.kind === "edit") {
@@ -4179,9 +4631,9 @@ function renderPf() {
       '<div class="pfawp">' + PF_AWARDS.map(([e, n]) => '<button type="button" data-act="pfgive" data-e="' + e + '"' + (gave || pts < PF_AWARD_COST ? " disabled" : "") + "><b>" + e + "</b><span>" + n + "</span></button>").join("") + "</div>";
   }
   const box = $("pfBox"), fa = document.activeElement && box.contains(document.activeElement) ? document.activeElement.dataset.act + "|" + (document.activeElement.dataset.k || document.activeElement.dataset.c || "") : null;
-  if (box.innerHTML !== h) {
+  if (box._h !== h) {
     const keepSt = $("pfSt") ? $("pfSt").value : null, keepAb = $("pfAb") ? $("pfAb").value : null;
-    box.innerHTML = h;
+    box.innerHTML = h; box._h = h; pfMountFx();
     if (pf.kind === "edit" && keepSt != null) { $("pfSt").value = keepSt; $("pfAb").value = keepAb; }
     if (fa) { const [a, k] = fa.split("|"); const el = box.querySelector('[data-act="' + a + '"]' + (k ? '[data-k="' + k + '"],[data-act="' + a + '"][data-c="' + k + '"]' : "")); if (el) try { el.focus({ preventScroll: true }); } catch {} }
   }
@@ -4197,7 +4649,7 @@ function pfOpen(kind, extra) {
 function pfSaveProf(patch) { const cur = (prefs.prof && typeof prefs.prof === "object") ? prefs.prof : {}; writePrefs({ prof: { ...cur, ...patch } }); renderProfile(); }
 async function pfAct(b, act) {
   if (act === "logout") { const o = $("authOut"); if (o) o.click(); return true; }
-  if (!/^pf(shop|edit|close|cat|buy|equip|pach|tsc|mv|save|award|give|wall|allach)$/.test(act)) return false;
+  if (!/^pf(shop|edit|close|cat|buy|equip|pach|tsc|mv|save|award|give|wall|allach|try|test)$/.test(act)) return false;
   if (act === "pfshop" || act === "pfedit") { pfOpen(act === "pfshop" ? "shop" : "edit"); return true; }
   if (act === "pfaward") { if (!me || !canWrite || !meActive()) return true; pfOpen("award", { pid: b.dataset.p }); return true; }
   if (act === "pfclose") { pf = null; renderPf(); return true; }
@@ -4205,16 +4657,18 @@ async function pfAct(b, act) {
   if (act === "pfwall") { const inp = document.querySelector('#friendOv [data-sc="wall"] input[type="text"]'); if (inp) { inp.scrollIntoView({ block: "center", behavior: RM() ? "auto" : "smooth" }); inp.focus({ preventScroll: true }); } return true; }
   if (!pf) return true;
   if (act === "pfcat") { pf.cat = b.dataset.c; renderPf(); return true; }
+  if (act === "pftry") { const it = PF_ITEM[b.dataset.k]; if (it) { pf.try = { ...(pf.try || {}), [it.cat]: it.id }; renderPf(); } return true; }
+  if (act === "pftest") { try { localStorage.setItem("sys.pftest", b.checked ? "1" : "0"); } catch {} renderPf(); renderProfile(); if (friendId) renderFriend(); return true; }
   if (act === "pfbuy") {
     const k = b.dataset.k, it = PF_ITEM[k];
     if (!it || it.tr || !it.p || !canWrite || pfHas(me, k)) return true;
     if (pfPoints(me) < it.p) { toast("Не хватает очков: нужно " + it.p + ", у тебя " + pfPoints(me) + "."); return true; }
     const pr = profOf(me);
-    pfSaveProf({ own: [...pr.own, k], eq: { ...pr.eq, [it.cat]: it.id } });
+    pfSaveProf({ own: [...pr.own, k], eq: { ...pr.eq, [it.cat]: it.id } }); if (pf.try) delete pf.try[it.cat];
     toast("Куплено: " + it.n + ". Опыт и уровень не изменились.");
     renderPf(); return true;
   }
-  if (act === "pfequip") { const k = b.dataset.k, it = PF_ITEM[k]; if (!it || !pfHas(me, k)) return true; const pr = profOf(me); pfSaveProf({ eq: { ...pr.eq, [it.cat]: it.id } }); renderPf(); return true; }
+  if (act === "pfequip") { const k = b.dataset.k, it = PF_ITEM[k]; if (!it || !pfHas(me, k)) return true; const pr = profOf(me); pfSaveProf({ eq: { ...pr.eq, [it.cat]: it.id } }); if (pf.try) delete pf.try[it.cat]; renderPf(); return true; }
   if (act === "pfpach") { const d = pf.draft, k = b.dataset.k, i = d.ach.indexOf(k); if (i >= 0) d.ach.splice(i, 1); else if (d.ach.length < 6) d.ach.push(k); else toast("На витрине максимум 6 ачивок."); renderPf(); return true; }
   if (act === "pftsc") { const d = pf.draft, k = b.dataset.k, i = d.show.indexOf(k); if (b.checked && i < 0) d.show.push(k); if (!b.checked && i >= 0) d.show.splice(i, 1); renderPf(); return true; }
   if (act === "pfmv") { const d = pf.draft, k = b.dataset.k, i = d.show.indexOf(k), j = i + num(b.dataset.d); if (i < 0 || j < 0 || j >= d.show.length) return true; [d.show[i], d.show[j]] = [d.show[j], d.show[i]]; renderPf(); return true; }
@@ -4470,7 +4924,7 @@ const GUIDE = [
   { id: "b-story", l: 2, t: "Сюжетные квесты", b: "<p>Сюжетный квест это большая цель, разбитая на <b>шаги</b>. Вкладка «Сюжет» → «+ Новый квест»: 1) цель, 2) срок (неделя, 2 недели, месяц… или своя дата, не позже 31 декабря), 3) характеристика, 4) шаги: пиши шаг и жми Enter.</p><p>Шаг это задача, как квест дня: <b>время × сложность × «нравится»</b>, опыт по той же формуле. У шага две кнопки: <b>дата</b> (мини-календарь, «Без даты», «повторять до срока» каждый день, через день или раз в неделю) и <b>время · сложность</b> (ползунки). Дата необязательна.</p><p>Шаги с датой «сегодня» видны на вкладке «Сегодня» в блоке <b>«Сюжет сегодня»</b>. Отметить можно <b>любой</b> несделанный шаг до срока: он засчитается сегодняшним днём. Когда все шаги сделаны, квест <b>сам уходит друзьям</b> на проверку. Одобрили: <b>бонус +50%</b> от опыта шагов.</p>", v: 22 },
   { id: "b-diary", l: 2, t: "Дневник", b: "<p>Вкладка «Дневник»: записи о том, что происходит. Кнопка <b>«+ Запись за сегодня»</b>: настроение и текст. Записать можно только за сегодня, править только в тот же день, удалить в любой момент. Опыта за дневник нет.</p><p>Новая запись по умолчанию <b>🔒 только мне</b>: её видишь только ты, сервер не отдаёт её друзьям. Замок у записи переключает <b>👁 друзьям</b> и обратно. «👀 Как видят друзья» показывает твой дневник их глазами.</p><p>Открытые записи друзей во вкладке «Дневник → Друзья» (новые с меткой НОВОЕ) и в окне друга. Под ними реакции и комментарии. Если запись скрыть, реакции и комментарии спрячутся вместе с ней и вернутся, когда откроешь снова.</p>", v: 23 },
   { id: "b-yr", l: 2, t: "Итоги сезона", b: "<p>31 декабря в 18:00 открываются <b>итоги сезона 1</b>: на «Сегодня» плашка, в ⚙ Настройках раздел «Итоги сезона». Это сторис: нажми справа, чтобы листать, слева, чтобы вернуться, ❚❚ ставит на паузу.</p><p>Что внутри: опыт по месяцам, процент выполнения, лучшая серия, главный квест, ритм по дням недели, рост характеристик, сюжеты, ачивки, голоса в пати и номинации. В конце карточка-итог и таблица пати. Можно открыть итоги любого друга.</p><p>Всё считается из квестов с 15 октября по 31 декабря, ничего заполнять не нужно.</p>", v: 24 },
-  { id: "b-prof", l: 2, t: "Профиль, магазин и награды", b: "<p><b>Профиль</b> как в Steam: фон, рамка аватарки, значок уровня, статус и «О себе». Ниже витрины: ачивки (выбираешь до 6), любимый квест, текущий сюжет, статистика, недавняя активность за 2 недели, дневник (только открытые записи), награды и стена. «✎ Изменить профиль»: статус, о себе, какие витрины показывать и в каком порядке.</p><p><b>Очки 💠</b> копятся вместе с опытом: 1 XP = 1 очко. В <b>магазине</b> на них покупаются фоны, рамки и форма значка уровня. Покупка тратит только очки, опыт и уровень не меняются. Цвет значка показывает уровень (меняется каждые 10 уровней) и не продаётся. Вещи с 🏆 открываются только ачивкой: фоны Гроза (Две недели), Восход (Идеальный день), Космос (Сотня), рамки Огненная (Железная воля), Хрусталь (Без провалов), Корона (Легенда), значок Звезда (Сюжет пройден).</p><p><b>Профиль друга</b> открывается в «Пати» по нажатию на него. Там можно написать на <b>стене</b> и <b>наградить</b> 🔥 💪 🧠 🎯 🌙 🤝: награда стоит 100 очков, одному другу одна в день, и навсегда остаётся у него на профиле.</p>", v: 26 },
+  { id: "b-prof", l: 2, t: "Профиль, магазин и награды", b: "<p><b>Профиль</b> как в Steam: фон, рамка аватарки, значок уровня, статус и «О себе». Ниже витрины: ачивки (выбираешь до 6), любимый квест, текущий сюжет, статистика, недавняя активность за 2 недели, дневник (только открытые записи), награды и стена. «✎ Изменить профиль»: статус, о себе, какие витрины показывать и в каком порядке.</p><p><b>Очки 💠</b> копятся вместе с опытом: 1 XP = 1 очко. В <b>магазине</b> на них покупаются фоны, рамки и форма значка уровня. Покупка тратит только очки, опыт и уровень не меняются. Цвет значка показывает уровень (меняется каждые 10 уровней) и не продаётся. Вещи с 🏆 открываются только ачивкой: фоны Гроза (Две недели), Восход (Идеальный день), Космос (Сотня), рамки Огненная (Железная воля), Хрусталь (Без провалов), Корона (Легенда), значок Звезда (Сюжет пройден).</p><p><b>Профиль друга</b> открывается в «Пати» по нажатию на него. Там можно написать на <b>стене</b> и <b>наградить</b> 🔥 💪 🧠 🎯 🌙 🤝: награда стоит 100 очков, одному другу одна в день, и навсегда остаётся у него на профиле.</p><p>Фоны и рамки <b>живые</b>: рисуются кодом прямо на устройстве и двигаются за мышкой или пальцем. В магазине сверху <b>примерка</b>: нажми на картинку вещи, и она сразу появится на тебе. Остановить анимацию: ⚙ Настройки → «Оформление» → «Живой фон».</p>", v: 26 },
   { id: "b-link", l: 2, t: "Шаги на ходу и лимит дня", b: "<p>Пока срок не вышел, шаги можно менять: дату и время у несделанных, добавлять новые, убирать лишние (×). Убранный шаг уходит в «Убрано»: опыта за него нет, бонус меньше, друзья видят «убрано N». Его можно вернуть. Последний шаг убрать нельзя. Сделанный шаг под замком 🔒.</p><p>Лимит дня общий: <b>16 часов и 5 привычек</b> на квесты дня, повторы и шаги сюжетов вместе. Шаг без даты день не занимает, пока не отметишь его или не поставишь дату. Честные часы действуют и для шагов.</p><p>Привязка квеста дня к сюжету (плашка «сюжет») осталась только у старых квестов: новым она не нужна.</p>", v: 22 },
   { id: "b-verify", l: 2, t: "Проверка друзьями", b: "<p>Ежедневные квесты друзья не проверяют, их можно только <b>оспорить</b> в течение суток. На проверку уходит <b>сюжетный квест</b>: сам, когда сделаны все шаги (и старые крупные B, A, S, отправленные до v18). Фото или пояснение для друзей добавь в обсуждении под квестом. У друзей появляется запрос во вкладке «Пати» и цифра на вкладке.</p><p>Засчитано, если <b>большинство</b> друзей сказали «да» (при 2 друзьях оба, при 3 двое, при 4 трое), или если есть хотя бы одно «да», ни одного «нет» и прошло <b>48 часов</b>. Зеркально: одно или больше «нет», ни одного «да» и 48 часов, и квест отклонён. Если «нет» сказали столько, что большинства уже не набрать, квест отклонён, его можно отправить снова.</p>", v: 22 },
   { id: "b-talk", l: 2, t: "Комментарии и обсуждения", b: "<p>Под квестом на проверке или в споре есть <b>обсуждение</b>: друзья спрашивают, ты отвечаешь, можно с фото. Когда итог подведён, переписка остаётся, но писать туда уже нельзя.</p><p>Голосуя, можно оставить комментарий. К «Не засчитывать» он обязателен, к «Подтверждаю» по желанию. «Спросить» отправляет вопрос без голоса. «Оспорить» тоже требует причину.</p><p>Все твои обсуждения собраны во вкладке «Пати» в разделе «Обсуждения». Новые комментарии видны цифрой на вкладке и в плашке на «Сегодня».</p>", v: 11 },
@@ -4848,6 +5302,7 @@ function renderFriend() {
   const fn = avaHtml(friendId, "md") + esc(pname(friendId)) + (isHere(friendId) ? ' <span class="ondot" aria-hidden="true"></span><span class="onl">онлайн</span>' : isAway(friendId) ? ' <span class="ondot away" aria-hidden="true"></span><span class="onl" style="color:var(--gold)">' + esc(awayTxt(friendId)) + "</span>" : roster[friendId] ? '<span class="onl" style="color:var(--muted)">' + esc(lastSeenTxt(friendId)) + "</span>" : "");
   if ($("fName").innerHTML !== fn) $("fName").innerHTML = fn;
   setHtml("fProf", pfHeroHtml(friendId, "friend") + '<div class="pfgw">' + pfShowHtml(friendId, "friend") + "</div>");
+  pfMountFx();
   setHtml("fNudge", nudgeHtml(friendId));
   setHtml("fQuests", questsListHtml(friendId).html);
   setHtml("fStories", storiesHtml(friendId));
@@ -5239,6 +5694,7 @@ window.SISTEMA_BG = (o) => { const el = $("bg"); bgS.phase = o.phase || bgPhase(
 (() => {
   const cb = $("liveBg"); if (!cb) return;
   cb.checked = bgLiveOn();
+  cb.addEventListener("change", () => { PFX.FX.live = cb.checked && !RM(); });
   cb.addEventListener("change", () => { try { localStorage.setItem("sys.liveBg", cb.checked ? "1" : "0"); } catch {} bgS.live = null; bgUpdate(); toast(cb.checked ? "Живой фон включён." : "Живой фон выключен: статичная картинка."); });
 })();
 bgUpdate();
