@@ -4383,14 +4383,17 @@ class Stage {
     this.io = new IntersectionObserver((e) => { this.vis = e[0].isIntersecting; }); this.io.observe(el);
     this.onMove = (e) => { const r = el.getBoundingClientRect(), p = e.touches ? e.touches[0] : e; this.tm.x = clamp(((p.clientX - r.left) / r.width - .5) * 2, -1, 1); this.tm.y = clamp(((p.clientY - r.top) / r.height - .5) * 2, -1, 1); };
     el.addEventListener("pointermove", this.onMove); el.addEventListener("pointerleave", () => { this.tm.x = 0; this.tm.y = 0; });
-    STAGES.add(this); this.frame(0);
+    STAGES.add(this); this.ready = true; if (FX.live) this.frame(0); else this.still();
   }
   resize() {
     const r = this.el.getBoundingClientRect(), sm = this.el.dataset.fxsm === "1", dpr = sm ? 1 : Math.min(window.devicePixelRatio || 1, FX.q > 1 ? 2 : 1.25);
     this.w = Math.max(10, r.width); this.h = Math.max(10, r.height);
     if (this.cg) { const k = sm ? .6 : FX.q > 1 ? Math.min(dpr, 1.5) : .75; this.cg.width = Math.round(this.w * k); this.cg.height = Math.round(this.h * k); }
     if (this.c2) { this.c2.width = Math.round(this.w * dpr); this.c2.height = Math.round(this.h * dpr); this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); this.S = {}; this.S.clear = true; if (this.sc.init) this.sc.init(this.S, this.w, this.h); }
+    if (this.ready && !FX.live) this.still();
   }
+  // живой фон выключен: прокручиваем пару секунд «впустую», чтобы кадр был наполнен (снег, капли, символы), и замираем
+  still() { for (let i = 0; i < 30; i++) this.frame(.05); }
   frame(dt) {
     this.m.x += (this.tm.x - this.m.x) * Math.min(1, dt * 4); this.m.y += (this.tm.y - this.m.y) * Math.min(1, dt * 4);
     this.t += dt;
@@ -4420,8 +4423,8 @@ const RINGS = {
 class Ring {
   constructor(el, id) { this.el = el; this.id = id; this.cfg = RINGS[id]; this.p = []; this.t = 0; this.arcT = 0; this.arcs = [];
     this.c = document.createElement("canvas"); this.c.className = "ringc"; el.appendChild(this.c); this.ctx = this.c.getContext("2d"); this.resize();
-    this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(el); STAGES.add(this); this.frame(1 / 60); }
-  resize() { const dpr = Math.min(window.devicePixelRatio || 1, 2), s = this.el.getBoundingClientRect().width * 1.7, av = this.el.querySelector(".pfav, .av"); this.s = s; this.ar = av ? av.getBoundingClientRect().width / 2 : s / 1.7 / 2 - 6; this.c.width = s * dpr; this.c.height = s * dpr; this.c.style.width = this.c.style.height = s + "px"; this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(el); STAGES.add(this); this.ready = true; for (let i = 0; i < (FX.live ? 1 : 20); i++) this.frame(1 / 30); }
+  resize() { const dpr = Math.min(window.devicePixelRatio || 1, 2), s = this.el.getBoundingClientRect().width * 1.7, av = this.el.querySelector(".pfav, .av"); this.s = s; this.ar = av ? av.getBoundingClientRect().width / 2 : s / 1.7 / 2 - 6; this.c.width = s * dpr; this.c.height = s * dpr; this.c.style.width = this.c.style.height = s + "px"; this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); if (this.ready && !FX.live) for (let i = 0; i < 20; i++) this.frame(1 / 30); }
   frame(dt) {
     const c = this.ctx, s = this.s, cx = s / 2, cy = s / 2, R = this.ar - 1.5, g = this.cfg; /* рамка прямо на краю аватарки */ this.t += dt; const t = this.t;
     c.clearRect(0, 0, s, s); if (!g || !(this.ar > 10)) return; // скрытый элемент: размеров ещё нет
