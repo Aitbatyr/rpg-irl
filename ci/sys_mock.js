@@ -1,9 +1,9 @@
 // СГЕНЕРИРОВАНО fn/mkcore.py: серверная логика v28 для тестов сайта
 (() => {
 const { makeCore } = (() => {
-// СГЕНЕРИРОВАНО fn/mkcore.py из index.html (APP_VERSION 30). Не править руками: меняй index.html и пересобирай.
+// СГЕНЕРИРОВАНО fn/mkcore.py из index.html (APP_VERSION 31). Не править руками: меняй index.html и пересобирай.
 // Тот же код подсчёта опыта, что в браузере. Сервер (функция sys) и тесты считают им опыт игроков.
-const CORE_VERSION = 30;
+const CORE_VERSION = 31;
 function makeCore(clock) {
   "use strict";
   const noop = () => {};
@@ -235,7 +235,9 @@ const tasksBy = Object.fromEntries(PLAYERS.map((p) => [p.id, []]));
 const storiesBy = Object.fromEntries(PLAYERS.map((p) => [p.id, []]));
 const votesBy = Object.fromEntries(PLAYERS.map((p) => [p.id, []]));
 const loadedBy = {}, storyLoadedBy = {}, defBy = {};
-const sealsBy = Object.fromEntries(PLAYERS.map((p) => [p.id, {}]));
+const sealsBy = Object.fromEntries(PLAYERS.map((p) => [p.id, {}])); // до v31: печати от браузеров друзей (больше не учитываются)
+// v31: печати пишет сервер (ws/{uid}/seal/main, каждую ночь в 4:10): итог мелких квестов за день и число квестов. Подделать нельзя.
+const ssealBy = {};
 let rosterMain = {}, rosterMeta = null, metaLoaded = false;
 // v28: данные участника в группе от сервера: gAt (когда вступил, мс), carry (опыт из прошлых групп), cach (ачивки, уже учтённые в carry)
 let gm = {};
@@ -267,7 +269,6 @@ function rebuildRoster() {
 const sealsLoaded = {}, votesLoaded = {};
 // голоса всех активных друзей загружены: только тогда сравниваем ачивки и подтверждения, иначе при входе всплывают «новые» старые события
 const votesReady = () => PLAYERS.every((p) => !isActive(p) || votesLoaded[p.id]);
-let sealing = false;
 const subs = {};
 let templates = [], templatesLoaded = false, subDaily = null;
 let selStat = "int", selT = 7, selE = 1, selL = 1, xpAuto = true;
@@ -277,15 +278,19 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 30;
+const APP_VERSION = 31;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
 const tplDays = new Set();
 let prefs = {}, prefsLoaded = false, subPrefs = null, markingSeen = false, clockNotice = false;
 const prefsBy = {}, reportsBy = {};
+// v31: «был N мин назад» живёт в маленьком документе q/{uid}/meta/seen, чтобы не гонять друзьям весь prefs каждые 10 минут.
+// В prefs.lastSeen пишем только первый заход за игровой день (по нему вечернее напоминание понимает, заходил ли игрок)
+const seenBy = {};
+let mySeenAt = 0;
+const seenOf = (pid) => Math.max(num((prefsBy[pid] || {}).lastSeen), num(seenBy[pid]));
 let bugStatus = {}, assetsApi = null, gLvl = 1, gQuery = "", tourStep = -1, tourAuto = false;
-const lastSealSig = {};
 const profCache = new Map();
 // ---------- выходной (v17) ----------
 // prefs.offDays = [{ d: "2026-11-12", at: время объявления }]. Засчитывается, только если объявлен заранее
@@ -318,6 +323,14 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 31, date: "2026-11-23", title: "Скорость и защита", items: [
+    "Сайт быстрее загружается и меньше грузит телефон: живой фон рисуется в 2 раза легче, рамки и уборы двигаются только в профиле и магазине, окно друга строит только открытую вкладку.",
+    "На слабых телефонах живой фон выключается сам. Включить обратно можно в ⚙ Настройках → «Оформление».",
+    "Квесты и отметки друзей приходят сразу из живого обновления, без перечитывания всего списка. Меньше трафика и батареи.",
+    "Честные часы на сервере теперь тоже считаются от 4:00. С 4 до 6 утра отметки больше не отклоняются, а шаги сюжета после полуночи отмечаются вчерашним днём.",
+    "Печати дня ставит сервер каждую ночь в 4:10, а не браузеры друзей. Подделать или испортить их больше нельзя.",
+    "Защита: почту игроков видит только сам игрок, фото до 5 МБ и только картинки.",
+  ] },
   { v: 30, date: "2026-11-23", title: "Чат как в мессенджере", items: [
     "Новый день начинается в 4:00 утра: засиделся после полуночи, спокойно отмечай свои квесты. Честные часы тоже считаются от 4:00.",
     "Чат: сообщения как в Telegram (имя над серией, время внутри), фото (📎), смайлы (🙂) и реакции: нажми на сообщение друга. Там же удаление.",
@@ -764,15 +777,10 @@ const storyReward = (s) => (isPlan(s) ? planBonus(s) : Math.round(RANKS[s.rank].
 
 // ---------- day seals (witnessed by friends) ----------
 function sealInfo(pid) {
-  const caps = {}, cnt = {};
-  for (const w of PLAYERS) {
-    if (w.id === pid || !isActive(w)) continue;
-    const doc = (sealsBy[w.id] || {})[pid];
-    if (!doc || doc.uid !== roster[pid]) continue;
-    const from = joinedOf(w.id); // свидетель не мог видеть дни до того, как вступил в пати
-    if (doc.days) for (const d in doc.days) { if (d < from) continue; const v = num(doc.days[d]); caps[d] = caps[d] == null ? v : Math.min(caps[d], v); }
-    if (doc.tk) for (const d in doc.tk) { if (d < from) continue; const v = num(doc.tk[d]); cnt[d] = cnt[d] == null ? v : Math.max(cnt[d], v); }
-  }
+  const caps = {}, cnt = {}, doc = ssealBy[pid];
+  if (!doc || doc.uid !== roster[pid]) return { caps, cnt };
+  if (doc.days) for (const d in doc.days) caps[d] = num(doc.days[d]);
+  if (doc.tk) for (const d in doc.tk) cnt[d] = num(doc.tk[d]);
   return { caps, cnt };
 }
 
@@ -948,7 +956,7 @@ const pfSpent = (pid) => profOf(pid).own.reduce((a, k) => a + PF_ITEM[k].p, 0) +
 const pfPoints = (pid) => profile(pid).xp - pfSpent(pid);
 
   return {
-    // o: { players: [{id,name,joined,archived}], roster: {pid: uid}, gm: {pid: {gAt, carry, cach}}, tasks: {pid: [...]}, stories, votes, seals, prefs }
+    // o: { players: [{id,name,joined,archived}], roster: {pid: uid}, gm: {pid: {gAt, carry, cach}}, tasks: {pid: [...]}, stories, votes, seals, sseal: {pid: doc}, prefs }
     load(o) {
       PLAYERS = o.players.map((p) => ({ ...p })); roster = { ...o.roster }; ensureSlots();
       if (typeof setGm === "function") setGm(o.gm || {});
@@ -957,11 +965,12 @@ const pfPoints = (pid) => profile(pid).xp - pfSpent(pid);
         storiesBy[p.id] = ((o.stories || {})[p.id] || []).map((x) => ({ ...x, player: p.id })).filter(validStory);
         votesBy[p.id] = (o.votes || {})[p.id] || [];
         sealsBy[p.id] = (o.seals || {})[p.id] || {};
+        ssealBy[p.id] = (o.sseal || {})[p.id] || null; // v31: печать сервера
         prefsBy[p.id] = (o.prefs || {})[p.id] || {};
       }
       me = null; profCache.clear(); offCache.clear();
     },
-    profile, levelInfo, xpOf, PLAYERS: () => PLAYERS,
+    profile, levelInfo, xpOf, PLAYERS: () => PLAYERS, tasksOf: (pid) => tasksBy[pid] || [],
     pfItem: (k) => PF_ITEM[k] || null, profOf, pfPoints, pfAwardsBy, PF_AWARDS: () => PF_AWARDS, PF_AWARD_COST,
   };
 }
@@ -984,7 +993,7 @@ function memCtx(docs, uid, opts = {}) {
       const out = {};
       for (const u of uids) {
         const of = (c) => Object.keys(docs).filter((k) => k.startsWith(c + "/") && depth(k) === depth(c) + 1).map((k) => ({ ...cl(docs[k]), id: k.split("/").pop() }));
-        out[u] = { tasks: of("q/" + u + "/tasks"), story: of("q/" + u + "/story"), votes: of("v/" + u + "/votes").map(({ id, ...x }) => x), seals: Object.fromEntries(of("w/" + u + "/seals").map(({ id, ...x }) => [id, x])), prefs: cl(docs["q/" + u + "/meta/prefs"]) || {} };
+        out[u] = { tasks: of("q/" + u + "/tasks"), story: of("q/" + u + "/story"), votes: of("v/" + u + "/votes").map(({ id, ...x }) => x), seals: Object.fromEntries(of("w/" + u + "/seals").map(({ id, ...x }) => [id, x])), sseal: cl(docs["ws/" + u + "/seal/main"]), prefs: cl(docs["q/" + u + "/meta/prefs"]) || {} };
       }
       return out;
     },
@@ -1036,16 +1045,51 @@ async function handle(ctx, body) {
 async function coreFor(ctx, members) {
   const data = await ctx.users(members.map((m) => m.uid));
   const core = makeCore(() => ctx.now());
-  const o = { players: [], roster: {}, gm: {}, tasks: {}, stories: {}, votes: {}, seals: {}, prefs: {} };
+  const o = { players: [], roster: {}, gm: {}, tasks: {}, stories: {}, votes: {}, seals: {}, sseal: {}, prefs: {} };
   for (const m of members) {
     const d = data[m.uid] || {};
     o.players.push({ id: m.pid, name: m.name, joined: m.joined || "2026-10-15" });
     o.roster[m.pid] = m.uid;
     o.gm[m.pid] = { gAt: m.gAt || 0, carry: m.carry || 0, cach: m.cach || [] };
-    o.tasks[m.pid] = d.tasks || []; o.stories[m.pid] = d.story || []; o.votes[m.pid] = d.votes || []; o.seals[m.pid] = d.seals || {}; o.prefs[m.pid] = d.prefs || {};
+    o.tasks[m.pid] = d.tasks || []; o.stories[m.pid] = d.story || []; o.votes[m.pid] = d.votes || []; o.seals[m.pid] = d.seals || {}; o.sseal[m.pid] = d.sseal || null; o.prefs[m.pid] = d.prefs || {};
   }
   core.load(o);
   return core;
+}
+// ---------- v31: печати ставит сервер ----------
+// Каждую ночь (4:10, после конца игрового дня) для каждого участника группы фиксируем итог прошедших дней:
+// days[d] = опыт мелких квестов, tk[d] = число квестов. Дальше ядро не даст опыту за этот день вырасти задним числом.
+// Первый раз переносим старые печати от браузеров друзей (берём минимум, как раньше), дальше дописываем только новые дни.
+const addDays = (d, n) => new Date(Date.parse(d + "T00:00:00Z") + n * 864e5).toISOString().slice(0, 10);
+async function sealAll(ctx) {
+  const pls = (await ctx.list("pl")).map((r) => ({ uid: r.id, ...r.data })).filter((p) => p.pid && p.gid);
+  const gids = [...new Set(pls.map((p) => p.gid))], y = addDays(dayOf(ctx.now()), -1);
+  let wrote = 0;
+  for (const gid of gids) {
+    const info = await ctx.get("g/" + gid + "/info"); if (!info) continue;
+    const members = membersOf(info); if (!members.length) continue;
+    const core = await coreFor(ctx, members);
+    for (const m of members) {
+      const path = "ws/" + m.uid + "/seal/main", cur = await ctx.get(path);
+      const doc = cur && cur.uid === m.uid ? { uid: m.uid, days: { ...(cur.days || {}) }, tk: { ...(cur.tk || {}) } } : { uid: m.uid, days: {}, tk: {} };
+      if (!cur) for (const w of members) {
+        if (w.pid === m.pid) continue;
+        const old = await ctx.get("w/" + w.uid + "/seals/" + m.pid);
+        if (!old || old.uid !== m.uid) continue;
+        const from = w.joined || "2026-10-15";
+        for (const d in old.days || {}) if (d >= from && d <= y) doc.days[d] = doc.days[d] == null ? Number(old.days[d]) || 0 : Math.min(doc.days[d], Number(old.days[d]) || 0);
+        for (const d in old.tk || {}) if (d >= from && d <= y) doc.tk[d] = Math.max(doc.tk[d] || 0, Number(old.tk[d]) || 0);
+      }
+      const p = core.profile(m.pid), tasks = core.tasksOf(m.pid);
+      for (let d = m.joined && m.joined > "2026-10-15" ? m.joined : "2026-10-15"; d <= y; d = addDays(d, 1)) {
+        if (doc.days[d] == null) doc.days[d] = p.smallByDay[d] || 0;
+        if (doc.tk[d] == null) doc.tk[d] = tasks.filter((t) => t.date === d).length;
+      }
+      const was = cur ? JSON.stringify({ uid: cur.uid, days: cur.days || {}, tk: cur.tk || {} }) : "";
+      if (JSON.stringify(doc) !== was) { await ctx.put(path, { ...doc, at: ctx.now() }); wrote++; }
+    }
+  }
+  return { ok: true, wrote, day: y };
 }
 const membersOf = (info) => Object.entries((info && info.members) || {}).map(([pid, m]) => ({ pid, ...m }));
 const soloOf = (pl, uid) => [{ pid: pl.pid, uid, name: pl.name, joined: pl.joined, gAt: pl.gAt || 0, carry: pl.carry || 0, cach: pl.cach || [] }];

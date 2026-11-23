@@ -22,24 +22,39 @@
   }
 
   // ---------- live queries ----------
+  // v31: живое обновление применяем прямо из события (в нём уже есть новая версия документа), а не перечитываем
+  // всю коллекцию. row: undefined = данных нет (перечитать), null = документ удалён, { data } = новая версия.
   const watchers = new Set();
-  function notify(coll, path) { for (const w of watchers) if ((coll && w.coll === coll) || (path && w.path === path)) w.kick(); }
+  function notify(coll, path, row) { for (const w of watchers) if ((coll && w.coll === coll) || (path && w.path === path)) { if (row === undefined || !w.apply(path, row)) w.kick(); } }
   function kickAll() { for (const w of watchers) w.kick(); }
+  const cmpId = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
   function watch(spec) {
-    let last = null, timer = null, alive = true, busy = false, again = false;
+    let last = null, timer = null, alive = true, busy = false, again = false, cur;
+    const emit = (rows) => { const sig = JSON.stringify(rows); if (sig !== last && alive) { last = sig; spec.next(spec.mk(rows)); } };
     const fire = async () => {
       if (!alive) return;
       if (busy) { again = true; return; }
       busy = true;
       try {
         const rows = await spec.run();
-        const sig = JSON.stringify(rows);
-        if (sig !== last && alive) { last = sig; spec.next(spec.mk(rows)); }
-      } catch (e) { clearTimeout(timer); timer = setTimeout(fire, 5000); }
+        cur = rows; emit(rows);
+      } catch (e) { clearTimeout(timer); timer = setTimeout(() => { timer = null; fire(); }, 5000); }
       busy = false;
       if (again) { again = false; fire(); }
     };
-    const entry = { coll: spec.coll, path: spec.path, kick: () => { clearTimeout(timer); timer = setTimeout(fire, 80); } };
+    // true: событие применено; false: надёжнее перечитать (ещё не загружено, идёт чтение, не помещается в лимит)
+    const apply = (path, row) => {
+      if (!alive || cur === undefined || busy || timer) return false;
+      if (spec.path) { cur = row ? row.data : null; emit(cur); return true; }
+      const id = idOf(path), i = cur.findIndex((r) => r.id === id), ok = !!row && spec.match(row.data);
+      if (ok) {
+        if (i < 0 && cur.length >= spec.lim) return false;
+        const next = cur.slice(); if (i >= 0) next[i] = { id, data: row.data }; else { next.push({ id, data: row.data }); next.sort(cmpId); }
+        cur = next;
+      } else if (i >= 0) { cur = cur.slice(); cur.splice(i, 1); } else return true;
+      emit(cur); return true;
+    };
+    const entry = { coll: spec.coll, path: spec.path, apply, kick: () => { clearTimeout(timer); timer = setTimeout(() => { timer = null; fire(); }, 80); } };
     watchers.add(entry);
     setTimeout(fire, 0);
     return () => { alive = false; clearTimeout(timer); watchers.delete(entry); };
@@ -47,6 +62,12 @@
   const snapDoc = (id, data) => ({ id, exists: data !== undefined && data !== null, data: () => (data == null ? undefined : JSON.parse(JSON.stringify(data))), metadata: { fromCache: false, hasPendingWrites: false } });
   const snapColl = (rows) => { const docs = rows.map((r) => snapDoc(r.id, r.data)); return { docs, size: docs.length, empty: !docs.length, metadata: { fromCache: false } }; };
 
+  // то же сравнение, что делает база для data->>k (текст)
+  const match1 = (d, k, op, v) => {
+    const x = d && d[k] == null ? null : d && typeof d[k] === "object" ? JSON.stringify(d[k]) : String(d ? d[k] : ""), y = String(v);
+    if (x == null) return false;
+    return op === ">=" ? x >= y : op === "<" ? x < y : op === "==" ? x === y : op === ">" ? x > y : op === "<=" ? x <= y : true;
+  };
   function coll(path, filters = [], lim = 1000) {
     const run = async () => {
       let q = sb.from("docs").select("id,data").eq("coll", path);
@@ -64,7 +85,7 @@
       orderBy: () => api,
       limit: (n) => coll(path, filters, n),
       get: async () => snapColl(await run()),
-      onSnapshot: (next, onError) => watch({ coll: path, run, next, mk: snapColl, onError }),
+      onSnapshot: (next, onError) => watch({ coll: path, run, next, mk: snapColl, onError, lim, match: (d) => filters.every(([k, op, v]) => match1(d, k, op, v)) }),
       doc: (id) => docRef(path + "/" + (id || autoId())),
       add: async (d) => { const r = docRef(path + "/" + autoId()); await r.set(d); return r; },
     };
@@ -83,7 +104,7 @@
       set: async (d) => {
         const { error } = await sb.from("docs").upsert({ path, coll: c, id, data: clean(d), updated_at: new Date().toISOString() }, { onConflict: "path" });
         if (error) throw mapErr(error);
-        notify(c, path);
+        notify(c, path, { data: clean(d) });
       },
       update: async (d) => {
         const { error } = await sb.rpc("doc_merge", { p_path: path, p_patch: clean(d) });
@@ -93,7 +114,7 @@
       delete: async () => {
         const { error } = await sb.from("docs").delete().eq("path", path);
         if (error) throw mapErr(error);
-        notify(c, path);
+        notify(c, path, null);
       },
       onSnapshot: (next) => watch({ path, run, next, mk: (d) => snapDoc(id, d) }),
       acquire: async (o) => {
@@ -111,7 +132,9 @@
     sb.channel("docs-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "docs" }, (p) => {
         const path = (p.new && p.new.path) || (p.old && p.old.path);
-        if (path) notify(collOf(path), path);
+        if (!path) return;
+        if (p.eventType === "DELETE") notify(collOf(path), path, null);
+        else notify(collOf(path), path, p.new && p.new.data !== undefined && !(p.errors && p.errors.length) ? { data: p.new.data } : undefined);
       })
       .subscribe((st) => { if (st === "SUBSCRIBED") { if (was) kickAll(); was = true; } });
     // запасная пересверка: живые обновления приходят сами, поэтому редко

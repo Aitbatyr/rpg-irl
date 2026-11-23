@@ -9,7 +9,9 @@
   const authCbs = [];
   const getJ = (row, col) => { if (col.startsWith("data->>")) { const v = row.data[col.slice(7)]; return v == null ? null : String(v); } return row[col]; };
   const tableRows = (t) => t === "docs" ? Object.entries(docs).map(([path, data]) => ({ path, coll: path.split("/").slice(0, -1).join("/"), id: path.split("/").pop(), data })) : t === "accounts" ? accounts : [];
-  const fire = (path, type) => setTimeout(() => chans.forEach((c) => c.pg.forEach((cb) => cb({ eventType: type, new: type === "DELETE" ? {} : { path }, old: { path } }))), 20);
+  // v31: как настоящий Supabase: в событии новая версия документа (data), сайт применяет её без перечитывания
+  const fire = (path, type) => setTimeout(() => { const d = docs[path]; const nw = type === "DELETE" || d === undefined ? {} : { path, data: JSON.parse(JSON.stringify(d)) }; chans.forEach((c) => c.pg.forEach((cb) => cb({ eventType: type, new: nw, old: { path } }))); }, 20);
+  M.fire = fire; // тесты: «изменение от друга» через живое обновление
   function builder(table) {
     const st = { table, op: "select", filters: [], lim: null, single: false, payload: null };
     const b = {
