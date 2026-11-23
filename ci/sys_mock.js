@@ -1,9 +1,9 @@
 // СГЕНЕРИРОВАНО fn/mkcore.py: серверная логика v28 для тестов сайта
 (() => {
 const { makeCore } = (() => {
-// СГЕНЕРИРОВАНО fn/mkcore.py из index.html (APP_VERSION 29). Не править руками: меняй index.html и пересобирай.
+// СГЕНЕРИРОВАНО fn/mkcore.py из index.html (APP_VERSION 30). Не править руками: меняй index.html и пересобирай.
 // Тот же код подсчёта опыта, что в браузере. Сервер (функция sys) и тесты считают им опыт игроков.
-const CORE_VERSION = 29;
+const CORE_VERSION = 30;
 function makeCore(clock) {
   "use strict";
   const noop = () => {};
@@ -71,7 +71,7 @@ function planStepsOn(pid, d, except, doneOnly) {
 const dayUsed = (pid, d, except) => dayTasks(pid, d, except).reduce((a, t) => a + t.m, 0) + planStepsOn(pid, d, except).m;
 const dayHabits = (pid, d, except) => dayTasks(pid, d, except).filter((t) => t.m === 0).length + planStepsOn(pid, d, except).h;
 const dayDoneMin = (pid, d, except) => dayTasks(pid, d, except).filter((t) => t.done).reduce((a, t) => a + t.m, 0) + planStepsOn(pid, d, except, true).m;
-const sinceSix = () => Math.floor(((now() + TZ) % 864e5) / 6e4) - 360; // минут с 6:00 сегодня (до 6 утра меньше нуля)
+const sinceSix = () => Math.floor((now() - (toUTC(today()) - TZ + DAY_H * 3600e3)) / 6e4); // v30: минут с 4:00 игрового дня (честные часы)
 // необычный день: больше 10 ч задач или опыт вдвое выше обычного за 14 дней
 function oddDay(pid, d, p) {
   const doneMin = (tasksBy[pid] || []).filter((t) => t.date === d && isNewQ(t) && countsTask(t)).reduce((a, t) => a + t.m, 0);
@@ -119,7 +119,12 @@ const ymd = (d) => d.getUTCFullYear() + "-" + pad(d.getUTCMonth() + 1) + "-" + p
 const TEST_MODE = false;
 let offset = 0, clockOk = false, clockTried = false, testShift = 0;
 const now = () => Date.now() + offset + testShift * 864e5;
-const dayOf = (ms) => ymd(new Date(ms + TZ));
+// v30: игровой день начинается в 4:00 (кто засиделся после полуночи, ещё во вчерашнем дне). Действует с 23 ноя 04:00,
+// всё раньше по-старому (календарная полночь), чтобы история не сдвинулась.
+const DAY_H = 4, D4_FROM = Date.UTC(2026, 10, 22, 23);
+const dayOf = (ms) => ymd(new Date(ms + TZ - (ms >= D4_FROM ? DAY_H * 3600e3 : 0)));
+const calDayOf = (ms) => ymd(new Date(ms + TZ)); // календарный день: подписи в чате, «был в сети»
+const calToday = () => calDayOf(now());
 const today = () => dayOf(now());
 const toUTC = (s) => { const [y, m, d] = s.split("-").map(Number); return Date.UTC(y, m - 1, d); };
 const addDays = (s, n) => ymd(new Date(toUTC(s) + n * 864e5));
@@ -272,7 +277,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 29;
+const APP_VERSION = 30;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -286,7 +291,7 @@ const profCache = new Map();
 // prefs.offDays = [{ d: "2026-11-12", at: время объявления }]. Засчитывается, только если объявлен заранее
 // или в тот же день до первой отметки; не больше 2 в месяц (первые по времени объявления). Проверяет каждый клиент.
 const OFF_PER_MONTH = 2;
-const dayStart = (d) => toUTC(d) - 5 * 3600e3;
+const dayStart = (d) => { const b = toUTC(d) - TZ; return b >= D4_FROM ? b + DAY_H * 3600e3 : b; }; // v30: начало игрового дня
 const offCache = new Map();
 function offSet(pid) {
   if (offCache.has(pid)) return offCache.get(pid);
@@ -320,7 +325,7 @@ const NEWS = [
     "Окно друга: сверху широкая кнопка «Профиль» (открыт по умолчанию), под ней «Квесты» и «Сюжет». Квесты с кнопками «Оспорить» в один клик.",
     "Обсуждения: у каждого кнопка «открыть →». Она ведёт к самой вещи (квест, этап, запись в дневнике или стена, свои или друга) и подсвечивает её.",
     "Управление группой: действия с участником (помощник, передать лидерство, исключить) спрятаны под кнопку «⋯», список стал компактнее.",
-    "В чате у своих сообщений теперь твоё имя вместо «Ты».",
+    "В чате у своих сообщений теперь твоё имя вместо «Ты», шапка сообщения прижата влево без пустого места.",
     "Настройки: убран отдельный блок «Аккаунт» (почта и «Выйти» есть внизу страницы). Итоги сезона откроются всем одновременно 31 декабря в 18:00.",
   ] },
   { v: 28, date: "2026-11-22", title: "Группы", items: [
@@ -995,7 +1000,9 @@ const EMB = ["⚡", "🐺", "🦅", "🐉", "🔥", "🌙", "🦁", "🗡️", "
 const COL = ["#5ec8ff", "#ffcf5c", "#49e3a0", "#b48cff", "#ff5d73", "#ff9d4d", "#ff9ecf", "#7cf3ff"];
 const MAX_MEMBERS = 30;
 const TZ = 5 * 3600e3;
-const dayOf = (ms) => new Date(ms + TZ).toISOString().slice(0, 10);
+// v30: игровой день с 4:00 (как на сайте)
+const D4_FROM = Date.UTC(2026, 10, 22, 23);
+const dayOf = (ms) => new Date(ms + TZ - (ms >= D4_FROM ? 4 * 3600e3 : 0)).toISOString().slice(0, 10);
 const str = (v, n) => (typeof v === "string" ? v.replace(/\s+/g, " ").trim().slice(0, n) : "");
 const AB = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const rnd = (n, abc = "abcdefghijklmnopqrstuvwxyz0123456789") => { let s = ""; const r = crypto.getRandomValues(new Uint8Array(n)); for (const x of r) s += abc[x % abc.length]; return s; };

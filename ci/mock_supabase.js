@@ -39,7 +39,16 @@
           if (/^g\/[^/]+\/chat\//.test(r.path)) {
             const pl = docs["pl/" + M.myUid()] || {};
             if (d.by !== M.myUid() || d.sys || !pl.gid || r.path.split("/")[1] !== pl.gid || r.path in docs) return { data: null, error: { code: "42501", message: "new row violates row-level security policy" } };
-            d = { by: M.myUid(), pid: pl.pid, n: pl.name || "", t: String(d.t || "").trim().slice(0, 500), at: Date.now() };
+            const imgs = Array.isArray(d.imgs) ? d.imgs.filter((x) => typeof x === "string").slice(0, 3) : [];
+            const t = String(d.t || "").trim().slice(0, 500);
+            if (!t && !imgs.length) return { data: null, error: { code: "P0001", message: "СИСТЕМА: сообщение от 1 до 500 символов." } };
+            d = { by: M.myUid(), pid: pl.pid, n: pl.name || "", t, ...(imgs.length ? { imgs } : {}), at: Date.now() };
+          }
+          // v30: реакции в чате (как триггер сервера): только свои, только участник группы
+          if (/^g\/[^/]+\/react\//.test(r.path)) {
+            const pl = docs["pl/" + M.myUid()] || {};
+            if (!pl.gid || r.path.split("/")[1] !== pl.gid || !r.path.endsWith("__" + M.myUid())) return { data: null, error: { code: "42501", message: "new row violates row-level security policy" } };
+            d = { m: String(d.m || ""), e: String(d.e || ""), by: M.myUid(), at: Date.now() };
           }
           if (/^q\/[^/]+\/meta\/prefs$/.test(r.path) && d.prof && typeof d.prof === "object") {
             const old = docs[r.path] && docs[r.path].prof && docs[r.path].prof.own;

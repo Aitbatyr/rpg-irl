@@ -355,6 +355,13 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 .news li::marker{color:var(--sys)}
 .ov.sheet{place-items:start center;overflow-y:auto}
 .ov .panel.sheetp{max-width:760px;width:100%;text-align:left;padding:18px;margin-block:8px 24px;display:flex;flex-direction:column;gap:10px}
+/* v30: верхняя полоса окна друга липкая, имя появляется плавно */
+#friendOv .ftop{position:sticky;top:calc(-1 * max(16px, env(safe-area-inset-top, 0px)));z-index:6;margin:-18px -18px 0;padding:calc(max(16px, env(safe-area-inset-top, 0px)) - 4px) 18px 12px;background:rgba(8,16,32,.94);backdrop-filter:blur(8px);border-bottom:1px solid transparent;transition:border-color .25s}
+#friendOv .ftop:has(#fName.on){border-bottom-color:var(--line)}
+#fName .fttl{display:inline-flex;align-items:center;gap:10px;font-size:15px;letter-spacing:.06em}
+#fName{opacity:0;transform:translateY(6px);transition:opacity .22s ease,transform .22s ease;pointer-events:none}
+#fName.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){#fName{transition:none;transform:none}}
 .fh{margin:8px 0 0;font:700 12px/1 var(--f-display);letter-spacing:.2em;text-transform:uppercase;color:var(--sys)}
 /* ---------- v8 ---------- */
 .plaques{display:flex;flex-wrap:wrap;gap:6px}
@@ -449,6 +456,7 @@ select:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus{bord
 .cm .hd{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .cm .who{font-weight:700;color:var(--fg)}
 .cm .tm{font:11px var(--f-mono);color:var(--muted)}
+.cm .cmdel{margin-left:auto;background:none;border:0;color:var(--dim);font-size:15px;line-height:1;padding:2px 6px;cursor:pointer}.cm .cmdel:hover{color:var(--bad,#ff6b6b)}
 .cm .tg{font:700 10px/1 var(--f-mono);padding:2px 5px;border:1px solid var(--line-soft);color:var(--muted)}
 .cm .tg.no{color:var(--bad);border-color:rgba(255,93,115,.5)}
 .cm .tg.yes{color:var(--ok);border-color:rgba(73,227,160,.5)}
@@ -1003,7 +1011,8 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 /* шапка профиля */
 .pfhero{padding:0;overflow:hidden}
 .pfbg{height:130px;position:relative;overflow:hidden;border-bottom:1px solid var(--line-soft)}
-.pftools{position:absolute;top:10px;right:10px;display:flex;gap:8px;z-index:2}
+.pftools{position:absolute;top:10px;right:10px;display:flex;align-items:stretch;gap:8px;z-index:2}
+.pftools .pfgear{height:auto;width:auto;aspect-ratio:1;font-size:16px} /* v30: шестерёнка ровно по высоте кнопки очков */
 .pfpts{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(124,243,255,.55);background:rgba(6,10,20,.7);padding:6px 11px;font:700 13px var(--f-display);color:#7cf3ff;cursor:pointer;font-variant-numeric:tabular-nums}
 .ph .pfpts{margin-left:auto;cursor:default}
 .pfgear{position:relative;width:36px;height:36px;border:1px solid var(--line);background:rgba(6,10,20,.7);color:var(--fg);font-size:18px;cursor:pointer;display:grid;place-items:center}
@@ -1318,15 +1327,11 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .gpend .acts{margin-top:8px}
 .gchat{display:flex;flex-direction:column;gap:10px;max-height:min(56vh,560px);overflow-y:auto;overflow-x:hidden;padding:16px 14px 6px 12px;overscroll-behavior:contain;scrollbar-width:none}
 .gchat::-webkit-scrollbar{display:none}
-.gmsg .h .slv{width:22px;height:22px;font-size:11px;margin-left:6px}
-.gmsg .h .slv::before{border-width:2px;box-shadow:0 0 6px var(--lc),inset 0 0 4px var(--lc)}
-.gmsg .h .slv.star>span{margin-top:2px}
 .gmsg{display:flex;gap:10px;align-items:flex-start}
 .gmsg .av{flex:none}
 .gmsg .pfavw.gcav{width:42px;height:42px;margin-top:4px}
 .gmsg .pfavw.gcav .pfav{width:38px;height:38px;font-size:16px;border-width:2px}
 .gmsg .gsp{width:42px;flex:none}
-.gmsg.cont{margin-top:-6px}
 .gmsg .grl{font:700 10px var(--f-mono);letter-spacing:.04em;color:var(--muted);margin-left:6px;white-space:nowrap}
 .gmsg .grl.lead{color:var(--gold)}.gmsg .grl.helper{color:var(--story)}
 .pc .groi{font-size:14px;margin-left:5px;vertical-align:1px}
@@ -1339,6 +1344,42 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 .gmsg.me{flex-direction:row-reverse}.gmsg.me .b{background:rgba(94,200,255,.1);border-color:var(--line)}.gmsg .h .gdel{margin-left:auto;padding-left:8px}.gmsg .gtm{white-space:nowrap;flex:none}.gmsg .h b{white-space:nowrap}
 .gmsg.sys{justify-content:center}.gmsg.sys p{font-size:12px;color:var(--muted);text-align:center;margin:0;border:1px dashed var(--line-soft);padding:4px 10px}
 .gday{align-self:center;font:700 10px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:4px 0}
+/* v30: сообщения как в Telegram: имя над серией, время внутри пузыря, реакции, фото */
+.gmsg .grun{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0;max-width:min(80%,520px)}
+.gmsg.me .grun{align-items:flex-end}
+.gwho{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;padding:0 2px 1px;white-space:nowrap;max-width:100%}.gwho b{color:var(--fg);overflow:hidden;text-overflow:ellipsis}
+.gwho .slv{width:22px;height:22px;font-size:11px;margin-left:6px}.gwho .slv::before{border-width:2px;box-shadow:0 0 6px var(--lc),inset 0 0 4px var(--lc)}.gwho .slv.star>span{margin-top:2px}
+.gb{position:relative;max-width:100%;min-width:64px;padding:6px 10px 6px;background:rgba(255,255,255,.05);border:1px solid var(--line-soft);border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s}
+.gmsg:not(.me) .gb:not(.f){border-top-left-radius:5px}.gmsg:not(.me) .gb:not(.l){border-bottom-left-radius:5px}
+.gmsg.me .gb:not(.f){border-top-right-radius:5px}.gmsg.me .gb:not(.l){border-bottom-right-radius:5px}
+.gmsg:not(.me) .gb.l{border-bottom-left-radius:5px}.gmsg.me .gb.l{border-bottom-right-radius:5px}
+.gmsg.me .gb{background:rgba(94,200,255,.13);border-color:rgba(94,200,255,.38)}
+.gb:hover{border-color:var(--line)}.gb.act,.gb:focus-visible{border-color:var(--sys);outline:none}
+.gb p{margin:0;font-size:14px;line-height:1.4;overflow-wrap:anywhere;white-space:pre-wrap}
+.gb .gtm{float:right;margin:7px -2px -3px 10px;font:500 10.5px/1 var(--f-mono);color:var(--dim);white-space:nowrap}
+.gb .gtm.solo{float:none;display:block;text-align:right;margin:4px 0 0}
+.gb .thumbs{margin:0 0 4px;gap:4px}.gb .thumbs img{width:auto;height:150px;max-width:min(240px,62vw);object-fit:cover;border-radius:10px;border:0;display:block}.gb.ph{padding:5px}
+.grcs{display:flex;flex-wrap:wrap;gap:4px}
+.grc{font:600 12px/1.6 var(--f-body,inherit);color:var(--fg);border:1px solid var(--line-soft);background:rgba(255,255,255,.05);border-radius:999px;padding:0 8px;cursor:pointer}
+.grc.on{border-color:var(--sys);background:rgba(94,200,255,.18)}span.grc{cursor:default}
+.gacts{display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:4px 6px;background:var(--panel-solid);border:1px solid var(--line);border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.45);animation:gmIn .15s ease-out}
+.gacts button{background:none;border:0;font-size:21px;line-height:1;padding:5px;cursor:pointer;border-radius:50%;transition:transform .12s}
+.gacts button:hover{transform:scale(1.18)}.gacts button[aria-pressed=true]{background:rgba(94,200,255,.22)}
+.gacts{flex-wrap:nowrap;width:max-content;max-width:calc(100vw - 40px)}
+.gacts .gdl{font-size:18px;margin-left:2px;border-left:1px solid var(--line-soft);border-radius:0 999px 999px 0;padding:5px 8px}
+.gacts .gdl:hover{background:rgba(255,107,107,.14)}
+.gsend .i{display:none}
+@media (max-width:520px){.gsend{width:44px;padding:0;font-size:16px}.gsend .t{display:none}.gsend .i{display:inline}.gacts button{font-size:19px;padding:4px}}
+@media (prefers-reduced-motion:reduce){.gacts{animation:none}.gacts button:hover{transform:none}}
+.gcin{align-items:center}
+.gcb{flex:none;width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--line-soft);background:transparent;color:var(--fg);font-size:18px;cursor:pointer}
+.gcb:hover,.gcb[aria-expanded=true]{border-color:var(--sys);background:rgba(94,200,255,.1)}.gcb[hidden]{display:none}
+.gemo{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:2px;margin-top:10px;padding:8px;border:1px solid var(--line);background:var(--panel-solid);max-height:168px;overflow-y:auto;overscroll-behavior:contain}
+.gemo[hidden]{display:none}.gemo button{font-size:22px;line-height:1;background:none;border:0;padding:6px 0;cursor:pointer;border-radius:8px}.gemo button:hover{background:rgba(94,200,255,.12)}
+.gcup:empty{display:none}.gcup{margin-top:10px}.gcup .thumbs{display:flex;gap:6px}
+/* v30: режим чата на весь экран, страница не листается */
+html.chatmode,html.chatmode body{overflow:hidden;overscroll-behavior:none}
+html.chatmode .gchat{max-height:none}
 .gdel{background:none;border:0;color:var(--dim);cursor:pointer;font-size:14px;line-height:1;padding:0 2px;opacity:.6}.gdel:hover{color:var(--bad);opacity:1}
 .gcin{display:flex;gap:8px;margin-top:12px}.gcin input{flex:1;min-width:0}
 .gbox .gcardh{display:flex;gap:14px;align-items:center}
@@ -1578,7 +1619,9 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
     <section class="panel" aria-labelledby="gcT">
       <div class="ph"><h2 class="ptitle" id="gcT">Чат группы</h2><span class="sub">последние 2 недели</span></div>
       <div class="gchat" id="gChat"></div>
-      <form class="gcin" id="gChatForm" autocomplete="off"><input type="text" id="gChatIn" maxlength="500" placeholder="Сообщение группе…" aria-label="Сообщение группе"><button class="btn sm" type="submit">Отправить</button></form>
+      <div class="gcup" id="gChatUp"></div>
+      <div class="gemo" id="gEmo" hidden role="group" aria-label="Смайлы"></div>
+      <form class="gcin" id="gChatForm" autocomplete="off"><label class="gcb" id="gAtt" title="Прикрепить фото" aria-label="Прикрепить фото"><input type="file" accept="image/*" multiple data-up="gchat" hidden>📎</label><button type="button" class="gcb" data-act="gemo" aria-label="Смайлы" aria-expanded="false">🙂</button><input type="text" id="gChatIn" maxlength="500" placeholder="Сообщение…" aria-label="Сообщение группе"><button class="btn sm gsend" type="submit" aria-label="Отправить"><span class="t">Отправить</span><span class="i" aria-hidden="true">➤</span></button></form>
     </section>
     </div>
     <div class="gsub" data-sub="ver" hidden>
@@ -1587,18 +1630,15 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
       <div id="verify" style="display:flex;flex-direction:column;gap:10px"></div>
     </section>
     <section class="panel" id="verEmpty" hidden><p class="hint" style="margin:0">Голосовать сейчас не за что. Крупные квесты и споры друзей появятся здесь.</p></section>
+    <section class="panel" id="talkPanel" hidden aria-labelledby="tkT">
+      <div class="ph"><h2 class="ptitle" id="tkT">💬 Идут споры</h2><span class="sub" id="talkSub"></span></div>
+      <div id="talk" style="display:flex;flex-direction:column;gap:10px"></div>
+    </section>
     <section class="panel" id="revPanel" aria-labelledby="rvT">
       <div class="ph"><h2 class="ptitle" id="rvT">Лента друзей</h2><span class="sub" id="rvSub">оспорить можно в течение суток</span></div>
       <div class="rvf" id="rvF" role="group" aria-label="Фильтр ленты"></div>
       <div id="rev" class="rvl"></div>
     </section>
-    </div>
-    <div class="gsub" data-sub="talk" hidden>
-    <section class="panel" id="talkPanel" hidden aria-labelledby="tkT">
-      <div class="ph"><h2 class="ptitle" id="tkT">💬 Обсуждения</h2><span class="sub" id="talkSub"></span></div>
-      <div id="talk" style="display:flex;flex-direction:column;gap:10px"></div>
-    </section>
-    <section class="panel" id="talkEmpty"><p class="hint" style="margin:0">Обсуждений пока нет. Комментарии к твоим квестам, дневнику и стене профиля собираются здесь.</p></section>
     </div>
   </div>
 
@@ -1633,7 +1673,7 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
         <div><span class="lbl">Привычка</span><span>без времени: 3 / 5 / 10 XP, не больше 5 в день · у дня 16 ч</span></div>
         <div><span class="lbl">Проверка</span><span>большинство друзей; через 48 ч решают проголосовавшие: «да» больше = засчитано, иначе (и при ничьей) отклонено</span></div>
         <div><span class="lbl">Охотник</span><span>E 1–4 · D 5–9 · C 10–14 · B 15–19 · A 20–29 · S 30+ уровень</span></div>
-        <div><span class="lbl">День</span><span>по времени сервера (UTC+5), провал — после полуночи</span></div>
+        <div><span class="lbl">День</span><span>по времени сервера (UTC+5), начинается в 4:00, провал после 4 утра</span></div>
       </div>
       <div class="gtabs" role="tablist" aria-label="Уровень гайда">
         <button type="button" class="chip" data-act="glvl" data-l="1" id="gl-1">1 · Быстрый старт</button>
@@ -1691,7 +1731,7 @@ html.yr-lock,html.yr-lock body{overflow:hidden}
 <div id="pfOv" class="ov sheet" hidden><div class="panel sheetp" role="dialog" aria-modal="true" aria-label="Профиль" id="pfBox"></div></div>
 <div id="friendOv" class="ov sheet" hidden>
   <div class="panel sheetp" role="dialog" aria-modal="true" aria-labelledby="fName">
-    <div class="ph"><h2 class="ptitle" id="fName">Профиль</h2><button type="button" class="btn sm ghost" data-act="fclose" aria-label="Закрыть">Закрыть ×</button></div>
+    <div class="ph ftop"><h2 class="ptitle" id="fName" aria-live="off"></h2><button type="button" class="btn sm ghost" data-act="fclose" aria-label="Закрыть">Закрыть ×</button></div>
     <div class="gseg fseg" id="fSeg" role="group" aria-label="Раздел профиля друга"></div>
     <div class="fsub" data-fs="q">
     <div id="fNudge"></div>
@@ -1797,7 +1837,7 @@ function planStepsOn(pid, d, except, doneOnly) {
 const dayUsed = (pid, d, except) => dayTasks(pid, d, except).reduce((a, t) => a + t.m, 0) + planStepsOn(pid, d, except).m;
 const dayHabits = (pid, d, except) => dayTasks(pid, d, except).filter((t) => t.m === 0).length + planStepsOn(pid, d, except).h;
 const dayDoneMin = (pid, d, except) => dayTasks(pid, d, except).filter((t) => t.done).reduce((a, t) => a + t.m, 0) + planStepsOn(pid, d, except, true).m;
-const sinceSix = () => Math.floor(((now() + TZ) % 864e5) / 6e4) - 360; // минут с 6:00 сегодня (до 6 утра меньше нуля)
+const sinceSix = () => Math.floor((now() - (toUTC(today()) - TZ + DAY_H * 3600e3)) / 6e4); // v30: минут с 4:00 игрового дня (честные часы)
 // необычный день: больше 10 ч задач или опыт вдвое выше обычного за 14 дней
 function oddDay(pid, d, p) {
   const doneMin = (tasksBy[pid] || []).filter((t) => t.date === d && isNewQ(t) && countsTask(t)).reduce((a, t) => a + t.m, 0);
@@ -1845,7 +1885,12 @@ const ymd = (d) => d.getUTCFullYear() + "-" + pad(d.getUTCMonth() + 1) + "-" + p
 const TEST_MODE = false;
 let offset = 0, clockOk = false, clockTried = false, testShift = 0;
 const now = () => Date.now() + offset + testShift * 864e5;
-const dayOf = (ms) => ymd(new Date(ms + TZ));
+// v30: игровой день начинается в 4:00 (кто засиделся после полуночи, ещё во вчерашнем дне). Действует с 23 ноя 04:00,
+// всё раньше по-старому (календарная полночь), чтобы история не сдвинулась.
+const DAY_H = 4, D4_FROM = Date.UTC(2026, 10, 22, 23);
+const dayOf = (ms) => ymd(new Date(ms + TZ - (ms >= D4_FROM ? DAY_H * 3600e3 : 0)));
+const calDayOf = (ms) => ymd(new Date(ms + TZ)); // календарный день: подписи в чате, «был в сети»
+const calToday = () => calDayOf(now());
 const today = () => dayOf(now());
 const toUTC = (s) => { const [y, m, d] = s.split("-").map(Number); return Date.UTC(y, m - 1, d); };
 const addDays = (s, n) => ymd(new Date(toUTC(s) + n * 864e5));
@@ -1998,7 +2043,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 29;
+const APP_VERSION = 30;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -2012,7 +2057,7 @@ const profCache = new Map();
 // prefs.offDays = [{ d: "2026-11-12", at: время объявления }]. Засчитывается, только если объявлен заранее
 // или в тот же день до первой отметки; не больше 2 в месяц (первые по времени объявления). Проверяет каждый клиент.
 const OFF_PER_MONTH = 2;
-const dayStart = (d) => toUTC(d) - 5 * 3600e3;
+const dayStart = (d) => { const b = toUTC(d) - TZ; return b >= D4_FROM ? b + DAY_H * 3600e3 : b; }; // v30: начало игрового дня
 const offCache = new Map();
 function offSet(pid) {
   if (offCache.has(pid)) return offCache.get(pid);
@@ -2039,6 +2084,15 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 30, date: "2026-11-23", title: "Чат как в мессенджере", items: [
+    "Новый день начинается в 4:00 утра: засиделся после полуночи, спокойно отмечай свои квесты. Честные часы тоже считаются от 4:00.",
+    "Чат: сообщения как в Telegram (имя над серией, время внутри), фото (📎), смайлы (🙂) и реакции: нажми на сообщение друга. Там же удаление.",
+    "Чат на телефоне занимает весь экран: листаются только сообщения, поле ввода внизу.",
+    "Вкладки «Обсуждения» больше нет. Споры по квестам в «Проверке» (блок «Идут споры»), комментарии к дневнику и стене под записью: о новых скажут цифра на «Дневнике» и точка на «Профиле».",
+    "Комментарии можно удалять: свои, лидер любые в группе, помощник комментарии участников. Защита от спама: не больше 8 в минуту.",
+    "Окно друга: имя сверху появляется, когда листаешь профиль вниз. Шестерёнка в профиле ровно по высоте с кнопкой очков.",
+    "Вечернее напоминание учитывает и этапы сюжетных квестов.",
+  ] },
   { v: 29, date: "2026-11-22", title: "Удобная проверка", items: [
     "Группа → Проверка: сверху то, где нужен твой голос, ниже «Лента друзей»: все квесты друзей за сутки, пока их можно оспорить. «Оспорить» и комментарии прямо в ленте, заходить в профиль не нужно.",
     "Подсказки «на что посмотреть»: квест на несколько часов создан и отмечен за минуты, отметки пачкой, долгий квест без фото, необычно много за день. Это не обвинение, а повод глянуть внимательнее.",
@@ -2760,7 +2814,7 @@ function linkLabel(t) {
 // ---------- photos, comments, online ----------
 const MAX_IMGS = 3, CMT_MAX = 300;
 const pendImgs = {}, upBusy = {}, drafts = {}, droppedBy = {};
-let dispOpen = null, cmtBase = null, online = new Set(), awayAt = new Map(), votesVer = 0, tiVer = -1, tiCache = new Map();
+let verifyKeys = new Set(), dispOpen = null, cmtBase = null, online = new Set(), awayAt = new Map(), votesVer = 0, tiVer = -1, tiCache = new Map();
 const san = (x) => String(x).replace(/[^A-Za-z0-9_-]/g, "_");
 const imgIds = (a) => (Array.isArray(a) ? a.filter((x) => typeof x === "string" && /^[A-Za-z0-9_-]{6,80}$/.test(x)).slice(0, MAX_IMGS) : []);
 const draftVal = (k, def) => esc(drafts[k] != null ? drafts[k] : def || "");
@@ -2816,7 +2870,7 @@ function threadIndex() {
   for (const p of PLAYERS) for (const x of votesBy[p.id] || []) {
     if (!x || typeof x.owner !== "string" || typeof x.task !== "string") continue;
     const at = num(x.at), text = (typeof x.text === "string" ? x.text : typeof x.note === "string" ? x.note : "").slice(0, CMT_MAX);
-    if (x.kind === "comment" && ["task", "story", "step", "diary", "wall"].includes(x.ik)) { if (text || imgIds(x.imgs).length) push(x.ik + ":" + x.owner + ":" + x.task, { by: p.id, at, text, imgs: x.imgs, tag: "" }); }
+    if (x.kind === "comment" && ["task", "story", "step", "diary", "wall"].includes(x.ik)) { if (text || imgIds(x.imgs).length) push(x.ik + ":" + x.owner + ":" + x.task, { by: p.id, at, text, imgs: x.imgs, tag: "", cid: x._id }); }
     else if (x.kind === "dispute" && text) push("task:" + x.owner + ":" + x.task, { by: p.id, at, text, tag: "оспорил", cls: "no" });
     else if (x.kind === "sdispute" && text) push("step:" + x.owner + ":" + x.task, { by: p.id, at, text, tag: "оспорил", cls: "no" });
     else if ((x.kind === "task" || x.kind === "story" || x.kind === "step") && text && (x.vote === "yes" || x.vote === "no")) push(x.kind + ":" + x.owner + ":" + x.task, { by: p.id, at, text, tag: x.vote === "yes" ? "да" : "нет", cls: x.vote });
@@ -2832,23 +2886,33 @@ function threadItem(ik, owner, id) {
   const [sid, si] = id.split("~"), s = storyOf(owner, sid), i = num(si);
   return s && (s.kind === "steps" || isPlan(s)) && s.steps[i] ? { title: s.steps[i].t + " · " + s.title, open: stepState(s, i) === "disputed" } : null;
 }
-const cmtSeen = () => (cmtBase != null ? cmtBase : num(prefs.cmtSeen));
+// v30: непрочитанные комментарии по группам: q споры квестов (вкладка «Проверка»), d дневник, w стена профиля
+const CG = (ik) => (ik === "diary" ? "d" : ik === "wall" ? "w" : "q");
+const CSK = { q: "cmtSeen", d: "cmtSeenD", w: "cmtSeenW" };
+const cSeenOf = (g) => num(prefs[CSK[g]] != null ? prefs[CSK[g]] : prefs.cmtSeen);
+let cmtBases = {};
+const cmtSeen = (ik) => { const g = CG(ik); return cmtBases[g] != null ? cmtBases[g] : cSeenOf(g); };
+// v30: удалить комментарий: свой; лидер любой в группе; помощник комментарии обычных участников (так же проверяет база)
+const cmtCanDel = (pid) => { if (!canWrite || !me) return false; if (pid === me) return true; if (!PLAYERS.some((p) => p.id === pid)) return false; const r = gRole(me); return r === "lead" || (r === "helper" && (gRole(pid) || "member") === "member"); };
+function markCmts(g) { if (prefsLoaded && unreadCmts(g) > 0) writePrefs({ [CSK[g]]: now() }); }
 function threadHtml(ik, owner, id, open, loc, compose) {
   const k = ik + ":" + owner + ":" + id, ents = threadIndex().get(k) || [];
   const canPost = compose !== false && open && meActive() && canWrite && (ents.length > 0 || owner !== me);
   if (!ents.length && !canPost) return "";
-  const seen = cmtSeen();
-  const rows = ents.map((e) => '<div class="cm' + (e.by !== me && e.at > seen ? " new" : "") + '"><div class="hd">' + avaHtml(e.by, "xs") + '<span class="who">' + esc(e.by === me ? "Ты" : pname(e.by)) + "</span>" + (e.tag ? '<span class="tg ' + (e.cls || "") + '">' + e.tag + "</span>" : "") + '<span class="tm">' + bugTime(e.at) + "</span></div>" + (e.text ? "<div>" + esc(e.text) + "</div>" : "") + thumbsHtml(e.imgs) + "</div>").join("");
+  const seen = cmtSeen(ik);
+  const rows = ents.map((e) => '<div class="cm' + (e.by !== me && e.at > seen ? " new" : "") + '"><div class="hd">' + avaHtml(e.by, "xs") + '<span class="who">' + esc(e.by === me ? "Ты" : pname(e.by)) + "</span>" + (e.tag ? '<span class="tg ' + (e.cls || "") + '">' + e.tag + "</span>" : "") + '<span class="tm">' + bugTime(e.at) + "</span>" + (e.cid && cmtCanDel(e.by) ? '<button type="button" class="cmdel" data-act="cdelc" data-p="' + esc(e.by) + '" data-id="' + esc(e.cid) + '" title="Удалить комментарий" aria-label="Удалить комментарий">×</button>' : "") + "</div>" + (e.text ? "<div>" + esc(e.text) + "</div>" : "") + thumbsHtml(e.imgs) + "</div>").join("");
   const dk = "c:" + k, inp = "ci-" + loc + "-" + san(k);
   const form = canPost ? '<div class="cin"><input type="text" id="' + inp + '" data-draft="' + esc(dk) + '" maxlength="' + CMT_MAX + '" placeholder="' + (owner === me ? "Ответить друзьям…" : "Комментарий…") + '" value="' + draftVal(dk) + '" aria-label="Комментарий"><button class="btn sm ghost" data-act="cpost" data-k="' + esc(k) + '" data-inp="' + inp + '">Отправить</button></div>' + uploaderHtml(dk) : "";
   return '<div class="thr">' + (ents.length ? '<div class="lbl">💬 ОБСУЖДЕНИЕ · ' + ents.length + "</div>" + rows : "") + form + (open ? "" : '<span class="hint">Итог подведён, обсуждение закрыто.</span>') + "</div>";
 }
-function unreadCmts() {
+function unreadCmts(g) {
   if (!me) return 0;
   if (!prefsLoaded) return 0;
-  const seen = num(prefs.cmtSeen); let n = 0;
+  let n = 0;
   threadIndex().forEach((ents, k) => {
-    const owner = k.split(":")[1];
+    const [ik, owner] = k.split(":"), kg = CG(ik);
+    if (g && kg !== g) return;
+    const seen = cSeenOf(kg);
     if (owner !== me && !ents.some((e) => e.by === me)) return;
     n += ents.filter((e) => e.by !== me && e.at > seen).length;
   });
@@ -2905,19 +2969,19 @@ function renderTalk() {
   const out = [];
   threadIndex().forEach((ents, k) => {
     const [ik, owner, ...rest] = k.split(":"), id = rest.join(":");
-    if (owner !== me && !ents.some((e) => e.by === me)) return;
-    const ti = threadItem(ik, owner, id); if (!ti) return;
+    if (!["task", "story", "step"].includes(ik) || verifyKeys.has(k)) return; // v30: здесь только идущие споры, голосование выше
+    if (owner !== me && !ents.some((e) => e.by === me) && !PLAYERS.some((p) => p.id === owner)) return;
+    const ti = threadItem(ik, owner, id); if (!ti || !ti.open) return;
     const last = ents[ents.length - 1].at;
-    if (!ti.open && now() - last > 3 * 864e5) return;
     out.push({ ik, owner, id, ti, last });
   });
   out.sort((a, b) => b.last - a.last);
   panel.hidden = !out.length;
-  const un = unreadCmts();
+  const un = unreadCmts("q");
   $("talkSub").innerHTML = un ? '<b class="tnew">' + un + " " + plCmt(un) + "</b>" : plDn(out.length, "обсуждение", "обсуждения", "обсуждений");
-  setHtml("talk", out.slice(0, 12).map((o) => '<div class="vi"><p class="sub talkh"><span>' + (o.ik === "wall" ? (o.owner === me ? "Твоя стена" : "Стена · <b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b>") : (o.owner === me ? (o.ik === "diary" ? "Твоя" : "Твой") : "<b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b> ·") + " " + (o.ik === "step" ? "этап" : o.ik === "story" ? "сюжетный квест" : o.ik === "diary" ? "запись в дневнике" : "квест") + " «" + esc(o.ti.title) + "»") + '</span><button type="button" class="tgo" data-act="talkgo" data-ik="' + o.ik + '" data-p="' + esc(o.owner) + '" data-id="' + esc(o.id) + '" title="Показать, где это">открыть →</button></p>' + threadHtml(o.ik, o.owner, o.id, o.ti.open, "t") + "</div>").join(""));
-  const tOpen = gSub === "talk";
-  if (tab === "party" && un > 0 && tOpen && !document.hidden) { writePrefs({ cmtSeen: now() }); $("talkSub").textContent = plDn(out.length, "обсуждение", "обсуждения", "обсуждений"); renderBadges(); }
+  setHtml("talk", out.slice(0, 20).map((o) => '<div class="vi"><p class="sub talkh"><span>' + (o.ik === "wall" ? (o.owner === me ? "Твоя стена" : "Стена · <b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b>") : (o.owner === me ? (o.ik === "diary" ? "Твоя" : "Твой") : "<b style=\"color:var(--fg)\">" + esc(pname(o.owner)) + "</b> ·") + " " + (o.ik === "step" ? "этап" : o.ik === "story" ? "сюжетный квест" : o.ik === "diary" ? "запись в дневнике" : "квест") + " «" + esc(o.ti.title) + "»") + '</span><button type="button" class="tgo" data-act="talkgo" data-ik="' + o.ik + '" data-p="' + esc(o.owner) + '" data-id="' + esc(o.id) + '" title="Показать, где это">открыть →</button></p>' + threadHtml(o.ik, o.owner, o.id, o.ti.open, "t") + "</div>").join(""));
+  const tOpen = gSub === "ver";
+  if (tab === "party" && un > 0 && tOpen && !document.hidden) { markCmts("q"); $("talkSub").textContent = plDn(out.length, "обсуждение", "обсуждения", "обсуждений"); renderBadges(); }
 }
 function droppedHtml(pid) {
   const a = (droppedBy[pid] || []).filter((x) => now() - num(x.deletedAt) <= 7 * 864e5);
@@ -3772,7 +3836,7 @@ async function plAct(b, act) {
       if (x.m > 0 && dayUsed(me, today(), key) + x.m > DAY_MIN) { toast("Сегодня уже нет места: в день не больше 16 ч квестов и шагов."); return true; }
       if (x.m === 0 && dayHabits(me, today(), key) >= HABITS_MAX) { toast("Привычек сегодня уже 5."); return true; }
     }
-    if (x.m > 0) { const lim = sinceSix(), dm = dayDoneMin(me, today(), key); if (dm + x.m > lim) { toast("С 6:00 прошло " + fmtHM(lim) + ", а выполнено уже " + fmtHM(dm) + ". Шаг на " + fmtMin(x.m) + " можно отметить позже.", "ЧЕСТНЫЕ ЧАСЫ"); return true; } }
+    if (x.m > 0) { const lim = sinceSix(), dm = dayDoneMin(me, today(), key); if (dm + x.m > lim) { toast("С 4:00 прошло " + fmtHM(lim) + ", а выполнено уже " + fmtHM(dm) + ". Шаг на " + fmtMin(x.m) + " можно отметить позже.", "ЧЕСТНЫЕ ЧАСЫ"); return true; } }
     const moved = x.d !== today();
     steps[i] = { ...steps[i], d: today(), done: true, doneAt: now() };
     const fin = allDone(steps), xp = plStepXp(x);
@@ -3934,7 +3998,7 @@ function dWeekHtml() {
 }
 function renderDiary() {
   const nc = dNewCount();
-  const b = $("diaryBadge"); if (b) { b.hidden = !nc; b.textContent = nc; }
+  const dc = unreadCmts("d"), b = $("diaryBadge"); if (b) { b.hidden = !(nc + dc); b.textContent = nc + dc; }
   const fb = $("dFrBadge"); if (fb) { fb.hidden = !nc; fb.textContent = nc; }
   document.querySelectorAll("[data-act=dview]").forEach((x) => x.setAttribute("aria-pressed", x.dataset.v === dView));
   if (tab !== "diary") return;
@@ -5281,6 +5345,7 @@ function renderVerify() {
   q.sort((a, b) => (a.it.submittedAt || 0) - (b.it.submittedAt || 0));
   panel.hidden = q.length === 0;
   verifyCount = q.length;
+  verifyKeys = new Set(q.map(({ kind, it }) => kind + ":" + it.player + ":" + it.id));
   $("vCount").textContent = q.length ? q.length + " ждут твоего голоса" : "";
   setHtml("verify", q.map(({ kind, it, round, story }) => {
     const stat = statOf(it.stat);
@@ -5371,8 +5436,8 @@ const GUIDE = [
   { id: "b-prof", l: 2, t: "Профиль, магазин и награды", b: "<p><b>Профиль</b> как в Steam: фон, рамка аватарки, значок уровня, статус и «О себе». Ниже витрины: ачивки (выбираешь до 6), любимый квест, текущий сюжет, статистика, недавняя активность за 2 недели, дневник (только открытые записи), награды и стена. «✎ Изменить профиль»: статус, о себе, какие витрины показывать и в каком порядке.</p><p><b>Очки 💠</b> копятся вместе с опытом: 1 XP = 1 очко. В <b>магазине</b> на них покупаются фоны, рамки и форма значка уровня. Покупка тратит только очки, опыт и уровень не меняются. Цвет значка показывает уровень (меняется каждые 10 уровней) и не продаётся. Вещи с 🏆 открываются только ачивкой: фоны Гроза (Две недели), Восход (Идеальный день), Космос (Сотня), рамки Огненная (Железная воля), Хрусталь (Без провалов), Корона (Легенда), значок Звезда (Сюжет пройден).</p><p><b>Профиль друга</b> открывается в «Пати» по нажатию на него. Там можно написать на <b>стене</b> и <b>наградить</b> 🔥 💪 🧠 🎯 🌙 🤝: награда стоит 100 очков, одному другу одна в день, и навсегда остаётся у него на профиле.</p><p>Фоны и рамки <b>живые</b>: рисуются кодом прямо на устройстве и двигаются за мышкой или пальцем. В магазине сверху <b>примерка</b>: нажми на картинку вещи, и она сразу появится на тебе. Остановить анимацию: ⚙ Настройки → «Оформление» → «Живой фон».</p><p><b>Уборы</b>: головной убор поверх аватарки, раздел «Уборы» в магазине. <b>Цвет сайта</b> подстраивается под твой фон профиля, а в профиле друга под его фон. Выключается в «Оформлении».</p>", v: 27 },
   { id: "b-link", l: 2, t: "Шаги на ходу и лимит дня", b: "<p>Пока срок не вышел, шаги можно менять: дату и время у несделанных, добавлять новые, убирать лишние (×). Убранный шаг уходит в «Убрано»: опыта за него нет, бонус меньше, друзья видят «убрано N». Его можно вернуть. Последний шаг убрать нельзя. Сделанный шаг под замком 🔒.</p><p>Лимит дня общий: <b>16 часов и 5 привычек</b> на квесты дня, повторы и шаги сюжетов вместе. Шаг без даты день не занимает, пока не отметишь его или не поставишь дату. Честные часы действуют и для шагов.</p><p>Привязка квеста дня к сюжету (плашка «сюжет») осталась только у старых квестов: новым она не нужна.</p>", v: 22 },
   { id: "b-verify", l: 2, t: "Проверка друзьями", b: "<p>Ежедневные квесты друзья не проверяют, их можно только <b>оспорить</b> в течение суток. На проверку уходит <b>сюжетный квест</b>: сам, когда сделаны все шаги (и старые крупные B, A, S, отправленные до v18). Фото или пояснение для друзей добавь в обсуждении под квестом. У друзей появляется запрос во вкладке «Пати» и цифра на вкладке.</p><p>Засчитано, если <b>большинство</b> друзей сказали «да» (при 2 друзьях оба, при 3 двое, при 4 трое), или если есть хотя бы одно «да», ни одного «нет» и прошло <b>48 часов</b>. Зеркально: одно или больше «нет», ни одного «да» и 48 часов, и квест отклонён. Если «нет» сказали столько, что большинства уже не набрать, квест отклонён, его можно отправить снова.</p>", v: 22 },
-  { id: "b-talk", l: 2, t: "Комментарии и обсуждения", b: "<p>Под квестом на проверке или в споре есть <b>обсуждение</b>: друзья спрашивают, ты отвечаешь, можно с фото. Когда итог подведён, переписка остаётся, но писать туда уже нельзя.</p><p>Голосуя, можно оставить комментарий. К «Не засчитывать» он обязателен, к «Подтверждаю» по желанию. «Спросить» отправляет вопрос без голоса. «Оспорить» тоже требует причину.</p><p>Все твои обсуждения собраны во вкладке «Пати» в разделе «Обсуждения». Новые комментарии видны цифрой на вкладке и в плашке на «Сегодня».</p>", v: 11 },
-  { id: "b-cap", l: 2, t: "Защита от накрутки", b: "<p><b>Честные часы</b>: выполненного времени за сегодня не больше, чем прошло с 6:00. В 10 утра можно отметить максимум 4 часа задач. Планировать можно на все 16 часов, отмечай по мере выполнения. Привычки «без времени» можно отмечать когда угодно.</p><p><b>Замок 🔒</b>: у выполненного квеста нельзя поменять время, сложность и «нравится». Сними галочку, поправь и отметь заново.</p><p><b>Прозрачность</b>: друзья видят у каждого квеста время, сложность и 👎. Если за день больше 10 часов задач или опыт вдвое выше обычного (среднего за 14 дней), на карточке появится <b>«⚠ необычно много»</b>. Это не запрет, а повод присмотреться и, если что, оспорить.</p><p><b>Сервер</b> сам отклоняет невозможное: больше 16 часов или 5 привычек за день, неизвестные значения, отметку раньше честных часов.</p><p>Всё это действует и для <b>шагов сюжетных квестов</b>: лимит дня общий, сделанный шаг под замком, отметить можно только сегодняшним днём.</p><p>Лимита мелочи (150 XP в день) больше нет. До 14 ноября он действовал, прошлый опыт не менялся.</p>", v: 22 },
+  { id: "b-talk", l: 2, t: "Комментарии и обсуждения", b: "<p>Под квестом на проверке или в споре есть <b>обсуждение</b>: друзья спрашивают, ты отвечаешь, можно с фото. Когда итог подведён, переписка остаётся, но писать туда уже нельзя.</p><p>Голосуя, можно оставить комментарий. К «Не засчитывать» он обязателен, к «Подтверждаю» по желанию. «Спросить» отправляет вопрос без голоса. «Оспорить» тоже требует причину.</p><p>Споры по квестам друзей во вкладке «Группа» → <b>Проверка</b>: сверху то, где нужен твой голос, ниже «Идут споры», там можно дописать и после голосования. Комментарии к дневнику и стене остаются под записью: о новых скажет цифра на вкладке «Дневник» и точка на «Профиле». Свой комментарий можно удалить, лидер удаляет любые в группе, помощник комментарии обычных участников.</p>", v: 30 },
+  { id: "b-cap", l: 2, t: "Защита от накрутки", b: "<p><b>День начинается в 4:00</b>: до 4 утра ещё идёт вчерашний день, так что если засиделся после полуночи, спокойно отмечай свои квесты.</p><p><b>Честные часы</b>: выполненного времени за день не больше, чем прошло с 4:00. В 8 утра можно отметить максимум 4 часа задач. Планировать можно на все 16 часов, отмечай по мере выполнения. Привычки «без времени» можно отмечать когда угодно.</p><p><b>Замок 🔒</b>: у выполненного квеста нельзя поменять время, сложность и «нравится». Сними галочку, поправь и отметь заново.</p><p><b>Прозрачность</b>: друзья видят у каждого квеста время, сложность и 👎. Если за день больше 10 часов задач или опыт вдвое выше обычного (среднего за 14 дней), на карточке появится <b>«⚠ необычно много»</b>. Это не запрет, а повод присмотреться и, если что, оспорить.</p><p><b>Сервер</b> сам отклоняет невозможное: больше 16 часов или 5 привычек за день, неизвестные значения, отметку раньше честных часов.</p><p>Всё это действует и для <b>шагов сюжетных квестов</b>: лимит дня общий, сделанный шаг под замком, отметить можно только сегодняшним днём.</p><p>Лимита мелочи (150 XP в день) больше нет. До 14 ноября он действовал, прошлый опыт не менялся.</p>", v: 30 },
   { id: "b-level", l: 2, t: "Уровень, характеристики, класс", b: "<p>Уровень растёт от общего опыта, каждый следующий дороже на 25 XP. <b>Ранг охотника</b>: E (1–4), D (5–9), C (10–14), B (15–19), A (20–29), S (30+).</p><p>Опыт квеста идёт в его характеристику: СИЛ, ИНТ, ВОЛ, ХАР, ТВР, ФИН. <b>Класс</b> — две самые прокачанные, например «Мудрец-Воин».</p>" },
   { id: "b-streak", l: 2, t: "Серия, неделя и ачивки", b: "<p><b>Серия</b> — дни подряд хотя бы с одним засчитанным квестом. <b>Неделя</b> в «Пати» — опыт каждого за 7 дней и места. <b>Ачивки</b> во вкладке «Профиль» выдаются сами за серии, идеальные дни, крупные квесты и сотню выполненных; дают немного опыта.</p>" },
   { id: "b-edit", l: 2, t: "Правка, перенос, удаление", b: "<p>Нажми на название невыполненного сегодняшнего квеста — можно поменять название, характеристику, время, сложность и «нравится». Выполненный сначала разотметь. Удалить (×) можно только квест, созданный сегодня.</p><p>«На сегодня» у проваленного создаёт копию на сегодня (если хватает свободного времени), а провал остаётся в своём дне.</p>", v: 18 },
@@ -5388,7 +5453,7 @@ const GUIDE = [
   { id: "d-pace", l: 3, t: "Срок, продление и закрытие сюжета", b: "<p>Срок задаётся при создании и потом не меняется. Если срок вышел, а шаги не все сделаны, остаются две кнопки: <b>«Продлить»</b> (на неделю или на 2 недели, не позже 31 декабря) или <b>«Закрыть без бонуса»</b> (опыт за сделанные шаги остаётся).</p><p>Продлевать можно сколько угодно. Каждое продление уменьшает вдвое бонус только за <b>уже сделанные</b> шаги, за оставшиеся бонус полный. Поэтому бросить и создать квест заново невыгодно: за сделанное бонуса не будет совсем. Цифры видны в карточке. После срока шаги менять и убирать нельзя.</p><p>Пока ни один друг не проголосовал, квест можно «Вернуть с проверки», чтобы добавить шаги. Если друзья не засчитали: «Отправить снова» или «Вернуть в работу». Удалить квест можно, пока в нём нет сделанных шагов.</p><p>Старые квесты (с буквами B, A, S) переводятся окном «Сюжет по новым правилам»: сделанные этапы остаются по 10 XP, остальным ставишь день и время.</p>", v: 22 },
   { id: "d-rankhint", l: 3, t: "Подсказка времени", b: "<p>Когда пишешь название, сайт ищет похожие квесты в истории группы и подсказывает, сколько времени для них обычно ставят, например «обычно на 30 мин (Английский ×12)», с кнопкой «Поставить». Подсказка ничего не запрещает.</p>", v: 18 },
   { id: "d-join", l: 3, t: "Группы: создать, вступить, роли", b: "<p>В Системе играют <b>группами</b>. Любой может создать группу и стать её <b>лидером</b>. Лидер зовёт друзей и знакомых по <b>ссылке-приглашению</b> (⚙ Управление → Пригласить): друг открывает ссылку, называет себя и отправляет заявку, а лидер или помощник её принимает. Новая ссылка отключает старую.</p><p>Роли: <b>👑 Лидер</b> может всё (роли, оформление, передать лидерство), <b>⭐ Помощник</b> принимает заявки и исключает участников, проверяют квесты все. Игрок бывает только в одной группе. Лидер выходит, только когда передал лидерство. Группы друг друга не видят и не соревнуются.</p><p>Опыт двух видов. <b>Общий</b> идёт с тобой в любую группу. <b>Опыт в группе</b> считается с момента вступления: по нему неделя, места и итоги, поэтому накрутить опыт в одной группе и прийти с ним в другую бесполезно.</p>", v: 28 },
-  { id: "d-party", l: 3, t: "Группа и профиль друга", b: "<p>Во вкладке «Группа» сверху шапка группы и ⚙, ниже переключатель: <b>Участники</b> (карточки и неделя), <b>Чат</b> (переписка группы за 2 недели; своё сообщение можно удалить, помощник удаляет и сообщения участников, лидер любые), <b>Проверка</b> и <b>Обсуждения</b> (у каждого обсуждения кнопка «открыть →»: покажет, к чему оно и чьё).</p><p><b>Проверка</b>: сверху квесты и споры, где нужен твой голос, ниже <b>«Лента друзей»</b>: все мелкие квесты друзей за сутки, пока их можно оспорить. Жёлтым подсвечено, на что стоит посмотреть (создан и отмечен за минуты, пачка отметок, долгий квест без фото, необычно много за день). Фильтры: все, «на что посмотреть», по другу. Новое с прошлого захода помечено, цифра на «Проверке» считает непросмотренное.</p><p>Нажми на друга, откроется окно: сверху широкая кнопка <b>Профиль</b> (открыт сразу), под ней <b>Квесты</b> (с кнопками «Оспорить») и <b>Сюжет</b>. Если друг сегодня не открывал сайт, там же кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление, одному другу раз в день.</p><p>Состояние друга как в Steam: <b style=\"color:var(--ok)\">● онлайн</b> сайт открыт на экране, <b style=\"color:var(--gold)\">● отошёл</b> сайт открыт, но свёрнут или 5 минут без действий, без точки «был …» значит не в сети.</p>", v: 29 },
+  { id: "d-party", l: 3, t: "Группа и профиль друга", b: "<p>Во вкладке «Группа» сверху шапка группы и ⚙, ниже переключатель: <b>Участники</b> (карточки и неделя), <b>Чат</b> (переписка группы за 2 недели; своё сообщение можно удалить, помощник удаляет и сообщения участников, лидер любые), <b>Проверка</b> (голосование, «Идут споры» с кнопкой «открыть →» к самой вещи и лента друзей). В чате можно прикреплять фото (📎), вставлять смайлы (🙂) и ставить реакции: нажми на чужое сообщение. Там же удаление.</p><p><b>Проверка</b>: сверху квесты и споры, где нужен твой голос, ниже <b>«Лента друзей»</b>: все мелкие квесты друзей за сутки, пока их можно оспорить. Жёлтым подсвечено, на что стоит посмотреть (создан и отмечен за минуты, пачка отметок, долгий квест без фото, необычно много за день). Фильтры: все, «на что посмотреть», по другу. Новое с прошлого захода помечено, цифра на «Проверке» считает непросмотренное.</p><p>Нажми на друга, откроется окно: сверху широкая кнопка <b>Профиль</b> (открыт сразу), под ней <b>Квесты</b> (с кнопками «Оспорить») и <b>Сюжет</b>. Если друг сегодня не открывал сайт, там же кнопка <b>«👊 Пнуть»</b>: ему придёт уведомление, одному другу раз в день.</p><p>Состояние друга как в Steam: <b style=\"color:var(--ok)\">● онлайн</b> сайт открыт на экране, <b style=\"color:var(--gold)\">● отошёл</b> сайт открыт, но свёрнут или 5 минут без действий, без точки «был …» значит не в сети.</p>", v: 30 },
   { id: "b-v17", l: 2, t: "Выходной, напоминания, карта активности", b: "<p><b>Выходной</b>: 2 дня в месяц. На «Сегодня» под полоской дня: «взять сегодня» (только пока ничего не отмечено), «на завтра» или «выбрать день»: календарь на этот и следующий месяц, можно взять любой день вперёд. Лимит считается по месяцу самого дня. Запланированные выходные видны списком, × отменяет (пока день не начался). Задним числом нельзя. В выходной повторы не создаются, провалов нет, серия не сгорает, опыт за сделанное засчитывается. Отменить можно в тот же день.</p><p><b>Напоминание</b>: плашка «⏰» при создании квеста или ⏰ в строке квеста. Придёт уведомление в это время, если квест не отмечен (точность около 5 минут). У повтора время сохраняется на все дни. Нужны включённые уведомления.</p><p><b>Карта активности</b> в «Статусе» и в профиле друга: квадратик на день, яркость по числу выполненных квестов (1–2, 3–4, 5–6, 7+). Золотая рамка: закрыты все квесты дня (от трёх). Серый с 🌙: выходной. Красный уголок: день правили задним числом. Наведи или нажми на квадратик, чтобы увидеть подробности.</p><p><b>Живой фон</b> меняет цвет по рангу охотника, ночью звёзды, в декабре снег. Выключить: «Ещё → Оформление».</p>", v: 20 },
   { id: "b-push", l: 2, t: "Уведомления", b: "<p>⚙ Настройки (шестерёнка в «Профиле») → <b>«Уведомления»</b> → «Включить уведомления» и разреши их в браузере. Настройка на каждом устройстве своя.</p><p>Что приходит: <b>друг ждёт твоего голоса</b>; <b>твой квест оспорили</b> или по нему проголосовали; <b>новый комментарий</b> в обсуждении, где ты участвуешь; <b>в 21:00</b> напоминание, если квесты дня не закрыты или ты сегодня не заходил; <b>друг тебя «пнул»</b>; <b>в понедельник в 9:00</b> итоги недели готовы. Любой тип можно выключить галочкой. «Прислать тестовое» проверяет, что всё работает.</p><p>На iPhone уведомления работают, только если сайт добавлен на экран «Домой» и открыт с иконки. На Android надёжнее всего через Chrome.</p>", v: 16 },
   { id: "b-week", l: 2, t: "Итоги недели и аватарка", b: "<p><b>Итоги недели</b>: каждый понедельник во вкладке «Профиль» карточка за прошлую неделю (пн–вс): опыт, место в пати, выполнено и провалено, процент повторов, лучший день и какие характеристики выросли. Ниже «Прошлые недели»: по строке на неделю (даты, опыт, место, полоска выполнено/провалено), нажатие раскрывает итоги целиком. Пока не посмотрел свежие итоги, на «Сегодня» висит плашка, а в понедельник в 9:00 приходит уведомление.</p><p><b>Аватарка</b>: во вкладке «Профиль» нажми на кружок со своей буквой (📷) и выбери картинку. Под именем: «открыть аватарку» и «убрать».</p><p>Чужую аватарку можно открыть на весь экран: нажми на неё в пати, в профиле друга или в обсуждении. Закрыть: нажатие по экрану или «Закрыть ×».</p>", v: 16 },
@@ -5419,7 +5484,7 @@ function bugCtx(r) {
   const dev = /Mobi|Android|iPhone/i.test(c.ua || "") ? "телефон" : "компьютер";
   return "v" + (c.ver || "?") + " · вкладка «" + esc(c.tab || "?") + "» · " + dev + " " + num(c.w) + "×" + num(c.h);
 }
-function bugTime(ms) { const d = new Date(num(ms) + TZ); return nice(dayOf(num(ms))) + " " + pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()); }
+function bugTime(ms) { const d = new Date(num(ms) + TZ); return nice(calDayOf(num(ms))) + " " + pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()); }
 function bugImg(r) { return r.img ? '<button type="button" class="thb" data-act="imgview" data-src="' + esc(blobUrl(r.img)) + '" aria-label="Открыть скриншот"><img class="bugimg" src="' + esc(blobUrl(r.img)) + '" alt="Скриншот к сообщению"></button>' : ""; }
 function renderMyBugs() {
   const list = me ? reportsBy[me] || [] : [];
@@ -5461,7 +5526,7 @@ function bugsAdminHtml() {
 const TOUR = [
   { sel: "#qTitle", t: "Квест на сегодня", x: "Напиши, что сделаешь сегодня, и нажми «Принять». Каждое дело — отдельный квест." },
   { sel: "#qPlaques", t: "Характеристика, опыт, повтор", x: "Опыт решают три ползунка: время, сложность и «нравится». Час средней задачи = 20 XP, за нелюбимое +30%. Повтор — чтобы квест появлялся сам." },
-  { sel: "#quests", t: "Список дня", x: "Сделал — ставь галочку слева. Не успел до полуночи — квест станет проваленным. Нажми на название, чтобы поправить квест." },
+  { sel: "#quests", t: "Список дня", x: "Сделал, ставь галочку слева. Не успел до 4 утра, квест станет проваленным. Нажми на название, чтобы поправить квест." },
   { sel: "#strip", t: "Твой статус", x: "Ранг охотника, уровень, опыт, серия дней и сколько опыта набрано сегодня." },
   { sel: "#tabs", t: "Вкладки", x: "Сюжет: цели на недели. Дневник: записи о дне, свои и друзей. Группа: друзья, чат и проверка. Профиль: твоя шапка, витрины, характеристики и ачивки, а шестерёнка ⚙ в нём открывает настройки, гайд и баги." },
 ];
@@ -5514,7 +5579,11 @@ const G_COL = ["#5ec8ff", "#ffcf5c", "#49e3a0", "#b48cff", "#ff5d73", "#ff9d4d",
 const G_ROLE = { lead: "👑 Лидер", helper: "⭐ Помощник", member: "Участник" };
 const G_CHAT_DAYS = 14, G_MAX = 30;
 let myPl = null, plLoaded = false, gInfo = null, gidSub = undefined, gSubs = [], gChat = [], gReqs = [], gChatLoaded = false, gChatBottom = true;
-let gSub = ["mem", "chat", "ver", "talk"].includes(store.get("sys.gsub")) ? store.get("sys.gsub") : "mem";
+// v30: реакции на сообщения (g/{gid}/react/{msgId}__{uid}), меню сообщения и смайлы
+const G_REACT = ["👍", "🔥", "😂", "😮", "❤️", "💪"];
+const G_EMOJI = "😀 😁 😂 🤣 😊 😍 😎 🤔 😮 😅 🥲 😢 😭 😡 😴 🤯 🥳 🙃 👀 👍 👎 👏 🙏 🤝 💪 🔥 ❤️ 💯 ✅ ❌ ⚡ 🎉 🏆 🎯 📚 💻 🏃 🎵 ☕ 🍕".split(" ");
+let gReact = [], gAct = null;
+let gSub = ["mem", "chat", "ver"].includes(store.get("sys.gsub")) ? store.get("sys.gsub") : store.get("sys.gsub") === "talk" ? "ver" : "mem";
 let gOv = null, gBusy = false, joinCode = null, gWasIn = null;
 { const m = /^#join[=-]([A-Za-z0-9-]{4,24})$/.exec(location.hash || ""); if (m) { joinCode = m[1].toUpperCase().replace(/[^A-Z0-9]/g, ""); store.set("sys.join", joinCode); store.set("sys.tab", "party"); try { history.replaceState(null, "", location.pathname + location.search); } catch {} } else if (/^[A-Z0-9]{4,20}$/.test(store.get("sys.join") || "")) joinCode = store.get("sys.join"); }
 const gid = () => (myPl && typeof myPl.gid === "string" && myPl.gid ? myPl.gid : null);
@@ -5562,12 +5631,16 @@ function rebuildGroup() {
 function syncGroup() {
   const g = gid();
   if (g !== gidSub) {
-    gSubs.forEach((f) => f()); gSubs = []; gidSub = g; gInfo = null; gChat = []; gReqs = []; gChatLoaded = false; gChatBottom = true;
+    gSubs.forEach((f) => f()); gSubs = []; gidSub = g; gInfo = null; gChat = []; gReqs = []; gReact = []; gAct = null; gChatLoaded = false; gChatBottom = true;
     if (g && db) {
       gSubs.push(db.doc("g/" + g + "/info").onSnapshot((s) => { gInfo = s.exists ? s.data() : null; rebuildGroup(); }, onErr));
       gSubs.push(db.collection("g/" + g + "/chat").where("at", ">=", now() - G_CHAT_DAYS * 864e5).limit(400).onSnapshot((snap) => {
         gChat = snap.docs.map((x) => ({ ...x.data(), id: x.id })).filter((m) => m && typeof m.t === "string" && typeof m.at === "number").sort((a, b) => a.at - b.at);
         gChatLoaded = true; renderGroup(); renderBadges();
+      }, onErr));
+      gSubs.push(db.collection("g/" + g + "/react").where("at", ">=", now() - G_CHAT_DAYS * 864e5).limit(1500).onSnapshot((snap) => {
+        gReact = snap.docs.map((x) => ({ ...x.data(), id: x.id })).filter((r) => r && typeof r.m === "string" && typeof r.by === "string" && G_REACT.includes(r.e));
+        if (gSub === "chat") renderChat();
       }, onErr));
       gSubs.push(db.collection("g/" + g + "/req").limit(100).onSnapshot((snap) => {
         gReqs = snap.docs.map((x) => ({ ...x.data(), uid: x.id })).filter((r) => typeof r.pid === "string").sort((a, b) => num(a.at) - num(b.at));
@@ -5590,6 +5663,7 @@ function onPl(s) {
 // ---------- вкладка «Группа» ----------
 function renderGroup() {
   const top = $("gTop"); if (!top) return;
+  if (!inGroup()) chatFit();
   const ic = $("gTabEmb"), sv = document.querySelector("#tab-party > svg");
   if (ic && sv) { const on = inGroup(); ic.hidden = !on; sv.style.display = on ? "none" : ""; if (on) ic.innerHTML = gEmb(gInfo.emb, gInfo.col, 22); }
   if (!inGroup()) {
@@ -5610,41 +5684,87 @@ function renderGroup() {
   const n = PLAYERS.length, r = gRole(me), rq = gReqN();
   setHtml("gTop", '<section class="panel gtop">' + gEmb(gInfo.emb, gInfo.col, 46) + '<div class="t"><h2>' + esc(gInfo.name) + "</h2><span>" + gPl(n) + (r ? " · ты " + G_ROLE[r].replace(/^\S+ /, "").toLowerCase() : "") + "</span></div>" +
     '<button type="button" class="gear" data-act="gmanage">⚙ ' + (gMod() ? "Управление" : "О группе") + (rq ? '<span class="bd">' + rq + "</span>" : "") + "</button></section>");
-  const cu = gChatUnread(), tu = unreadCmts();
-  setHtml("gSeg", [["mem", "Участники", ""], ["chat", "Чат", cu ? '<span class="n">' + (cu > 99 ? "99+" : cu) + "</span>" : ""], ["ver", "Проверка", verifyCount + revNew ? '<span class="n">' + (verifyCount + revNew) + "</span>" : ""], ["talk", "Обсуждения", tu ? '<span class="n">' + tu + "</span>" : ""]]
+  const cu = gChatUnread(), tu = unreadCmts("q");
+  setHtml("gSeg", [["mem", "Участники", ""], ["chat", "Чат", cu ? '<span class="n">' + (cu > 99 ? "99+" : cu) + "</span>" : ""], ["ver", "Проверка", verifyCount + revNew + tu ? '<span class="n">' + (verifyCount + revNew + tu) + "</span>" : ""]]
     .map(([k, t, b]) => '<button type="button" data-act="gsub" data-s="' + k + '" aria-pressed="' + (gSub === k) + '">' + t + b + "</button>").join(""));
   $("gSeg").hidden = false;
   document.querySelectorAll(".gsub").forEach((el) => (el.hidden = el.dataset.sub !== gSub));
   $("verEmpty").hidden = true;
-  $("talkEmpty").hidden = !$("talkPanel").hidden;
-  if (gSub === "chat") renderChat();
+  if (gSub === "chat") renderChat(); else chatFit();
 }
 // удалить сообщение: своё; лидер любое; помощник сообщения обычных участников (и ушедших). Так же проверяет база
 const gCanDel = (m) => { if (!m || m.sys && !gMod()) return false; if (m.by === uid) return true; const r = gRole(me); if (r === "lead") return true; if (r !== "helper") return false; const ar = PLAYERS.some((p) => p.id === m.pid) ? gRole(m.pid) : null; return !ar || ar === "member"; };
-const chatTime = (at) => { const d = dayOf(at), t = dTm(at); return d === today() ? t : d === addDays(today(), -1) ? "вчера " + t : nice(d) + " " + t; };
+const chatTime = (at) => { const d = calDayOf(at), t = dTm(at); return d === calToday() ? t : d === addDays(calToday(), -1) ? "вчера " + t : nice(d) + " " + t; };
 function renderChat() {
   const box = $("gChat"); if (!box) return;
   const near = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
-  const html = !gChatLoaded ? '<p class="hint">Загружаю…</p>' : !gChat.length ? '<p class="hint">Здесь пока тихо. Напиши первым: договоритесь о целях на неделю.</p>' :
-    gChat.map((m, i) => {
-      const day = dayOf(m.at), sep = i === 0 || dayOf(gChat[i - 1].at) !== day ? '<div class="gday">' + esc(day === today() ? "Сегодня" : day === addDays(today(), -1) ? "Вчера" : nice(day)) + "</div>" : "";
-      if (m.sys) return sep + '<div class="gmsg sys"><p>' + esc(m.t) + "</p></div>";
-      const mine = m.by === uid, inG = PLAYERS.some((p) => p.id === m.pid), prev = gChat[i - 1], del = gCanDel(m);
-      // подряд от одного автора (до 5 минут): без повторной аватарки и имени, как в мессенджерах
-      const cont = !sep && prev && !prev.sys && prev.by === m.by && m.at - prev.at < 5 * 60e3;
+  const nameOfUid = (u) => { const p = PLAYERS.find((x) => roster[x.id] === u); return p ? pname(p.id) : "Игрок"; };
+  // v30: как в Telegram. Серия сообщений одного автора (до 5 мин): имя один раз сверху, время внутри пузыря
+  const same = (a, b) => a && b && !a.sys && !b.sys && a.by === b.by && b.at - a.at < 5 * 60e3 && calDayOf(a.at) === calDayOf(b.at);
+  let html = "";
+  if (!gChatLoaded) html = '<p class="hint">Загружаю…</p>';
+  else if (!gChat.length) html = '<p class="hint">Здесь пока тихо. Напиши первым: договоритесь о целях на неделю.</p>';
+  else gChat.forEach((m, i) => {
+    const prev = gChat[i - 1], next = gChat[i + 1], day = calDayOf(m.at);
+    if (!prev || calDayOf(prev.at) !== day) html += '<div class="gday">' + esc(day === calToday() ? "Сегодня" : day === addDays(calToday(), -1) ? "Вчера" : nice(day)) + "</div>";
+    if (m.sys) { html += '<div class="gmsg sys"><p>' + esc(m.t) + "</p></div>"; return; }
+    const mine = m.by === uid, inG = PLAYERS.some((p) => p.id === m.pid), first = !same(prev, m), last = !same(m, next);
+    if (first) {
       const r = inG ? gRole(m.pid) : null, eq = inG ? pfEq(m.pid) : { fr: "none", hat: "none", bd: "circle" }, a = inG ? avaOf(m.pid) : null;
-      const ava = cont ? '<span class="gsp"></span>' : '<div class="pfavw gcav"' + (eq.fr !== "none" ? ' data-fxfr="' + esc(eq.fr) + '"' : "") + '><span class="pfav">' + (a ? '<img src="' + esc(blobUrl(a)) + '" alt="">' : esc(((inG ? pname(m.pid) : m.n) || "?")[0])) + "</span>" + (eq.hat !== "none" ? pfHatHtml(eq.hat, "c" + m.id) : "") + "</div>";
+      const ava = '<div class="pfavw gcav"' + (eq.fr !== "none" ? ' data-fxfr="' + esc(eq.fr) + '"' : "") + '><span class="pfav">' + (a ? '<img src="' + esc(blobUrl(a)) + '" alt="">' : esc(((inG ? pname(m.pid) : m.n) || "?")[0])) + "</span>" + (eq.hat !== "none" ? pfHatHtml(eq.hat, "c" + m.id) : "") + "</div>";
       const who = inG ? pname(m.pid) : m.n || (mine ? "Ты" : "Бывший участник");
-      return sep + '<div class="gmsg' + (mine ? " me" : "") + (cont ? " cont" : "") + '">' + ava + '<div class="b">' +
-        '<div class="h">' + (cont ? "" : "<b>" + esc(who) + "</b>" + (inG ? pfLvl(profile(m.pid).li.L, eq.bd) : "") + (r ? '<span class="grl ' + r + '">' + esc(G_ROLE[r]) + "</span>" : "")) + '<span class="gtm">' + (cont ? "" : "· ") + esc(dTm(m.at)) + "</span>" +
-        (del ? '<button type="button" class="gdel" data-act="gcdel" data-id="' + esc(m.id) + '" title="Удалить сообщение" aria-label="Удалить сообщение">×</button>' : "") + "</div><p>" + esc(m.t) + "</p></div></div>";
-    }).join("");
+      html += '<div class="gmsg' + (mine ? " me" : "") + '">' + ava + '<div class="grun"><div class="gwho"><b>' + esc(who) + "</b>" + (inG ? pfLvl(profile(m.pid).li.L, eq.bd) : "") + (r ? '<span class="grl ' + r + '">' + esc(G_ROLE[r]) + "</span>" : "") + "</div>";
+    }
+    const imgs = imgIds(m.imgs), tm = '<span class="gtm">' + esc(dTm(m.at)) + "</span>", act = gAct === m.id, del = gCanDel(m);
+    const rs = new Map(); for (const x of gReact) if (x.m === m.id) { if (!rs.has(x.e)) rs.set(x.e, []); rs.get(x.e).push(x.by); }
+    html += '<div class="gb' + (first ? " f" : "") + (last ? " l" : "") + (act ? " act" : "") + (imgs.length && !m.t ? " ph" : "") + '" data-act="gtap" data-id="' + esc(m.id) + '" role="button" tabindex="0" aria-expanded="' + act + '" aria-label="Сообщение, ' + esc(chatTime(m.at)) + '. Нажми для реакций">' +
+      (imgs.length ? thumbsHtml(imgs) : "") + (m.t ? "<p>" + esc(m.t) + tm + "</p>" : '<span class="gtm solo">' + esc(dTm(m.at)) + "</span>") + "</div>";
+    if (rs.size) html += '<div class="grcs">' + G_REACT.filter((e) => rs.has(e)).map((e) => { const us = rs.get(e), on = us.includes(uid), t = us.map(nameOfUid).join(", ");
+      return mine ? '<span class="grc" title="' + esc(t) + '">' + e + " " + us.length + "</span>" : '<button type="button" class="grc' + (on ? " on" : "") + '" data-act="greact" data-id="' + esc(m.id) + '" data-e="' + e + '" aria-pressed="' + on + '" title="' + esc(t) + '">' + e + " " + us.length + "</button>"; }).join("") + "</div>";
+    if (act && (!mine || del)) {
+      const myR = (gReact.find((x) => x.m === m.id && x.by === uid) || {}).e;
+      html += '<div class="gacts" role="group" aria-label="Действия с сообщением">' + (mine ? "" : G_REACT.map((e) => '<button type="button" data-act="greact" data-id="' + esc(m.id) + '" data-e="' + e + '" aria-pressed="' + (myR === e) + '" aria-label="Реакция ' + e + '">' + e + "</button>").join("")) +
+        (del ? '<button type="button" class="gdl" data-act="gcdel" data-id="' + esc(m.id) + '" aria-label="Удалить сообщение" title="Удалить сообщение">🗑</button>' : "") + "</div>";
+    }
+    if (last) html += "</div></div>";
+  });
   if (lastHtml.gChat !== html) { setHtml("gChat", html); pfMountFx(); if (near || gChatBottom) { box.scrollTop = box.scrollHeight; gChatBottom = false; } }
+  // фото к отправке и кнопка 📎 (только если есть хранилище фото)
+  const att = $("gAtt"); if (att) att.hidden = !assetsApi;
+  const pa = imgIds(pendImgs.gchat);
+  setHtml("gChatUp", upBusy.gchat ? '<span class="hint">Загружаю фото…</span>' : pa.length ? '<div class="thumbs">' + pa.map((id, k) => '<span class="th"><img src="' + esc(blobUrl(id)) + '" alt="Фото ' + (k + 1) + '"><button type="button" class="rm" data-act="imgrm" data-k="gchat" data-i="' + k + '" aria-label="Убрать фото">×</button></span>').join("") + "</div>" : "");
+  chatFit();
   if (tab === "party" && gSub === "chat" && !document.hidden && gChat.length) {
     const last = gChat[gChat.length - 1].at;
     if (last > num(prefs.chatSeen)) { writePrefs({ chatSeen: last }); renderBadges(); setTimeout(renderGroup, 0); }
   }
 }
+// v30: чат на подвкладке «Чат» занимает весь экран до нижнего меню, страница не листается (без двойной прокрутки)
+var chatFitRaf = 0;
+function chatFit() {
+  const box = $("gChat"), root = document.documentElement; if (!box) return;
+  const on = tab === "party" && gSub === "chat" && inGroup() && !!box.offsetParent && !friendId;
+  if (!on) { if (root.classList.contains("chatmode")) { root.classList.remove("chatmode"); box.style.height = ""; } return; }
+  const wasBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+  if (!root.classList.contains("chatmode")) {
+    root.classList.add("chatmode");
+    const seg = $("gSeg"); if (seg) window.scrollTo(0, Math.max(0, seg.getBoundingClientRect().top + window.scrollY - 8));
+  }
+  const vv = window.visualViewport, vb = vv ? vv.height + vv.offsetTop : innerHeight;
+  const nav = $("tabs"), nr = nav && getComputedStyle(nav).position === "fixed" ? nav.getBoundingClientRect().top : Infinity;
+  const bottom = Math.min(vb, nr) - 10, sec = box.closest("section");
+  const below = sec ? sec.getBoundingClientRect().bottom - box.getBoundingClientRect().bottom : 60;
+  const h = Math.max(180, Math.floor(bottom - box.getBoundingClientRect().top - below));
+  if (box.style.height !== h + "px") { box.style.height = h + "px"; if (wasBottom) box.scrollTop = box.scrollHeight; }
+}
+function chatFitSoon() { cancelAnimationFrame(chatFitRaf); chatFitRaf = requestAnimationFrame(chatFit); }
+window.addEventListener("resize", chatFitSoon);
+if (window.visualViewport) { visualViewport.addEventListener("resize", chatFitSoon); visualViewport.addEventListener("scroll", chatFitSoon); }
+// тап мимо меню сообщения или панели смайлов закрывает их
+document.addEventListener("click", (e) => {
+  if (gAct && !e.target.closest(".gb,.gacts")) { gAct = null; renderChat(); }
+  const em = $("gEmo"); if (em && !em.hidden && !e.target.closest("#gEmo,[data-act=gemo]")) { em.hidden = true; const bt = document.querySelector("[data-act=gemo]"); if (bt) bt.setAttribute("aria-expanded", "false"); chatFitSoon(); }
+});
 // ---------- шторка: управление, создание, вступление ----------
 function gOpenJoin(code) {
   joinCode = null; store.set("sys.join", "");
@@ -5717,9 +5837,9 @@ function renderGOv() {
 const gVal = (id) => { const el = $(id); return el ? el.value : ""; };
 function gKeepForm() { if (!gOv) return; if ($("gNm")) gOv.name = gVal("gNm"); if ($("gAb")) gOv.about = gVal("gAb"); if ($("gNote")) gOv.note = gVal("gNote"); }
 async function groupAct(act, b) {
-  if (!/^g(manage|create|close|emb|col|docreate|doreq|cancel|copy|newinv|ok|no|role|lead|kick|leave|cf|menu|save|sub|cdel)$/.test(act)) return false;
+  if (!/^g(manage|create|close|emb|col|docreate|doreq|cancel|copy|newinv|ok|no|role|lead|kick|leave|cf|menu|save|sub|cdel|tap|react|emo|emoji)$/.test(act)) return false;
   gKeepForm();
-  if (act === "gsub") { gSub = b.dataset.s; store.set("sys.gsub", gSub); if (gSub === "chat") gChatBottom = true; lastHtml.talk = null; renderTalk(); renderRev(); renderGroup(); renderBadges(); return true; }
+  if (act === "gsub") { gSub = ["mem", "chat", "ver"].includes(b.dataset.s) ? b.dataset.s : "mem"; store.set("sys.gsub", gSub); if (gSub === "chat") gChatBottom = true; lastHtml.talk = null; renderTalk(); renderRev(); renderGroup(); renderBadges(); return true; }
   if (act === "gmanage") { if (!inGroup()) return true; gOv = { kind: "manage", name: gInfo.name, about: gInfo.about || "", emb: gInfo.emb, col: gInfo.col }; renderGOv(); return true; }
   if (act === "gcreate") { gOv = { kind: "create", name: "", about: "", emb: G_EMB[0], col: G_COL[0] }; renderGOv(); setTimeout(() => { const n = $("gNm"); if (n) n.focus(); }, 50); return true; }
   if (act === "gclose") { gOv = null; renderGOv(); return true; }
@@ -5741,7 +5861,31 @@ async function groupAct(act, b) {
   if (act === "gsave") { await gCall({ a: "edit", name: gOv.name, about: gOv.about, emb: gOv.emb, col: gOv.col }, "Сохранено."); return true; }
   if (act === "gcdel") {
     const m = gChat.find((x) => x.id === b.dataset.id); if (!m || !gid() || !gCanDel(m)) return true;
+    gAct = null;
     try { await db.doc("g/" + gid() + "/chat/" + m.id).delete(); } catch (err) { fail(err); }
+    return true;
+  }
+  if (act === "gtap") { const id = b.dataset.id; gAct = gAct === id ? null : id; renderChat(); return true; }
+  if (act === "greact") {
+    const id = b.dataset.id, e = b.dataset.e, m = gChat.find((x) => x.id === id);
+    if (!m || m.sys || m.by === uid || !gid() || !uid || !canWrite || !G_REACT.includes(e)) return true;
+    const cur = gReact.find((r) => r.m === id && r.by === uid), ref = db.doc("g/" + gid() + "/react/" + id + "__" + uid);
+    gAct = null; renderChat();
+    try { if (cur && cur.e === e) await ref.delete(); else await ref.set({ m: id, e, by: uid, at: now() }); } catch (err) { fail(err); }
+    return true;
+  }
+  if (act === "gemo") {
+    const box = $("gEmo"); if (!box) return true;
+    if (!box.innerHTML) box.innerHTML = G_EMOJI.map((x) => '<button type="button" data-act="gemoji" data-e="' + x + '" aria-label="' + x + '">' + x + "</button>").join("");
+    box.hidden = !box.hidden; b.setAttribute("aria-expanded", String(!box.hidden)); chatFit(); return true;
+  }
+  if (act === "gemoji") {
+    const inp = $("gChatIn"), e = b.dataset.e || ""; if (!inp) return true;
+    const a = inp.selectionStart ?? inp.value.length, z = inp.selectionEnd ?? a;
+    if ((inp.value.length - (z - a) + e.length) > 500) return true;
+    inp.value = inp.value.slice(0, a) + e + inp.value.slice(z);
+    const c = a + e.length; try { inp.setSelectionRange(c, c); } catch {}
+    if (matchMedia("(pointer:fine)").matches) inp.focus();
     return true;
   }
   return true;
@@ -5764,11 +5908,12 @@ async function groupSubmit(e) {
   }
   if (f.id === "gChatForm") {
     e.preventDefault();
-    const inp = $("gChatIn"), t = (inp.value || "").trim().slice(0, 500);
-    if (!t || !gid() || !uid || !canWrite) return true;
-    inp.value = ""; gChatBottom = true;
-    try { await db.doc("g/" + gid() + "/chat/" + Math.round(now()).toString(36) + Math.random().toString(36).slice(2, 7)).set({ by: uid, t }); }
-    catch (err) { inp.value = t; fail(err); }
+    const inp = $("gChatIn"), t = (inp.value || "").trim().slice(0, 500), imgs = imgIds(pendImgs.gchat);
+    if (upBusy.gchat) { toast("Подожди, фото ещё загружаются."); return true; }
+    if ((!t && !imgs.length) || !gid() || !uid || !canWrite) return true;
+    inp.value = ""; delete pendImgs.gchat; gChatBottom = true; const em = $("gEmo"); if (em) em.hidden = true; renderChat();
+    try { await db.doc("g/" + gid() + "/chat/" + Math.round(now()).toString(36) + Math.random().toString(36).slice(2, 7)).set({ by: uid, t, ...(imgs.length ? { imgs } : {}) }); }
+    catch (err) { inp.value = t; if (imgs.length) pendImgs.gchat = imgs; renderChat(); fail(err); }
     return true;
   }
   return false;
@@ -5941,7 +6086,7 @@ function renderTabs() {
 // точки «есть новое» на Профиле и ⚙: новая версия, ответы на мои баги, у владельца новые сообщения об ошибках (v28: перенесены в Настройки)
 function dotSync() {
   const on = seenVer() < APP_VERSION || newAnswers() || (isOwner && newBugCount() > 0);
-  $("moreDot").hidden = !on || tab === "more";
+  $("moreDot").hidden = !(on || unreadCmts("w")) || tab === "more" || tab === "status" && !on;
   const gd = $("gearDot"); if (gd) gd.hidden = !on;
 }
 const seenVer = () => Math.max(num(store.get("sys.seenVer")), num(prefs.seenVer));
@@ -5981,7 +6126,7 @@ function lastSeenTxt(pid) {
   let ls = num((prefsBy[pid] || {}).lastSeen);
   for (const t of tasksBy[pid] || []) ls = Math.max(ls, num(t.createdAt), num(t.doneAt));
   if (!ls) return "ещё не заходил";
-  const diff = Math.max(0, now() - ls), d = new Date(ls + TZ), hm = pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()), day = dayOf(ls);
+  const diff = Math.max(0, now() - ls), d = new Date(ls + TZ), hm = pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()), day = calDayOf(ls), today = calToday;
   if (diff < 5 * 60e3) return "был только что";
   if (diff < 60 * 60e3) return "был " + Math.round(diff / 60e3) + " мин назад";
   if (day === today()) return "был сегодня в " + hm;
@@ -5998,12 +6143,15 @@ function setTab(t) {
   tab = t; store.set("sys.tab", t);
   if (t === "status") { const hw = document.querySelector("#heat .hmwrap"); if (hw) hw.dataset.tr = ""; setTimeout(() => hmScroll("heat"), 30); }
   if (t === "more") markSeen(); else { newsHi = false; renderNewsHi(); }
-  cmtBase = t === "party" ? num(prefs.cmtSeen) : null;
+  cmtBases = { q: t === "party" ? cSeenOf("q") : null, d: t === "diary" ? cSeenOf("d") : null, w: t === "status" ? cSeenOf("w") : null };
+  if (t === "diary") markCmts("d");
+  if (t === "status") markCmts("w");
   renderTabs();
   if (t === "party") { lastHtml.talk = null; renderTalk(); renderBadges(); }
   if (t === "diary") { if (dView === "friends") dSeenBase = num(prefs.diarySeen); renderDiary(); }
   renderRecap();
   try { window.scrollTo(0, 0); } catch {}
+  chatFitSoon();
 }
 function newBugCount() {
   let c = 0;
@@ -6011,7 +6159,7 @@ function newBugCount() {
   return c;
 }
 function renderBadges() {
-  const un = unreadCmts();
+  const un = unreadCmts("q");
   const n = verifyCount + adminPend + un + gReqN() + gChatUnread(), b = $("partyBadge"); dotSync();
   b.hidden = !n; b.textContent = n;
   const v = $("vNote");
@@ -6030,12 +6178,25 @@ function nudgeHtml(pid) {
   return '<div class="nudge"><button type="button" class="btn sm' + (done ? " ghost" : "") + '" data-act="nudge" data-p="' + esc(pid) + '"' + (done ? " disabled" : "") + ">" + (done ? "✓ Сегодня уже пнул" : "👊 Пнуть") + "</button>" +
     '<span class="hint">' + (done ? "Завтра можно снова." : esc(pname(pid)) + " сегодня не заходил. Придёт уведомление, если они у него включены.") + "</span></div>";
 }
+// v30: имя в верхней полосе окна друга видно на «Квестах»/«Сюжете» и на «Профиле», когда имя в шапке ушло за экран
+let fTopIO = null;
+function fTopSync() {
+  const ov = $("friendOv"), h = $("fName");
+  if (!h) return;
+  if (fTopIO) { fTopIO.disconnect(); fTopIO = null; }
+  if (!friendId) return;
+  const tgt = fSub === "p" ? ov.querySelector("#fProf .pfid") : null;
+  if (!tgt || !("IntersectionObserver" in window)) { h.classList.toggle("on", fSub !== "p" || !tgt); return; }
+  fTopIO = new IntersectionObserver((es) => { const e = es[es.length - 1]; h.classList.toggle("on", !e.isIntersecting); }, { root: ov, threshold: 0, rootMargin: "-56px 0px 0px 0px" });
+  fTopIO.observe(tgt);
+}
 function renderFriend() {
   const ov = $("friendOv");
   document.body.style.overflow = friendId ? "hidden" : "";
   if (!friendId) { hideOv(ov); syncTheme(); return; }
   showOv(ov);
-  const fn = avaHtml(friendId, "md") + esc(pname(friendId)) + (isHere(friendId) ? ' <span class="ondot" aria-hidden="true"></span><span class="onl">онлайн</span>' : isAway(friendId) ? ' <span class="ondot away" aria-hidden="true"></span><span class="onl" style="color:var(--gold)">' + esc(awayTxt(friendId)) + "</span>" : roster[friendId] ? '<span class="onl" style="color:var(--muted)">' + esc(lastSeenTxt(friendId)) + "</span>" : "");
+  // v30: сверху только маленькая аватарка и имя; на «Профиле» появляются, когда шапка профиля ушла за экран (fTopSync)
+  const fn = '<span class="fttl">' + avaHtml(friendId, "sm") + "<span>" + esc(pname(friendId)) + "</span></span>";
   if ($("fName").innerHTML !== fn) $("fName").innerHTML = fn;
   // v29: переключатель, чтобы квесты для проверки были сразу, без прокрутки профиля
   const fq = questsListHtml(friendId), nst = (storiesBy[friendId] || []).filter((x) => storyState(x) === "active").length;
@@ -6043,7 +6204,7 @@ function renderFriend() {
     .map(([k, t, n]) => '<button type="button" data-act="fsub" data-s="' + k + '" aria-pressed="' + (fSub === k) + '">' + t + (n ? '<span class="fn">' + n + "</span>" : "") + "</button>").join(""));
   document.querySelectorAll("#friendOv .fsub").forEach((el) => (el.hidden = el.dataset.fs !== fSub));
   setHtml("fProf", pfHeroHtml(friendId, "friend") + '<div class="pfgw">' + pfShowHtml(friendId, "friend") + "</div>");
-  pfMountFx(); syncTheme();
+  pfMountFx(); syncTheme(); fTopSync();
   setHtml("fNudge", nudgeHtml(friendId));
   setHtml("fQuests", fq.html);
   setHtml("fStories", storiesHtml(friendId));
@@ -6569,7 +6730,7 @@ document.addEventListener("click", async (e) => {
   const act = b.dataset.act;
   if (act === "wday") { const d = num(b.dataset.d); if (selDays.has(d)) selDays.delete(d); else selDays.add(d); lastHtml.qWeekdays = null; renderRepeat(); return; }
   if (act === "tshift" && TEST_MODE) { const v = b.dataset.v; testShift = v === "0" ? 0 : testShift + num(v); renderTestBar(); renderAll(); ensureDailies(); writeSeals(); return; }
-  if (act === "tab") { if (b.id === "vNote" && (verifyCount || unreadCmts())) { gSub = verifyCount ? "ver" : "talk"; store.set("sys.gsub", gSub); } setTab(b.dataset.t); return; }
+  if (act === "tab") { if (b.id === "vNote" && (verifyCount || unreadCmts("q"))) { gSub = "ver"; store.set("sys.gsub", gSub); } setTab(b.dataset.t); return; }
   if (plUi(b, act)) return;
   if (dUi(b, act)) return;
   if (yrUi(b, act)) return;
@@ -6772,10 +6933,10 @@ document.addEventListener("click", async (e) => {
         else { await taskDoc(t.id).update({ done: false }); toast("Заявка на проверку отозвана."); }
         return;
       }
-      // честные часы: выполненного времени за сегодня не больше, чем прошло с 6:00
+      // честные часы: выполненного времени за сегодня не больше, чем прошло с 4:00
       if (!t.done && isNewQ(t) && t.m > 0) {
         const lim = sinceSix(), dm = dayDoneMin(me, today(), t.id);
-        if (dm + t.m > lim) { toast("С 6:00 прошло " + fmtHM(lim) + ", а выполнено уже " + fmtHM(dm) + ". Квест на " + fmtMin(t.m) + " можно отметить позже.", "ЧЕСТНЫЕ ЧАСЫ"); return; }
+        if (dm + t.m > lim) { toast("С 4:00 прошло " + fmtHM(lim) + ", а выполнено уже " + fmtHM(dm) + ". Квест на " + fmtMin(t.m) + " можно отметить позже.", "ЧЕСТНЫЕ ЧАСЫ"); return; }
       }
       const xp = taskXp(t);
       b.disabled = true;
@@ -6990,6 +7151,12 @@ document.addEventListener("click", async (e) => {
       await db.doc("v/" + uid + "/votes/" + owner + "__" + (kind === "story" ? "s-" : kind === "step" ? "p-" : "") + (round === "dispute" ? "d-" : "") + it.id).set({ task: it.id, kind, owner, vote: b.dataset.v, round, sig: sigOf(it, kind), ...(note ? { note } : {}), at: now() });
       delete drafts["c:" + kind + ":" + owner + ":" + it.id];
       toast(b.dataset.v === "yes" ? "Голос «подтверждаю» засчитан." : "Голос «не засчитывать» засчитан.");
+    }
+    if (act === "cdelc") {
+      const pid = b.dataset.p, id = b.dataset.id || "", u = roster[pid];
+      if (!u || !/__c-/.test(id) || !cmtCanDel(pid)) return;
+      b.disabled = true; await db.doc("v/" + u + "/votes/" + id).delete(); toast("Комментарий удалён.");
+      return;
     }
     if (act === "cpost") {
       const k = b.dataset.k || "", [ik, owner, ...rest] = k.split(":"), id = rest.join(":"), dk = "c:" + k;
@@ -7304,7 +7471,7 @@ function syncSubs() {
         renderDiary(); if (friendId === p.id) renderFriend();
       }, onErr),
       db.collection("v/" + u + "/votes").limit(1000).onSnapshot((snap) => {
-        votesBy[p.id] = snap.docs.map((x) => x.data()); votesVer++; votesLoaded[p.id] = true; renderAll();
+        votesBy[p.id] = snap.docs.map((x) => ({ ...x.data(), _id: x.id })); votesVer++; votesLoaded[p.id] = true; renderAll();
       }, onErr),
       db.collection("w/" + u + "/seals").limit(10).onSnapshot((snap) => {
         sealsBy[p.id] = Object.fromEntries(snap.docs.map((x) => [x.id, x.data()]));
@@ -7337,7 +7504,9 @@ function syncSubs() {
     subPrefs = db.doc("q/" + uid + "/meta/prefs").onSnapshot((snap) => {
       prefs = snap.exists ? { ...snap.data() } : {}; prefsLoaded = true;
       renderTabs(); renderGuide(); renderMyBugs(); if (tab === "more") markSeen(); touchSeen();
-      if (tab === "party" && cmtBase == null) cmtBase = num(prefs.cmtSeen);
+      // v30: раньше одна отметка на все комментарии; дневник и стену отделяем от споров, начиная с прежней отметки
+      if (canWrite && (prefs.cmtSeenD == null || prefs.cmtSeenW == null)) writePrefs({ cmtSeenD: prefs.cmtSeenD ?? num(prefs.cmtSeen), cmtSeenW: prefs.cmtSeenW ?? num(prefs.cmtSeen) });
+      for (const [g, tb] of [["q", "party"], ["d", "diary"], ["w", "status"]]) if (tab === tb && cmtBases[g] == null) { cmtBases[g] = cSeenOf(g); if (g !== "q") markCmts(g); }
       lastHtml.talk = null; renderTalk(); renderQuests(); renderStories(); renderBadges(); renderRev(); renderGroup(); renderStatus(); renderMigr(); renderSmig(); renderDiary(); renderProfile();
       if (!prefs.tourDone && !tourAuto && me) { tourAuto = true; setTimeout(tourWhenFree, 900); }
     }, onErr);
