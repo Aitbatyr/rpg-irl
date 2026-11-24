@@ -289,7 +289,9 @@ const prefsBy = {}, reportsBy = {};
 // В prefs.lastSeen пишем только первый заход за игровой день (по нему вечернее напоминание понимает, заходил ли игрок)
 const seenBy = {};
 let mySeenAt = 0;
-const seenOf = (pid) => Math.max(num((prefsBy[pid] || {}).lastSeen), num(seenBy[pid]));
+// v32: у ИИ-бота нет браузера, «в сети» он до seen.until (сервер задаёт случайную длину захода: от «зашёл и вышел» до 20 минут)
+const seenUntil = {}, seenT = {};
+const seenOf = (pid) => Math.max(num((prefsBy[pid] || {}).lastSeen), num(seenBy[pid]), Math.min(num(seenUntil[pid]), now()));
 let bugStatus = {}, assetsApi = null, gLvl = 1, gQuery = "", tourStep = -1, tourAuto = false;
 const profCache = new Map();
 // ---------- выходной (v17) ----------
