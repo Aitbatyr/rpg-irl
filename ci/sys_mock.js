@@ -1,9 +1,9 @@
 // СГЕНЕРИРОВАНО fn/mkcore.py: серверная логика v28 для тестов сайта
 (() => {
 const { makeCore } = (() => {
-// СГЕНЕРИРОВАНО fn/mkcore.py из index.html (APP_VERSION 31). Не править руками: меняй index.html и пересобирай.
+// СГЕНЕРИРОВАНО fn/mkcore.py из index.html (APP_VERSION 32). Не править руками: меняй index.html и пересобирай.
 // Тот же код подсчёта опыта, что в браузере. Сервер (функция sys) и тесты считают им опыт игроков.
-const CORE_VERSION = 31;
+const CORE_VERSION = 32;
 function makeCore(clock) {
   "use strict";
   const noop = () => {};
@@ -278,7 +278,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 31;
+const APP_VERSION = 32;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -323,6 +323,12 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 32, date: "2026-11-24", title: "ИИ-бот в группе", items: [
+    "В группе «Система» новый участник: Годжо 🤖, ИИ-бот на модели Claude Haiku в характере Годжо Сатору.",
+    "Он сам заходит в случайное время, берёт и отмечает свои квесты, пишет в чат, ставит реакции и помнит, что было в прошлые дни.",
+    "Упомяни его в чате («Годжо, …»), и он ответит через пару минут. Ночью спит, отвечает утром.",
+    "В местах недели и итогах сезона бота нет: соревнуются только люди.",
+  ] },
   { v: 31, date: "2026-11-23", title: "Скорость и защита", items: [
     "Сайт быстрее загружается и меньше грузит телефон: живой фон рисуется в 2 раза легче, рамки и уборы двигаются только в профиле и магазине, окно друга строит только открытую вкладку.",
     "На слабых телефонах живой фон выключается сам. Включить обратно можно в ⚙ Настройках → «Оформление».",
