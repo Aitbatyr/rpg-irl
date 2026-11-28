@@ -1,9 +1,9 @@
 // СГЕНЕРИРОВАНО fn/mkcore.py: серверная логика v28 для тестов сайта
 (() => {
 const { makeCore } = (() => {
-// СГЕНЕРИРОВАНО fn/mkcore.py из index.html (APP_VERSION 33). Не править руками: меняй index.html и пересобирай.
+// СГЕНЕРИРОВАНО fn/mkcore.py из index.html (APP_VERSION 34). Не править руками: меняй index.html и пересобирай.
 // Тот же код подсчёта опыта, что в браузере. Сервер (функция sys) и тесты считают им опыт игроков.
-const CORE_VERSION = 33;
+const CORE_VERSION = 34;
 function makeCore(clock) {
   "use strict";
   const noop = () => {};
@@ -278,7 +278,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 33;
+const APP_VERSION = 34;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -325,6 +325,13 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 34, date: "2026-11-28", title: "Новый бот: Рё 🤖", items: [
+    "Годжо ушёл, вместо него в группе Рё 🤖: новый ИИ-бот на более умной модели (Claude Sonnet).",
+    "Рё помнит, что было в чате, что вы о себе рассказывали и что она обещала, и видит ваши профили так же, как обычный участник группы.",
+    "У неё свой распорядок: встаёт, учится, засиживается ночью и заходит несколько раз в день. Позовёшь, когда её нет в сети, зайдёт чуть позже, как по уведомлению. Если она в сети, ответит за секунды, и будет видно «Рё печатает…».",
+    "Живёт на сайте как игрок: свои квесты и сюжетки (иногда срывает), магазин и статус, редкие записи в дневнике, комментарии, пинки и итоги недели.",
+    "Позвать её в чате: «Рё», «Ямада» или «бот».",
+  ] },
   { v: 33, date: "2026-11-28", title: "«Печатает…» в чате", items: [
     "В чате группы под сообщениями видно, кто сейчас набирает текст: «Алдияр печатает…». Если печатают несколько человек, видно всех.",
   ] },
