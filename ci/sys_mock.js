@@ -1,9 +1,9 @@
 // СГЕНЕРИРОВАНО fn/mkcore.py: серверная логика v28 для тестов сайта
 (() => {
 const { makeCore } = (() => {
-// СГЕНЕРИРОВАНО fn/mkcore.py из index.html (APP_VERSION 31). Не править руками: меняй index.html и пересобирай.
+// СГЕНЕРИРОВАНО fn/mkcore.py из index.html (APP_VERSION 33). Не править руками: меняй index.html и пересобирай.
 // Тот же код подсчёта опыта, что в браузере. Сервер (функция sys) и тесты считают им опыт игроков.
-const CORE_VERSION = 31;
+const CORE_VERSION = 33;
 function makeCore(clock) {
   "use strict";
   const noop = () => {};
@@ -278,7 +278,7 @@ let storyFormOpen = false, proofOpen = null, extendOpen = null, delConfirm = nul
 let pickDismissed = false, reclaiming = false, ensuring = false;
 const lastLevel = {};
 const lastHtml = {};
-const APP_VERSION = 31;
+const APP_VERSION = 33;
 let remEdit = null;
 let tab = "today", friendId = null, verifyCount = 0, adminPend = 0;
 let openGrp = "", editTask = null, tplEdit = null, linkAvail = false;
@@ -289,7 +289,9 @@ const prefsBy = {}, reportsBy = {};
 // В prefs.lastSeen пишем только первый заход за игровой день (по нему вечернее напоминание понимает, заходил ли игрок)
 const seenBy = {};
 let mySeenAt = 0;
-const seenOf = (pid) => Math.max(num((prefsBy[pid] || {}).lastSeen), num(seenBy[pid]));
+// v32: у ИИ-бота нет браузера, «в сети» он до seen.until (сервер задаёт случайную длину захода: от «зашёл и вышел» до 20 минут)
+const seenUntil = {}, seenT = {};
+const seenOf = (pid) => Math.max(num((prefsBy[pid] || {}).lastSeen), num(seenBy[pid]), Math.min(num(seenUntil[pid]), now()));
 let bugStatus = {}, assetsApi = null, gLvl = 1, gQuery = "", tourStep = -1, tourAuto = false;
 const profCache = new Map();
 // ---------- выходной (v17) ----------
@@ -323,6 +325,19 @@ const mainPid = () => me || viewId;
 const fold = (key, sum, body) => '<details class="fold" data-key="' + key + '"' + (openKeys.has(key) ? " open" : "") + "><summary>" + sum + "</summary>" + body + "</details>";
 const plQuest = (n) => (n % 10 === 1 && n % 100 !== 11 ? "квест" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "квеста" : "квестов");
 const NEWS = [
+  { v: 33, date: "2026-11-28", title: "«Печатает…» в чате", items: [
+    "В чате группы под сообщениями видно, кто сейчас набирает текст: «Алдияр печатает…». Если печатают несколько человек, видно всех.",
+  ] },
+  { v: 32, date: "2026-11-24", title: "ИИ-бот в группе", items: [
+    "В группе «Система» новый участник: Годжо 🤖, ИИ-бот на модели Claude Haiku в характере Годжо Сатору.",
+    "Он сам заходит в случайное время, берёт и отмечает свои квесты, пишет в чат, ставит реакции и помнит, что было в прошлые дни.",
+    "Упомяни его в чате («Годжо», «годж», «гожо», «бот»…). Если он в сети, ответит почти сразу, если нет, через несколько минут. Ночью спит, отвечает утром.",
+    "Если к нему обратились несколько человек, он сам решает, кому и как ответить: одним сообщением, несколькими подряд или просто реакцией.",
+    "Заходит как человек: иногда на минуту, иногда на 5–20 минут, и пока он на сайте, у него горит точка «в сети».",
+    "Высказывается в спорах: защищает свои квесты и иногда комментирует чужие (голосуют только люди).",
+    "Чат группы открывается на последних сообщениях, а кнопка со стрелкой быстро листает в самый верх или вниз.",
+    "В местах недели и итогах сезона бота нет: соревнуются только люди.",
+  ] },
   { v: 31, date: "2026-11-23", title: "Скорость и защита", items: [
     "Сайт быстрее загружается и меньше грузит телефон: живой фон рисуется в 2 раза легче, рамки и уборы двигаются только в профиле и магазине, окно друга строит только открытую вкладку.",
     "На слабых телефонах живой фон выключается сам. Включить обратно можно в ⚙ Настройках → «Оформление».",
