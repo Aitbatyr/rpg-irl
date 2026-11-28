@@ -4,6 +4,7 @@
   const docs = M.docs; // path -> data
   const accounts = M.accounts; // [{auth_id, uid, email, admin, created_at}]
   const chans = [];
+  window.__bcast = (name, payload) => chans.filter((x) => x.name === name).forEach((x) => x.bc.forEach((f) => f({ payload })));
   window.__writes = [];
   let session = M.session || null;
   const authCbs = [];
@@ -91,10 +92,12 @@
       },
     },
     storage: { from: () => ({ upload: async (id, blob) => { window.__writes.push(["upload", id, blob.size]); return { data: { path: id }, error: null }; }, remove: async (ids) => { window.__writes.push(["remove", ids]); return { error: null }; } }) },
+    removeChannel: async () => "ok",
     channel: (name, opts) => {
-      const c = { name, pg: [], pres: [], state: {} };
+      const c = { name, pg: [], pres: [], bc: [], state: {} };
       const api = {
-        on(type, filter, cb) { if (type === "postgres_changes") c.pg.push(cb); else c.pres.push(cb); return api; },
+        on(type, filter, cb) { if (type === "postgres_changes") c.pg.push(cb); else if (type === "broadcast") c.bc.push(cb); else c.pres.push(cb); return api; },
+        send: async (m) => { (window.__writes || []).push(["broadcast", name, m && m.payload]); return "ok"; },
         subscribe(cb) { chans.push(c); setTimeout(() => cb && cb("SUBSCRIBED"), 10); return api; },
         presenceState() { return Object.assign({}, M.presence || {}, c.state); },
         track: async (s) => { if (opts && opts.config && opts.config.presence) c.state[opts.config.presence.key] = [s]; setTimeout(() => c.pres.forEach((f) => f()), 5); },

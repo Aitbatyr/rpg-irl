@@ -186,6 +186,18 @@
     });
   }
 
+  // ---------- v33: «печатает…» в чате группы (realtime broadcast, в базу ничего не пишется) ----------
+  const typCh = {};
+  window.SISTEMA_TYPING = Object.freeze({
+    join(gid, cb) {
+      const ch = sb.channel("typing-" + gid, { config: { broadcast: { self: false } } });
+      ch.on("broadcast", { event: "typing" }, (m) => { try { cb((m && m.payload) || {}); } catch {} }).subscribe();
+      typCh[gid] = ch;
+      return () => { if (typCh[gid] === ch) delete typCh[gid]; try { sb.removeChannel(ch); } catch {} };
+    },
+    send(gid, payload) { const ch = typCh[gid]; if (!ch) return; try { const r = ch.send({ type: "broadcast", event: "typing", payload }); if (r && r.catch) r.catch(() => {}); } catch {} },
+  });
+
   // ---------- push-уведомления ----------
   const FN = CFG.url + "/functions/v1/push";
   const b64u = (s) => { const p = "=".repeat((4 - (s.length % 4)) % 4), b = atob((s + p).replace(/-/g, "+").replace(/_/g, "/")); return Uint8Array.from(b, (c) => c.charCodeAt(0)); };
